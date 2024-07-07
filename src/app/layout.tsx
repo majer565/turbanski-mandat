@@ -1,6 +1,11 @@
+import { ThemeProvider } from "@/components/providers/theme-provider";
+import Sidebar from "@/components/Sidebar";
+import FlexRowWrapper from "@/components/wrappers/FlexRowWrapper";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import RootWrapper from "@/components/wrappers/RootWrapper";
+import PageWrapper from "@/components/wrappers/PageWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,8 +20,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="pl">
+      <body className={inter.className}>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          <FlexRowWrapper>
+            <RootWrapper>
+              <Sidebar />
+              <PageWrapper>{children}</PageWrapper>
+            </RootWrapper>
+          </FlexRowWrapper>
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
