@@ -5,6 +5,7 @@ export default function Home() {
     <div>
       <p className="text-primary">Ala</p>
       <p className="text-secondary">Makota</p>
+      <p className="text-destructive">Bez Ali</p>
     </div>
   );
 }
