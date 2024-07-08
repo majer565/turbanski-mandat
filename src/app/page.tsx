@@ -1,11 +1,25 @@
-"use client"
+import { DataTable } from "../components/dataTable/DataTable";
+import { columns, Payment } from "../lib/data-table-columns/test-columns";
 
-export default function Home() {
+async function getData(): Promise<Payment[]> {
+  // Fetch data from your API here.
+  return [
+    {
+      id: "728ed52f",
+      amount: 100,
+      status: "pending",
+      email: "m@example.com",
+    },
+    // ...
+  ]
+}
+
+export default async function Home() {
+  const data = await getData()
+ 
   return (
-    <div>
-      <p className="text-primary">Ala</p>
-      <p className="text-secondary">Makota</p>
-      <p className="text-destructive">Bez Ali</p>
+    <div className="container mx-auto py-10">
+      <DataTable columns={columns} data={data} />
     </div>
   );
 }
