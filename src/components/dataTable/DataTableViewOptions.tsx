@@ -1,6 +1,8 @@
 "use client";
 
 import { Table } from "@tanstack/react-table";
+import { ScanSearch } from "lucide-react";
+import { Button } from "../ui/button";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -9,37 +11,26 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { Button } from "../ui/button";
-import { GalleryHorizontalIcon } from "lucide-react";
 
 interface DataTableViewOptionsProps<TData> {
   table: Table<TData>;
 }
 
-export function DataTableViewOptions<TData>({
-  table,
-}: DataTableViewOptionsProps<TData>) {
+export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps<TData>) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          className="ml-auto hidden h-8 lg:flex"
-        >
-          <GalleryHorizontalIcon className="mr-2 h-4 w-4" />
-          View
+        <Button variant="outline" size="sm" className="ml-auto hidden h-8 lg:flex bg-muted/40">
+          <ScanSearch className="mr-2 h-4 w-4" />
+          Widok
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[150px]">
-        <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+        <DropdownMenuLabel>Ukryj kolumny</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {table
           .getAllColumns()
-          .filter(
-            (column) =>
-              typeof column.accessorFn !== "undefined" && column.getCanHide()
-          )
+          .filter((column) => typeof column.accessorFn !== "undefined" && column.getCanHide())
           .map((column) => {
             return (
               <DropdownMenuCheckboxItem
