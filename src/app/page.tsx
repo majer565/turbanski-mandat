@@ -1,4 +1,4 @@
-import { DataTable } from "../components/dataTable/DataTable";
+import { DataTable } from "../components/data-table/DataTable";
 import { columns, Payment } from "../lib/data-table-columns/test-columns";
 
 async function getData(): Promise<Payment[]> {
@@ -9,6 +9,18 @@ async function getData(): Promise<Payment[]> {
       amount: 100,
       status: "pending",
       email: "m@example.com",
+    },
+    {
+      id: "123qwe432",
+      amount: 200,
+      status: "pending",
+      email: "ala@example.com",
+    },
+    {
+      id: "546fvd26g",
+      amount: 50,
+      status: "success",
+      email: "malina@example.com",
     },
     // ...
   ]

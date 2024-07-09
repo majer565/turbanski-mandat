@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { DataTablePagination } from "./DataTablePagination";
 import { DataTableViewOptions } from "./DataTableViewOptions";
 import { DataTableHeaderWrapper, DataTableWrapper } from "../wrappers/DataTableWrappers";
-import DataTableFilters from "./DataTableFilters";
+import DataTableFilters from "./data-table-filters/DataTableFilters";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -23,14 +23,14 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
   return (
     <DataTableWrapper>
       <DataTableHeaderWrapper>
-        <DataTableFilters />
+        <DataTableFilters table={table} />
         <DataTableViewOptions table={table} />
       </DataTableHeaderWrapper>
-      <div className="rounded-md border">
+      <div className="rounded-md border border-border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow className="border-border" key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id}>
@@ -44,14 +44,14 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                <TableRow className="border-border" key={row.id} data-state={row.getIsSelected() && "selected"}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
-              <TableRow>
+              <TableRow className="border-border">
                 <TableCell colSpan={columns.length} className="h-24 text-center">
                   No results.
                 </TableCell>
