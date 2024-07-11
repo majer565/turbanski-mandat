@@ -6,14 +6,15 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { DataTablePagination } from "./DataTablePagination";
 import { DataTableViewOptions } from "./DataTableViewOptions";
 import { DataTableHeaderWrapper, DataTableWrapper } from "../wrappers/DataTableWrappers";
-import DataTableFilters from "./data-table-filters/DataTableFilters";
+import DataTableFilters, { DataTableFilterOption } from "./data-table-filters/DataTableFilters";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  columnFilters: DataTableFilterOption<TData>[];
 }
 
-export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({ columns, data, columnFilters }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
@@ -23,7 +24,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
   return (
     <DataTableWrapper>
       <DataTableHeaderWrapper>
-        <DataTableFilters table={table} />
+        <DataTableFilters table={table} columnFilters={columnFilters} />
         <DataTableViewOptions table={table} />
       </DataTableHeaderWrapper>
       <div className="rounded-md border border-border">
