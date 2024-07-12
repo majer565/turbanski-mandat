@@ -19,6 +19,7 @@ export function DataTable<TData, TValue>({ columns, data, columnFilters }: DataT
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    manualFiltering: true,
   });
 
   return (
