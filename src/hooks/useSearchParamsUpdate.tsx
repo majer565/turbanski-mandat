@@ -7,11 +7,7 @@ export default function useSearchParamsUpdate() {
   const pathname = usePathname();
   const { replace } = useRouter();
 
-  const updateSearchParams = (
-    id: string,
-    param: string,
-    callback?: () => void
-  ) => {
+  const updateSearchParams = (id: string, param: string) => {
     const params = new URLSearchParams(searchParams);
     if (param) {
       params.set(id, param);
@@ -19,8 +15,6 @@ export default function useSearchParamsUpdate() {
       params.delete(id);
     }
     replace(`${pathname}?${params.toString()}`);
-
-    if (callback) callback();
   };
 
   return { updateSearchParams };
