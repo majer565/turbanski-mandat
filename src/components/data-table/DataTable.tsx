@@ -7,6 +7,7 @@ import { DataTablePagination } from "./DataTablePagination";
 import { DataTableViewOptions } from "./DataTableViewOptions";
 import { DataTableHeaderWrapper, DataTableWrapper } from "../wrappers/DataTableWrappers";
 import DataTableFilters, { DataTableFilterOption } from "./data-table-filters/DataTableFilters";
+import { TEST_COLUMN } from "../../lib/data-table-columns/test-columns";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -25,7 +26,7 @@ export function DataTable<TData, TValue>({ columns, data, columnFilters }: DataT
   return (
     <DataTableWrapper>
       <DataTableHeaderWrapper>
-        <DataTableFilters table={table} columnFilters={columnFilters} />
+        <DataTableFilters table={table} columnFilters={columnFilters} queryFilters={TEST_COLUMN} />
         <DataTableViewOptions table={table} />
       </DataTableHeaderWrapper>
       <div className="rounded-md border border-border">

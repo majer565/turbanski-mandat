@@ -1,5 +1,10 @@
+import { Suspense } from "react";
 import { DataTable } from "../components/data-table/DataTable";
-import { columnFilters, columns, Payment } from "../lib/data-table-columns/test-columns";
+import {
+  columnFilters,
+  columns,
+  Payment,
+} from "../lib/data-table-columns/test-columns";
 
 async function getData(): Promise<Payment[]> {
   // Fetch data from your API here.
@@ -23,15 +28,21 @@ async function getData(): Promise<Payment[]> {
       email: "malina@example.com",
     },
     // ...
-  ]
+  ];
 }
 
 export default async function Home() {
-  const data = await getData()
- 
+  const data = await getData();
+
   return (
-    <div className="container mx-auto py-10">
-      <DataTable columnFilters={columnFilters} columns={columns} data={data} />
-    </div>
+    <Suspense>
+      <div className="container mx-auto py-10">
+        <DataTable
+          columnFilters={columnFilters}
+          columns={columns}
+          data={data}
+        />
+      </div>
+    </Suspense>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import { useEffect } from "react";
 
 import {
   Command,
@@ -10,18 +10,19 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Plus, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 import { useState } from "react";
-import { Button } from "../../ui/button";
-import { DataTableFilterOption } from "./DataTableFilters";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "../../ui/checkbox";
 import { useDebouncedCallback } from "use-debounce";
+import useSearchParamsUpdate from "../../../hooks/useSearchParamsUpdate";
+import { Button } from "../../ui/button";
+import { Checkbox } from "../../ui/checkbox";
+import { DataTableFilterOption } from "./DataTableFilters";
 
 interface DataTableFiterProps<TData> {
   filter: DataTableFilterOption<TData>;
@@ -30,47 +31,63 @@ interface DataTableFiterProps<TData> {
 
 interface PopoverContentProps<TData> {
   filter: DataTableFilterOption<TData>;
-  onRemoveFilter: (filter: DataTableFilterOption<TData>) => void;
-  value: FilterOption[];
-  onValueChange: (option: FilterOption) => void;
-}
-
-interface FilterOption {
-  value: string;
-  label: string;
+  onRemove: () => void;
+  value: string[];
+  onValueChange: (valueToUpdate: string) => void;
 }
 
 export default function DataTableFilterButton<TData>(
   props: DataTableFiterProps<TData>
 ) {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState<FilterOption[]>([]);
+  const [value, setValue] = useState<string[]>(props.filter.value || []);
+  const { updateSearchParams } = useSearchParamsUpdate();
 
-  const handleValueUpdate = (option: FilterOption) => {
+  useEffect(() => {
+    if (value.length === 0) {
+      updateSearchParams(props.filter.id, "");
+    } else {
+      updateSearchParams(props.filter.id, value.map((v) => v).join("."));
+    }
+  }, [value]);
+
+  const handleValueUpdate = (valueToUpdate: string) => {
     if (props.filter.options.length === 0) {
-      if (option.value === "") {
+      if (valueToUpdate === "") {
         setValue([]);
-      } else setValue([option]);
+      } else setValue([valueToUpdate]);
       return;
     }
 
-    if (value.some((v) => v.value === option.value)) {
-      setValue(value.filter((v) => v.value !== option.value));
-    } else setValue((prev) => [...prev, option]);
+    if (value.some((v) => v === valueToUpdate)) {
+      setValue(value.filter((v) => v !== valueToUpdate));
+    } else setValue((prev) => [...prev, valueToUpdate]);
+  };
+
+  const getLabelByValue = (value: string): string => {
+    return props.filter.options.find((o) => o.value === value)?.label || value;
   };
 
   const getChoosenFiltersText = () => {
     if (value.length === 1) {
-      return <span className="ml-2 opacity-50">{value[0].label}</span>;
+      return <span className="ml-2 opacity-50">{getLabelByValue(value[0])}</span>;
     } else {
       return value.length > 2 ? (
         <span className="ml-2 opacity-50">{value.length} zaznaczone</span>
       ) : (
         <span className="ml-2 opacity-50">
-          {value.map((v, i) => (i === 1 ? `${v.label}` : `${v.label}, `))}
+          {value.map((v, i) => {
+            const label = getLabelByValue(v);
+            return i === 1 ? `${label}` : `${label}, `;
+          })}
         </span>
       );
     }
+  };
+
+  const handleRemove = () => {
+    updateSearchParams(props.filter.id, "");
+    props.onRemoveFilter(props.filter);
   };
 
   return (
@@ -89,7 +106,7 @@ export default function DataTableFilterButton<TData>(
               {value.length > 1 ? (
                 getChoosenFiltersText()
               ) : (
-                <span className="ml-2 opacity-50">{value[0].label}</span>
+                <span className="ml-2 opacity-50">{getLabelByValue(value[0])}</span>
               )}
             </>
           )}
@@ -99,14 +116,14 @@ export default function DataTableFilterButton<TData>(
         {props.filter.options.length === 0 ? (
           <InputPopoverContent
             filter={props.filter}
-            onRemoveFilter={props.onRemoveFilter}
+            onRemove={handleRemove}
             value={value}
             onValueChange={handleValueUpdate}
           />
         ) : (
           <SelectPopoverContent
             filter={props.filter}
-            onRemoveFilter={props.onRemoveFilter}
+            onRemove={handleRemove}
             value={value}
             onValueChange={handleValueUpdate}
           />
@@ -118,10 +135,7 @@ export default function DataTableFilterButton<TData>(
 
 function InputPopoverContent<TData>(props: PopoverContentProps<TData>) {
   const handleChange = useDebouncedCallback((input: string) => {
-    props.onValueChange({
-      value: input,
-      label: input,
-    });
+    props.onValueChange(input);
   }, 300);
 
   return (
@@ -134,14 +148,14 @@ function InputPopoverContent<TData>(props: PopoverContentProps<TData>) {
           className="h-6 w-6"
           variant="ghost"
           size="icon"
-          onClick={() => props.onRemoveFilter(props.filter)}
+          onClick={() => props.onRemove()}
         >
           <Trash className="w-3 h-3 opacity-50" />
         </Button>
       </div>
       <Input
         onChange={(e) => handleChange(e.target.value)}
-        defaultValue={props.value[0] ? props.value[0].value : ""}
+        defaultValue={props.value[0] || ""}
         placeholder="Wpisz tutaj..."
         className="w-full h-8 text-sm px-2 py-4"
         type="text"
@@ -152,15 +166,11 @@ function InputPopoverContent<TData>(props: PopoverContentProps<TData>) {
 
 function SelectPopoverContent<TData>(props: PopoverContentProps<TData>) {
   const handleSelect = (value: string) => {
-    props.onValueChange({
-      value,
-      label:
-        props.filter.options.find((o) => o.value === value)?.label || value,
-    });
+    props.onValueChange(value);
   };
 
   const isSelected = (value: string): boolean => {
-    return props.value.some((v) => v.value === value);
+    return props.value.some((v) => v === value);
   };
 
   return (
@@ -173,7 +183,7 @@ function SelectPopoverContent<TData>(props: PopoverContentProps<TData>) {
           className="h-6 w-6"
           variant="ghost"
           size="icon"
-          onClick={() => props.onRemoveFilter(props.filter)}
+          onClick={() => props.onRemove()}
         >
           <Trash className="w-3 h-3 opacity-50" />
         </Button>

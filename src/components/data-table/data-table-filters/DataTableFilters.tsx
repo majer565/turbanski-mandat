@@ -22,7 +22,7 @@ export interface DataTableFilterOption<TData> {
   id: string;
   label: string;
   options: Option[];
-  // value: keyof TData;
+  value?: string[];
   // filterValues?: string[];
   // filterOperator?: string;
   // isMulti?: boolean;
@@ -31,28 +31,16 @@ export interface DataTableFilterOption<TData> {
 interface DataTableFiltersProps<TData> {
   table: Table<TData>;
   columnFilters: DataTableFilterOption<TData>[];
+  queryFilters: DataTableFilterOption<TData>[];
 }
 
-function DataTableFilters<TData>({ table, columnFilters }: DataTableFiltersProps<TData>) {
-  const [allFilters, setAllFilters] = useState<DataTableFilterOption<TData>[]>(
-    []
-  );
-  const [selectedFilters, setSelectedFilters] = useState<
-    DataTableFilterOption<TData>[]
-  >([]);
-
-  useEffect(() => {
-    let columns: DataTableFilterOption<TData>[] = [];
-    columnFilters.forEach((col) =>
-      columns.push({
-        id: col.id,
-        label: col.label,
-        options: col.options,
-      })
-    );
-
-    setAllFilters(columns);
-  }, []);
+function DataTableFilters<TData>({
+  table,
+  columnFilters,
+  queryFilters,
+}: DataTableFiltersProps<TData>) {
+  const [selectedFilters, setSelectedFilters] =
+    useState<DataTableFilterOption<TData>[]>(queryFilters);
 
   const addSelectedFilter = (filter: DataTableFilterOption<TData>) => {
     setSelectedFilters((prev) => [...prev, filter]);
@@ -70,7 +58,7 @@ function DataTableFilters<TData>({ table, columnFilters }: DataTableFiltersProps
   };
 
   const getNotSelectedFilters = () => {
-    return allFilters.filter((f) => !selectedFilters.includes(f));
+    return columnFilters.filter((f) => !selectedFilters.includes(f));
   };
 
   return (
@@ -82,7 +70,7 @@ function DataTableFilters<TData>({ table, columnFilters }: DataTableFiltersProps
           filter={f}
         />
       ))}
-      {selectedFilters.length !== allFilters.length && (
+      {selectedFilters.length !== columnFilters.length && (
         <DataTableFilterAddButton
           options={getNotSelectedFilters()}
           onAddFilter={addSelectedFilter}
