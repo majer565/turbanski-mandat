@@ -21,6 +21,7 @@ import { Button } from "../../ui/button";
 import { DataTableFilterOption } from "./DataTableFilters";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "../../ui/checkbox";
+import { useDebouncedCallback } from "use-debounce";
 
 interface DataTableFiterProps<TData> {
   filter: DataTableFilterOption<TData>;
@@ -46,6 +47,13 @@ export default function DataTableFilterButton<TData>(
   const [value, setValue] = useState<FilterOption[]>([]);
 
   const handleValueUpdate = (option: FilterOption) => {
+    if (props.filter.options.length === 0) {
+      if (option.value === "") {
+        setValue([]);
+      } else setValue([option]);
+      return;
+    }
+
     if (value.some((v) => v.value === option.value)) {
       setValue(value.filter((v) => v.value !== option.value));
     } else setValue((prev) => [...prev, option]);
@@ -108,16 +116,13 @@ export default function DataTableFilterButton<TData>(
   );
 }
 
-//Current state:
-//- select filter works perfectly
-//- input filter does not work -> needs to be fixed
 function InputPopoverContent<TData>(props: PopoverContentProps<TData>) {
-  const handleChange = (event: { target: { value: string } }) => {
+  const handleChange = useDebouncedCallback((input: string) => {
     props.onValueChange({
-      value: event.target.value,
-      label: event.target.value,
+      value: input,
+      label: input,
     });
-  };
+  }, 300);
 
   return (
     <>
@@ -135,8 +140,8 @@ function InputPopoverContent<TData>(props: PopoverContentProps<TData>) {
         </Button>
       </div>
       <Input
-        onChange={handleChange}
-        value={props.value[0] ? props.value[0].value : ""}
+        onChange={(e) => handleChange(e.target.value)}
+        defaultValue={props.value[0] ? props.value[0].value : ""}
         placeholder="Wpisz tutaj..."
         className="w-full h-8 text-sm px-2 py-4"
         type="text"
