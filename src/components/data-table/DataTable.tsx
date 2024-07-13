@@ -30,7 +30,6 @@ export interface QueryParams {
   ps?: string;
   sort?: string;
 }
-``;
 
 export interface TableProps {
   page: number;
