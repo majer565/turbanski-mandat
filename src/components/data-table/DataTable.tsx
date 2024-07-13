@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+import { flexRender, Table as TanstackTable } from "@tanstack/react-table";
 
 import {
   Table,
@@ -15,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { PAGINATION_SETUP } from "../../lib/data-table-columns/test-columns";
 import {
   DataTableHeaderWrapper,
   DataTableWrapper,
@@ -25,32 +21,29 @@ import DataTableFilters, {
 import { DataTablePagination } from "./DataTablePagination";
 import { DataTableViewOptions } from "./DataTableViewOptions";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-  columnFilters: DataTableFilterOption<TData>[];
+export interface QueryParams {
+  p?: string;
+  ps?: string;
+}
+
+export interface TableProps {
+  page: number;
+  pageSize: number;
+}
+
+interface DataTableProps<TData> {
+  table: TanstackTable<TData>;
+  columnFilters: DataTableFilterOption[];
 }
 
 export function DataTable<TData, TValue>({
-  columns,
-  data,
+  table,
   columnFilters,
-}: DataTableProps<TData, TValue>) {
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    manualFiltering: true,
-  });
-
+}: DataTableProps<TData>) {
   return (
     <DataTableWrapper>
       <DataTableHeaderWrapper>
-        <DataTableFilters
-          table={table}
-          columnFilters={columnFilters}
-          queryFilters={[]}
-        />
+        <DataTableFilters columnFilters={columnFilters} queryFilters={[]} />
         <DataTableViewOptions table={table} />
       </DataTableHeaderWrapper>
       <div className="rounded-md border border-border">
@@ -94,17 +87,17 @@ export function DataTable<TData, TValue>({
             ) : (
               <TableRow className="border-border">
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={table.getAllColumns().length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  Brak wyników.
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
+      <DataTablePagination config={PAGINATION_SETUP} table={table} />
     </DataTableWrapper>
   );
 }

@@ -43,9 +43,11 @@ export default function DataTableFilterButton(props: DataTableFiterProps) {
 
   useEffect(() => {
     if (value.length === 0) {
-      updateSearchParams(props.filter.id, "");
+      updateSearchParams([{ id: props.filter.id, param: "" }]);
     } else {
-      updateSearchParams(props.filter.id, value.map((v) => v).join("."));
+      updateSearchParams([
+        { id: props.filter.id, param: value.map((v) => v).join(".") },
+      ]);
     }
   }, [value]);
 
@@ -86,7 +88,7 @@ export default function DataTableFilterButton(props: DataTableFiterProps) {
   };
 
   const handleRemove = () => {
-    updateSearchParams(props.filter.id, "");
+    updateSearchParams([{ id: props.filter.id, param: "" }]);
     props.onRemoveFilter(props.filter);
   };
 

@@ -5,16 +5,19 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 export default function useSearchParamsUpdate() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const { replace } = useRouter();
+  const router = useRouter();
 
-  const updateSearchParams = (id: string, param: string) => {
+  const updateSearchParams = (paramsArray: { id: string; param: string }[]) => {
     const params = new URLSearchParams(searchParams);
-    if (param) {
-      params.set(id, param);
-    } else {
-      params.delete(id);
-    }
-    replace(`${pathname}?${params.toString()}`);
+
+    paramsArray.forEach(({ id, param }) => {
+      if (param) {
+        params.set(id, param);
+      } else {
+        params.delete(id);
+      }
+    });
+    router.replace(`${pathname}?${params.toString()}`);
   };
 
   return { updateSearchParams };

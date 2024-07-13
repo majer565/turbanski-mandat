@@ -6,6 +6,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import RootWrapper from "@/components/wrappers/RootWrapper";
 import PageWrapper from "@/components/wrappers/PageWrapper";
+import { ReactQueryClientProvider } from "../components/providers/react-query-client-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,14 +23,16 @@ export default function RootLayout({
   return (
     <html lang="pl">
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          <FlexRowWrapper>
-            <RootWrapper>
-              <Sidebar />
-              <PageWrapper>{children}</PageWrapper>
-            </RootWrapper>
-          </FlexRowWrapper>
-        </ThemeProvider>
+        <ReactQueryClientProvider>
+          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+            <FlexRowWrapper>
+              <RootWrapper>
+                <Sidebar />
+                <PageWrapper>{children}</PageWrapper>
+              </RootWrapper>
+            </FlexRowWrapper>
+          </ThemeProvider>
+        </ReactQueryClientProvider>
       </body>
     </html>
   );
