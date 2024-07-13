@@ -1,22 +1,35 @@
 "use client";
 
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../../ui/button";
 import { DataTableFilterOption } from "./DataTableFilters";
 
-interface DataTableFilterAddButtonProps<TData> {
-  options: DataTableFilterOption<TData>[];
-  onAddFilter: (filter: DataTableFilterOption<TData>) => void;
-  isFilterSelected: (filter: DataTableFilterOption<TData>) => boolean;
+interface DataTableFilterAddButtonProps {
+  options: DataTableFilterOption[];
+  onAddFilter: (filter: DataTableFilterOption) => void;
+  isFilterSelected: (filter: DataTableFilterOption) => boolean;
 }
 
-export default function DataTableFilterAddButton<TData>(props: DataTableFilterAddButtonProps<TData>) {
+export default function DataTableFilterAddButton(
+  props: DataTableFilterAddButtonProps
+) {
   const [open, setOpen] = useState(false);
 
-  const getFilterById = (id: string): DataTableFilterOption<TData> | undefined => {
+  const getFilterById = (id: string): DataTableFilterOption | undefined => {
     return props.options.find((f) => f.id === id);
   };
 
@@ -30,7 +43,11 @@ export default function DataTableFilterAddButton<TData>(props: DataTableFilterAd
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="h-8 text-xs flex rounded-2xl bg-muted/40">
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-8 text-xs flex rounded-2xl bg-muted/40"
+        >
           <Plus className="h-4 w-4 mr-2 opacity-50" />
           Dodaj filtr
         </Button>

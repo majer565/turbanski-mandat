@@ -24,21 +24,19 @@ import { Button } from "../../ui/button";
 import { Checkbox } from "../../ui/checkbox";
 import { DataTableFilterOption } from "./DataTableFilters";
 
-interface DataTableFiterProps<TData> {
-  filter: DataTableFilterOption<TData>;
-  onRemoveFilter: (filter: DataTableFilterOption<TData>) => void;
+interface DataTableFiterProps {
+  filter: DataTableFilterOption;
+  onRemoveFilter: (filter: DataTableFilterOption) => void;
 }
 
-interface PopoverContentProps<TData> {
-  filter: DataTableFilterOption<TData>;
+interface PopoverContentProps {
+  filter: DataTableFilterOption;
   onRemove: () => void;
   value: string[];
   onValueChange: (valueToUpdate: string) => void;
 }
 
-export default function DataTableFilterButton<TData>(
-  props: DataTableFiterProps<TData>
-) {
+export default function DataTableFilterButton(props: DataTableFiterProps) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState<string[]>(props.filter.value || []);
   const { updateSearchParams } = useSearchParamsUpdate();
@@ -70,7 +68,9 @@ export default function DataTableFilterButton<TData>(
 
   const getChoosenFiltersText = () => {
     if (value.length === 1) {
-      return <span className="ml-2 opacity-50">{getLabelByValue(value[0])}</span>;
+      return (
+        <span className="ml-2 opacity-50">{getLabelByValue(value[0])}</span>
+      );
     } else {
       return value.length > 2 ? (
         <span className="ml-2 opacity-50">{value.length} zaznaczone</span>
@@ -106,7 +106,9 @@ export default function DataTableFilterButton<TData>(
               {value.length > 1 ? (
                 getChoosenFiltersText()
               ) : (
-                <span className="ml-2 opacity-50">{getLabelByValue(value[0])}</span>
+                <span className="ml-2 opacity-50">
+                  {getLabelByValue(value[0])}
+                </span>
               )}
             </>
           )}
@@ -133,7 +135,7 @@ export default function DataTableFilterButton<TData>(
   );
 }
 
-function InputPopoverContent<TData>(props: PopoverContentProps<TData>) {
+function InputPopoverContent(props: PopoverContentProps) {
   const handleChange = useDebouncedCallback((input: string) => {
     props.onValueChange(input);
   }, 300);
@@ -164,7 +166,7 @@ function InputPopoverContent<TData>(props: PopoverContentProps<TData>) {
   );
 }
 
-function SelectPopoverContent<TData>(props: PopoverContentProps<TData>) {
+function SelectPopoverContent(props: PopoverContentProps) {
   const handleSelect = (value: string) => {
     props.onValueChange(value);
   };
