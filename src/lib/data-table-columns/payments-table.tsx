@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { DataTable, TableProps } from "../../components/data-table/DataTable";
+import SkeletonDataTable from "../../components/data-table/SkeletonDataTable";
 import { usePagination } from "../../hooks/usePagination";
 import { columnFilters, columns, getPayments } from "./test-columns";
 
@@ -30,7 +31,8 @@ const PaymentsTable = (props: TableProps) => {
     },
   });
 
-  if (isPending) return <div>Loading...</div>;
+  if (isPending)
+    return <SkeletonDataTable columnFilters={columnFilters} table={table} />;
 
   return <DataTable columnFilters={columnFilters} table={table} />;
 };

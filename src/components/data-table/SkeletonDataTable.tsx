@@ -1,6 +1,6 @@
 "use client";
 
-import { flexRender, Table as TanstackTable } from "@tanstack/react-table";
+import { flexRender } from "@tanstack/react-table";
 
 import {
   Table,
@@ -11,35 +11,32 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { PAGINATION_SETUP } from "../../lib/data-table-columns/test-columns";
+import { Skeleton } from "../ui/skeleton";
 import {
   DataTableHeaderWrapper,
   DataTableWrapper,
 } from "../wrappers/DataTableWrappers";
-import DataTableFilters, {
-  DataTableFilterOption,
-} from "./data-table-filters/DataTableFilters";
+import DataTableFilters from "./data-table-filters/DataTableFilters";
+import { DataTableProps } from "./DataTable";
 import { DataTablePagination } from "./DataTablePagination";
 import { DataTableViewOptions } from "./DataTableViewOptions";
 
-export interface QueryParams {
-  p?: string;
-  ps?: string;
-}
-
-export interface TableProps {
-  page: number;
-  pageSize: number;
-}
-
-export interface DataTableProps<TData> {
-  table: TanstackTable<TData>;
-  columnFilters: DataTableFilterOption[];
-}
-
-export function DataTable<TData>({
+export default function SkeletonDataTable<TData>({
   table,
   columnFilters,
 }: DataTableProps<TData>) {
+  const getSkeleton = () => {
+    return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
+      <TableRow key={n} className="border-border">
+        {table.getVisibleFlatColumns().map((column) => (
+          <TableCell key={column.id}>
+            <Skeleton className="w-full h-4" />
+          </TableCell>
+        ))}
+      </TableRow>
+    ));
+  };
+
   return (
     <DataTableWrapper>
       <DataTableHeaderWrapper>
@@ -66,35 +63,7 @@ export function DataTable<TData>({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  className="border-border"
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow className="border-border">
-                <TableCell
-                  colSpan={table.getAllColumns().length}
-                  className="h-24 text-center"
-                >
-                  Brak wyników.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
+          <TableBody>{getSkeleton()}</TableBody>
         </Table>
       </div>
       <DataTablePagination config={PAGINATION_SETUP} table={table} />
