@@ -7,11 +7,11 @@ export default async function Home({
 }: {
   searchParams?: QueryParams;
 }) {
-  const { p, ps } = useQueryParamsResolver(searchParams);
+  const { p, ps, sort } = useQueryParamsResolver(searchParams);
 
   return (
     <div className="container mx-auto py-10">
-      <PaymentsTable page={p} pageSize={ps} />
+      <PaymentsTable page={p} pageSize={ps} sort={sort} />
     </div>
   );
 }

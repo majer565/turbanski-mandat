@@ -1,9 +1,17 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
-import { CircleCheck, CircleDashed, CircleX, LoaderCircle } from "lucide-react";
+import { ColumnDef, SortingState } from "@tanstack/react-table";
+import {
+  ArrowDownNarrowWide,
+  ArrowDownWideNarrow,
+  CircleCheck,
+  CircleDashed,
+  CircleX,
+  LoaderCircle,
+} from "lucide-react";
 import { DataTableFilterOption } from "../../components/data-table/data-table-filters/DataTableFilters";
 import { PaginationConfig } from "../../components/data-table/DataTablePagination";
+import { Button } from "../../components/ui/button";
 import { MOCK_PAYMENTS } from "./mock-payments";
 import { COLUMN_LABELS, COLUMN_OPTIONS } from "./test-column-labels";
 
@@ -55,10 +63,27 @@ export const columnFilters: DataTableFilterOption[] = [
   },
 ];
 
+const renderSortIcon = (sortOption: string | false) => {
+  if (!sortOption) return;
+
+  return sortOption === "asc" ? (
+    <ArrowDownNarrowWide className="ml-2 h-4 w-4" />
+  ) : (
+    <ArrowDownWideNarrow className="ml-2 h-4 w-4" />
+  );
+};
+
 export const columns: ColumnDef<Payment>[] = [
   {
     accessorKey: "status",
-    header: "Status",
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting()}>
+          Status
+          {renderSortIcon(column.getIsSorted())}
+        </Button>
+      );
+    },
   },
   {
     accessorKey: "email",
@@ -92,11 +117,22 @@ export const PAGINATION_SETUP: PaginationConfig = {
 
 export const getPayments = (
   page: number,
-  pageSize: number
+  pageSize: number,
+  sort: SortingState
 ): Promise<Payment[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve(MOCK_PAYMENTS.slice((page - 1) * pageSize, page * pageSize));
+      let arr: Payment[];
+      console.log(sort);
+      sort[0]
+        ? (arr = [...MOCK_PAYMENTS].sort((a, b) =>
+            sort[0].desc
+              ? a.status.localeCompare(b.status)
+              : b.status.localeCompare(a.status)
+          ))
+        : (arr = MOCK_PAYMENTS);
+      console.log(arr);
+      resolve(arr.slice((page - 1) * pageSize, page * pageSize));
     }, 500);
   });
 };

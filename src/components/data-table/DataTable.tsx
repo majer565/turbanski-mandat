@@ -1,6 +1,10 @@
 "use client";
 
-import { flexRender, Table as TanstackTable } from "@tanstack/react-table";
+import {
+  ColumnSort,
+  flexRender,
+  Table as TanstackTable,
+} from "@tanstack/react-table";
 
 import {
   Table,
@@ -24,11 +28,14 @@ import { DataTableViewOptions } from "./DataTableViewOptions";
 export interface QueryParams {
   p?: string;
   ps?: string;
+  sort?: string;
 }
+``;
 
 export interface TableProps {
   page: number;
   pageSize: number;
+  sort: ColumnSort[];
 }
 
 export interface DataTableProps<TData> {
