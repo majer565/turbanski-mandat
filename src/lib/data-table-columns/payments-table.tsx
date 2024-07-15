@@ -6,12 +6,22 @@ import { DataTable, TableProps } from "../../components/data-table/DataTable";
 import SkeletonDataTable from "../../components/data-table/SkeletonDataTable";
 import { usePagination } from "../../hooks/usePagination";
 import { useSorting } from "../../hooks/useSorting";
+import { queryFilterAdapter } from "../utils";
 import { columnFilters, columns, getPayments } from "./test-columns";
 
 const PaymentsTable = (props: TableProps) => {
+  const queryFilters = queryFilterAdapter(columnFilters, props.filter);
+
   const { data, isPending, error } = useQuery({
-    queryKey: ["payments", props.page, props.pageSize, props.sort],
-    queryFn: () => getPayments(props.page, props.pageSize, props.sort),
+    queryKey: [
+      "payments",
+      props.page,
+      props.pageSize,
+      props.sort,
+      props.filter,
+    ],
+    queryFn: () =>
+      getPayments(props.page, props.pageSize, props.sort, queryFilters),
   });
 
   const { pagination, setPagination } = usePagination({
@@ -38,9 +48,21 @@ const PaymentsTable = (props: TableProps) => {
   });
 
   if (isPending)
-    return <SkeletonDataTable columnFilters={columnFilters} table={table} />;
+    return (
+      <SkeletonDataTable
+        columnFilters={columnFilters}
+        table={table}
+        queryFilters={queryFilters}
+      />
+    );
 
-  return <DataTable columnFilters={columnFilters} table={table} />;
+  return (
+    <DataTable
+      columnFilters={columnFilters}
+      queryFilters={queryFilters}
+      table={table}
+    />
+  );
 };
 
 export default PaymentsTable;

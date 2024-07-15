@@ -118,12 +118,12 @@ export const PAGINATION_SETUP: PaginationConfig = {
 export const getPayments = (
   page: number,
   pageSize: number,
-  sort: SortingState
+  sort: SortingState,
+  filter: DataTableFilterOption[]
 ): Promise<Payment[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
       let arr: Payment[];
-      console.log(sort);
       sort[0]
         ? (arr = [...MOCK_PAYMENTS].sort((a, b) =>
             sort[0].desc
@@ -131,7 +131,22 @@ export const getPayments = (
               : b.status.localeCompare(a.status)
           ))
         : (arr = MOCK_PAYMENTS);
-      console.log(arr);
+      arr = arr.filter((payment) => {
+        return filter.every((f) => {
+          if (f.value) {
+            if (f.id === "status") {
+              return f.value.includes(payment.status);
+            }
+            if (f.id === "email") {
+              return payment.email.includes(f.value[0]);
+            }
+            if (f.id === "amount") {
+              return payment.amount.toString().includes(f.value[0]);
+            }
+            return true;
+          }
+        });
+      });
       resolve(arr.slice((page - 1) * pageSize, page * pageSize));
     }, 500);
   });

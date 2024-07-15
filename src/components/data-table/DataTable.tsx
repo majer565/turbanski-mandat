@@ -29,27 +29,36 @@ export interface QueryParams {
   p?: string;
   ps?: string;
   sort?: string;
+  [key: string]: string | undefined;
 }
+
+export type SimpleFilter = { id: string; value: string[] };
 
 export interface TableProps {
   page: number;
   pageSize: number;
   sort: ColumnSort[];
+  filter: SimpleFilter[];
 }
 
 export interface DataTableProps<TData> {
   table: TanstackTable<TData>;
   columnFilters: DataTableFilterOption[];
+  queryFilters: DataTableFilterOption[];
 }
 
 export function DataTable<TData>({
   table,
   columnFilters,
+  queryFilters,
 }: DataTableProps<TData>) {
   return (
     <DataTableWrapper>
       <DataTableHeaderWrapper>
-        <DataTableFilters columnFilters={columnFilters} queryFilters={[]} />
+        <DataTableFilters
+          columnFilters={columnFilters}
+          queryFilters={queryFilters}
+        />
         <DataTableViewOptions table={table} />
       </DataTableHeaderWrapper>
       <div className="rounded-md border border-border">
