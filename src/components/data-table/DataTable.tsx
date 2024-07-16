@@ -1,29 +1,14 @@
 "use client";
 
-import {
-  ColumnSort,
-  flexRender,
-  Table as TanstackTable,
-} from "@tanstack/react-table";
+import { ColumnSort, flexRender, Table as TanstackTable } from "@tanstack/react-table";
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PAGINATION_SETUP } from "../../lib/data-table-columns/test-columns";
-import {
-  DataTableHeaderWrapper,
-  DataTableWrapper,
-} from "../wrappers/DataTableWrappers";
-import DataTableFilters, {
-  DataTableFilterOption,
-} from "./data-table-filters/DataTableFilters";
+import { DataTableHeaderWrapper, DataTableWrapper } from "../wrappers/DataTableWrappers";
+import DataTableFilters, { DataTableFilterOption } from "./data-table-filters/DataTableFilters";
 import { DataTablePagination } from "./DataTablePagination";
 import { DataTableViewOptions } from "./DataTableViewOptions";
+import { Skeleton } from "../ui/skeleton";
 
 export interface QueryParams {
   p?: string;
@@ -45,20 +30,46 @@ export interface DataTableProps<TData> {
   table: TanstackTable<TData>;
   columnFilters: DataTableFilterOption[];
   queryFilters: DataTableFilterOption[];
+  isDataLoading: boolean;
 }
 
-export function DataTable<TData>({
-  table,
-  columnFilters,
-  queryFilters,
-}: DataTableProps<TData>) {
+export function DataTable<TData>({ table, columnFilters, queryFilters, isDataLoading }: DataTableProps<TData>) {
+  const getSkeleton = () => {
+    return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
+      <TableRow key={n} className="border-border">
+        {table.getVisibleFlatColumns().map((column) => (
+          <TableCell key={column.id}>
+            <Skeleton className="w-full h-4" />
+          </TableCell>
+        ))}
+      </TableRow>
+    ));
+  };
+
+  const getTableBody = (isLoading: boolean) => {
+    return isLoading ? (
+      getSkeleton()
+    ) : table.getRowModel().rows?.length ? (
+      table.getRowModel().rows.map((row) => (
+        <TableRow className="border-border" key={row.id} data-state={row.getIsSelected() && "selected"}>
+          {row.getVisibleCells().map((cell) => (
+            <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+          ))}
+        </TableRow>
+      ))
+    ) : (
+      <TableRow className="border-border">
+        <TableCell colSpan={table.getAllColumns().length} className="h-24 text-center">
+          Brak wyników.
+        </TableCell>
+      </TableRow>
+    );
+  };
+
   return (
     <DataTableWrapper>
       <DataTableHeaderWrapper>
-        <DataTableFilters
-          columnFilters={columnFilters}
-          queryFilters={queryFilters}
-        />
+        <DataTableFilters columnFilters={columnFilters} queryFilters={queryFilters} />
         <DataTableViewOptions table={table} />
       </DataTableHeaderWrapper>
       <div className="rounded-md border border-border">
@@ -69,47 +80,14 @@ export function DataTable<TData>({
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                     </TableHead>
                   );
                 })}
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  className="border-border"
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow className="border-border">
-                <TableCell
-                  colSpan={table.getAllColumns().length}
-                  className="h-24 text-center"
-                >
-                  Brak wyników.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
+          <TableBody>{getTableBody(isDataLoading)}</TableBody>
         </Table>
       </div>
       <DataTablePagination config={PAGINATION_SETUP} table={table} />

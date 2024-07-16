@@ -3,7 +3,7 @@ import { useQueryParamsResolver } from "../hooks/useQueryParamsResolver";
 import PaymentsTable from "../lib/data-table-columns/payments-table";
 
 //TODO:
-//fix disappearing filter buttons when query changes
+//fix row count for datatable
 export default async function Home({
   searchParams,
 }: {
