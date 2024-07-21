@@ -16,12 +16,12 @@ import {
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../../ui/button";
-import { DataTableFilterOption } from "./DataTableFilters";
+import { DataTableFilterPropsV2 } from "./DataTableFilterButtonV2";
 
 interface DataTableFilterAddButtonProps {
-  options: DataTableFilterOption[];
-  onAddFilter: (filter: DataTableFilterOption) => void;
-  isFilterSelected: (filter: DataTableFilterOption) => boolean;
+  options: DataTableFilterPropsV2[];
+  onAddFilter: (filter: DataTableFilterPropsV2) => void;
+  isFilterSelected: (filter: DataTableFilterPropsV2) => boolean;
 }
 
 export default function DataTableFilterAddButton(
@@ -29,8 +29,8 @@ export default function DataTableFilterAddButton(
 ) {
   const [open, setOpen] = useState(false);
 
-  const getFilterById = (id: string): DataTableFilterOption | undefined => {
-    return props.options.find((f) => f.id === id);
+  const getFilterById = (id: string): DataTableFilterPropsV2 | undefined => {
+    return props.options.find((f) => f.label === id);
   };
 
   const handleFilterSelect = (value: string) => {
@@ -61,8 +61,8 @@ export default function DataTableFilterAddButton(
               {props.options.map((o) => (
                 <CommandItem
                   className="cursor-pointer"
-                  key={`command-item-${o.id}`}
-                  value={o.id}
+                  key={`command-item-${o.label}`}
+                  value={o.label}
                   onSelect={handleFilterSelect}
                 >
                   {o.label}

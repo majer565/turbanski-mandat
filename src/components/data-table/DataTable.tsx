@@ -1,6 +1,6 @@
 "use client";
 
-import { ColumnSort, flexRender, Table as TanstackTable } from "@tanstack/react-table";
+import { ColumnFiltersState, ColumnSort, flexRender, Table as TanstackTable } from "@tanstack/react-table";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PAGINATION_SETUP } from "../../lib/data-table-columns/test-columns";
@@ -9,6 +9,7 @@ import DataTableFilters, { DataTableFilterOption } from "./data-table-filters/Da
 import { DataTablePagination } from "./DataTablePagination";
 import { DataTableViewOptions } from "./DataTableViewOptions";
 import { Skeleton } from "../ui/skeleton";
+import { ColumFilterDefinition, DataTableFilterPropsV2 } from "./data-table-filters/DataTableFilterButtonV2";
 
 export interface QueryParams {
   p?: string;
@@ -23,13 +24,13 @@ export interface TableProps {
   page: number;
   pageSize: number;
   sort: ColumnSort[];
-  filter: SimpleFilter[];
+  filter: ColumnFiltersState;
 }
 
 export interface DataTableProps<TData> {
   table: TanstackTable<TData>;
-  columnFilters: DataTableFilterOption[];
-  queryFilters: DataTableFilterOption[];
+  columnFilters: ColumFilterDefinition[];
+  queryFilters: DataTableFilterPropsV2[];
   isDataLoading: boolean;
 }
 
@@ -69,7 +70,7 @@ export function DataTable<TData>({ table, columnFilters, queryFilters, isDataLoa
   return (
     <DataTableWrapper>
       <DataTableHeaderWrapper>
-        <DataTableFilters columnFilters={columnFilters} queryFilters={queryFilters} />
+        <DataTableFilters columnFilters={columnFilters} queryFilters={queryFilters} table={table} />
         <DataTableViewOptions table={table} />
       </DataTableHeaderWrapper>
       <div className="rounded-md border border-border">

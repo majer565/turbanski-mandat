@@ -7,13 +7,21 @@ import { usePagination } from "../../hooks/usePagination";
 import { useSorting } from "../../hooks/useSorting";
 import { queryFilterAdapter } from "../utils";
 import { columnFilters, columns, getPayments } from "./test-columns";
+import { useColumnFilter } from "../../hooks/useColumnFilter";
 
 const PaymentsTable = (props: TableProps) => {
   const queryFilters = queryFilterAdapter(columnFilters, props.filter);
 
   const { data, isPending, error } = useQuery({
-    queryKey: ["payments", props.page, props.pageSize, props.sort, props.filter],
-    queryFn: () => getPayments(props.page, props.pageSize, props.sort, queryFilters),
+    queryKey: [
+      "payments",
+      props.page,
+      props.pageSize,
+      props.sort,
+      props.filter,
+    ],
+    queryFn: () =>
+      getPayments(props.page, props.pageSize, props.sort, queryFilters),
   });
 
   const { pagination, setPagination } = usePagination({
@@ -22,6 +30,8 @@ const PaymentsTable = (props: TableProps) => {
   });
 
   const { sorting, setSorting } = useSorting(props.sort);
+
+  const { filters, setFilters } = useColumnFilter(props.filter);
 
   const table = useReactTable({
     data: data || [],
@@ -32,15 +42,22 @@ const PaymentsTable = (props: TableProps) => {
     manualSorting: true,
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
+    onColumnFiltersChange: setFilters,
     rowCount: 100,
     state: {
       pagination,
       sorting,
+      columnFilters: filters,
     },
   });
 
   return (
-    <DataTable columnFilters={columnFilters} queryFilters={queryFilters} table={table} isDataLoading={isPending} />
+    <DataTable
+      columnFilters={columnFilters}
+      queryFilters={queryFilters}
+      table={table}
+      isDataLoading={isPending}
+    />
   );
 };
 

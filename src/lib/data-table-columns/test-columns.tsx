@@ -9,11 +9,12 @@ import {
   CircleX,
   LoaderCircle,
 } from "lucide-react";
-import { DataTableFilterOption } from "../../components/data-table/data-table-filters/DataTableFilters";
+import { DataTableFilterOption, FilterType } from "../../components/data-table/data-table-filters/DataTableFilters";
 import { PaginationConfig } from "../../components/data-table/DataTablePagination";
 import { Button } from "../../components/ui/button";
 import { MOCK_PAYMENTS } from "./mock-payments";
 import { COLUMN_LABELS, COLUMN_OPTIONS } from "./test-column-labels";
+import { ColumFilterDefinition, DataTableFilterPropsV2 } from "../../components/data-table/data-table-filters/DataTableFilterButtonV2";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -24,42 +25,38 @@ export type Payment = {
   email: string;
 };
 
-export const columnFilters: DataTableFilterOption[] = [
+export const columnFilters: ColumFilterDefinition[] = [
   {
-    id: "status",
     label: "Status",
-    options: [
-      {
-        value: "pending",
-        label: "Pending",
-        icon: <CircleDashed className="w-4 h-4" />,
-      },
-      {
-        value: "processing",
-        label: "Processing",
-        icon: <LoaderCircle className="w-4 h-4" />,
-      },
-      {
-        value: "success",
-        label: "Success",
-        icon: <CircleCheck className="w-4 h-4" />,
-      },
-      {
-        value: "failed",
-        label: "Failed",
-        icon: <CircleX className="w-4 h-4" />,
-      },
-    ],
+    type: FilterType.SELECT,
+    options: {
+      selectOptions: [
+        {
+          value: "Pending",
+          icon: <CircleDashed className="w-4 h-4" />,
+        },
+        {
+          value: "Processing",
+          icon: <LoaderCircle className="w-4 h-4" />,
+        },
+        {
+          value: "Success",
+          icon: <CircleCheck className="w-4 h-4" />,
+        },
+        {
+          value: "Failed",
+          icon: <CircleX className="w-4 h-4" />,
+        },
+      ],
+    }
   },
   {
-    id: "email",
     label: "Email",
-    options: [],
+    type: FilterType.TEXT,
   },
   {
-    id: "amount",
     label: "Amount",
-    options: [],
+    type: FilterType.RANGE,
   },
 ];
 
@@ -119,7 +116,7 @@ export const getPayments = (
   page: number,
   pageSize: number,
   sort: SortingState,
-  filter: DataTableFilterOption[]
+  filter: DataTableFilterPropsV2[]
 ): Promise<Payment[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -133,15 +130,19 @@ export const getPayments = (
         : (arr = MOCK_PAYMENTS);
       arr = arr.filter((payment) => {
         return filter.every((f) => {
-          if (f.value) {
-            if (f.id === "status") {
-              return f.value.includes(payment.status);
+          if (f.filter?.value) {
+            if (f.filter.id === "Status") {
+              return (f.filter.value as string).includes(payment.status);
             }
-            if (f.id === "email") {
-              return payment.email.includes(f.value[0]);
+            if (f.filter.id === "Email") {
+              return payment.email.includes(f.filter.value as string);
             }
-            if (f.id === "amount") {
-              return payment.amount.toString().includes(f.value[0]);
+            if (f.filter.id === "Amount") {
+              const [min, max] = (f.filter.value as string).split("-");
+              const minNum = parseInt(min) || 0;
+              const maxNum = parseInt(max) || 0;
+
+              return payment.amount >= minNum && payment.amount <= maxNum;
             }
             return true;
           }

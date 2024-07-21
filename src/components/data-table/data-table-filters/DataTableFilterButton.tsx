@@ -23,6 +23,7 @@ import useSearchParamsUpdate from "../../../hooks/useSearchParamsUpdate";
 import { Button } from "../../ui/button";
 import { Checkbox } from "../../ui/checkbox";
 import { DataTableFilterOption } from "./DataTableFilters";
+import { Table } from "@tanstack/react-table";
 
 interface DataTableFiterProps {
   filter: DataTableFilterOption;
