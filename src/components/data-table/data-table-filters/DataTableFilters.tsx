@@ -3,8 +3,9 @@
 import { ReactNode, useState } from "react";
 import DataTableFilterAddButton from "./DataTableFilterAddButton";
 import DataTableFilterButton from "./DataTableFilterButton";
-import { ColumnFiltersState, Table } from "@tanstack/react-table";
+import { ColumnFilter, ColumnFiltersState, Table } from "@tanstack/react-table";
 import DataTableFilterButtonV2, { ColumFilterDefinition, DataTableFilterPropsV2 } from "./DataTableFilterButtonV2";
+import { columnFilterToFilterData } from "../../../lib/utils";
 
 export enum FilterType {
   TEXT,
@@ -37,41 +38,35 @@ function DataTableFilters<TData>({
   queryFilters,
 }: DataTableFiltersProps<TData>) {
   const [selectedFilters, setSelectedFilters] =
-    useState<DataTableFilterPropsV2[]>(queryFilters);
-
-  const addSelectedFilter = (filter: DataTableFilterPropsV2) => {
-    setSelectedFilters((prev) => [...prev, filter]);
-  };
+    useState<ColumnFiltersState>(table.getState().columnFilters);
 
   const removeSelectedFilter = (filter: DataTableFilterPropsV2) => {
-    setSelectedFilters((prev) => {
-      const filters = prev.filter((f) => f.label !== filter.label);
-      return filters;
-    });
-  };
-
-  const isFilterSelected = (filter: DataTableFilterPropsV2): boolean => {
-    return selectedFilters.some((f) => f.label === filter.label);
+    table.setColumnFilters((prev) => prev.filter((f) => f.id !== filter.label));
+    // setSelectedFilters((prev) => {
+    //   const filters = prev.filter((f) => f.label !== filter.label);
+    //   return filters;
+    // });
   };
 
   const getNotSelectedFilters = () => {
-    return columnFilters.filter((f) => !selectedFilters.includes(f));
+    return columnFilters.filter((f) => !selectedFilters.includes({ id: f.label, value: f.filter?.value }));
   };
 
   return (
     <div className="w-1/2 flex gap-2">
+      {/* {filters.map((f) => ())} */}
       {selectedFilters.map((f) => (
         <DataTableFilterButtonV2
-          key={String(f.label)}
+          key={String(f.id)}
           table={table}
-          filterData={f}
+          filterData={columnFilterToFilterData(f, columnFilters)}
+          onRemoveFilter={removeSelectedFilter}
         />
       ))}
       {selectedFilters.length !== columnFilters.length && (
         <DataTableFilterAddButton
           options={getNotSelectedFilters()}
-          onAddFilter={addSelectedFilter}
-          isFilterSelected={isFilterSelected}
+          table={table}
         />
       )}
     </div>

@@ -19,7 +19,7 @@ const InputContent = (props: DataTableFilterPopoverContentProps) => {
           className="h-6 w-6"
           variant="ghost"
           size="icon"
-          onClick={() => props.handleValueChange("")}
+          onClick={() => props.onRemove()}
         >
           <Trash className="w-3 h-3 opacity-50" />
         </Button>

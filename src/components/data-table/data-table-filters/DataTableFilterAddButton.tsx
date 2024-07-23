@@ -17,15 +17,15 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../../ui/button";
 import { DataTableFilterPropsV2 } from "./DataTableFilterButtonV2";
+import { Table } from "@tanstack/react-table";
 
-interface DataTableFilterAddButtonProps {
+interface DataTableFilterAddButtonProps<TData> {
   options: DataTableFilterPropsV2[];
-  onAddFilter: (filter: DataTableFilterPropsV2) => void;
-  isFilterSelected: (filter: DataTableFilterPropsV2) => boolean;
+  table: Table<TData>;
 }
 
-export default function DataTableFilterAddButton(
-  props: DataTableFilterAddButtonProps
+export default function DataTableFilterAddButton<TData>(
+  props: DataTableFilterAddButtonProps<TData>
 ) {
   const [open, setOpen] = useState(false);
 
@@ -36,7 +36,7 @@ export default function DataTableFilterAddButton(
   const handleFilterSelect = (value: string) => {
     const filter = getFilterById(value);
 
-    if (filter) props.onAddFilter(filter);
+    if (filter) props.table.setColumnFilters((prev) => [...prev, {id: filter.label, value: ""}]);
     setOpen(false);
   };
 

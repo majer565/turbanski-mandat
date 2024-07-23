@@ -13,6 +13,7 @@ export interface DataTablePopoverContentProps {
   type: FilterType;
   value: string;
   handleValueChange: Dispatch<SetStateAction<string>>;
+  onRemove: () => void;
   options?: DataTableFilterPropsOptions;
 }
 
@@ -29,6 +30,7 @@ const DataTableFilterPopoverContent = (props: DataTablePopoverContentProps) => {
           id={props.id}
           value={props.value}
           handleValueChange={props.handleValueChange}
+          onRemove={props.onRemove}
         />
       );
     }
@@ -39,6 +41,7 @@ const DataTableFilterPopoverContent = (props: DataTablePopoverContentProps) => {
           value={props.value}
           handleValueChange={props.handleValueChange}
           options={props.options}
+          onRemove={props.onRemove}
         />
       );
     }
@@ -48,6 +51,7 @@ const DataTableFilterPopoverContent = (props: DataTablePopoverContentProps) => {
           id={props.id}
           value={props.value}
           handleValueChange={props.handleValueChange}
+          onRemove={props.onRemove}
         />
       );
     }
@@ -57,6 +61,7 @@ const DataTableFilterPopoverContent = (props: DataTablePopoverContentProps) => {
           id={props.id}
           value={props.value}
           handleValueChange={props.handleValueChange}
+          onRemove={props.onRemove}
         />
       );
     }
@@ -66,6 +71,7 @@ const DataTableFilterPopoverContent = (props: DataTablePopoverContentProps) => {
           id={props.id}
           value={props.value}
           handleValueChange={props.handleValueChange}
+          onRemove={props.onRemove}
         />
       );
     }

@@ -21,7 +21,7 @@ import { ColumFilterDefinition, DataTableFilterPropsV2 } from "../../components/
 export type Payment = {
   id: number;
   amount: number;
-  status: "pending" | "processing" | "success" | "failed";
+  status: "Pending" | "Processing" | "Success" | "Failed";
   email: string;
 };
 

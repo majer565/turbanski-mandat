@@ -17,7 +17,18 @@ const SelectContent = (props: DataTableFilterPopoverContentProps) => {
   const handleSelect = (value: string) => {
     props.handleValueChange((prev) => {
       if (!prev) return value;
-      else return `, ${value}`;
+      if (prev === value) return "";
+      if (prev.includes(value)) {
+        const removedValue = prev
+          .replace(value, "")
+          .split(", ")
+          .filter((s) => s.length > 0)
+          .toString()
+          .replaceAll(",", ", ");
+        return removedValue;
+      }
+
+      return prev + ", " + value;
     });
   };
 
@@ -33,7 +44,7 @@ const SelectContent = (props: DataTableFilterPopoverContentProps) => {
           className="h-6 w-6"
           variant="ghost"
           size="icon"
-          onClick={() => props.handleValueChange("")}
+          onClick={() => props.onRemove()}
         >
           <Trash className="w-3 h-3 opacity-50" />
         </Button>

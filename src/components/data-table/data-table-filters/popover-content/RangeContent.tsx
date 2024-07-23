@@ -32,7 +32,7 @@ const RangeContent = (props: DataTableFilterPopoverContentProps) => {
           className="h-6 w-6"
           variant="ghost"
           size="icon"
-          onClick={() => props.handleValueChange("")}
+          onClick={() => props.onRemove()}
         >
           <Trash className="w-3 h-3 opacity-50" />
         </Button>
@@ -46,7 +46,7 @@ const RangeContent = (props: DataTableFilterPopoverContentProps) => {
           className="w-full h-8 text-sm px-2 py-4 [-moz-appearance:_textfield] [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none"
           type="number"
         />
-        <span>-</span>
+        <span className="w-12">-</span>
         <Input
           key={`filter-input-max-${props.id}`}
           onChange={(e) => handleChange(e.target.value, "max")}

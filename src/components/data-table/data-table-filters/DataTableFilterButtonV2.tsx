@@ -32,11 +32,10 @@ export interface DataTableFilterPropsV2 {
 interface DataTableFilterButtonV2Props<TData> {
   table: Table<TData>;
   filterData: DataTableFilterPropsV2;
+  onRemoveFilter: (filterData: DataTableFilterPropsV2) => void;
 }
 
 //TODO:
-// - ColumnFilters add for every iteration
-// - Status is borken
 // - Can't remove filter
 export default function DataTableFilterButtonV2<TData>(
   props: DataTableFilterButtonV2Props<TData>
@@ -48,9 +47,27 @@ export default function DataTableFilterButtonV2<TData>(
 
   useEffect(() => {
     props.table.setColumnFilters((prev) => {
-      return [...prev, { id: props.filterData.filter?.id || props.filterData.label, value: value }];
+      const filterId: string = props.filterData.filter?.id || props.filterData.label;
+
+      // if(!value) {
+      //   return prev.filter((f) => f.id !== filterId);
+      // }
+
+      const filterToUpdate = prev.find((f) => f.id === filterId);
+  
+      if(filterToUpdate) {
+        const prevFiltered = prev.filter((f) => f.id !== filterId);
+        return [...prevFiltered, { id: filterId, value: value }];
+      } 
+      
+      return [...prev, { id: filterId, value: value }];
     });
   }, [value]);
+
+  const handleRemove = () => {
+    setValue("");
+    props.onRemoveFilter(props.filterData);
+  }
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -77,6 +94,7 @@ export default function DataTableFilterButtonV2<TData>(
           type={props.filterData.type}
           id={props.filterData.label}
           options={props.filterData.options}
+          onRemove={handleRemove}
         />
       </PopoverContent>
     </Popover>
