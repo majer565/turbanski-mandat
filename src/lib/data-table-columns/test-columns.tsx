@@ -27,6 +27,7 @@ export type Payment = {
 
 export const columnFilters: ColumFilterDefinition[] = [
   {
+    id: "status",
     label: "Status",
     type: FilterType.SELECT,
     options: {
@@ -51,10 +52,12 @@ export const columnFilters: ColumFilterDefinition[] = [
     }
   },
   {
+    id: "email",
     label: "Email",
     type: FilterType.TEXT,
   },
   {
+    id: "amount",
     label: "Amount",
     type: FilterType.RANGE,
   },

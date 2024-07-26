@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { DataTableFilterPopoverContentProps } from "../DataTableFilterPopoverContent";
+import { DataTablePopoverContentProps } from "../DataTableFilterPopoverContent";
 
-const DateContent = (props: DataTableFilterPopoverContentProps) => {
+const DateContent = (props: DataTablePopoverContentProps) => {
   return "";
 };
 

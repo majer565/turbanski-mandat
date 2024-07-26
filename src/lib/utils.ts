@@ -1,25 +1,13 @@
-import { ColumnFilter, ColumnFiltersState } from "@tanstack/react-table";
+import { ColumnFiltersState } from "@tanstack/react-table";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import {
   ColumFilterDefinition,
   DataTableFilterPropsV2,
 } from "../components/data-table/data-table-filters/DataTableFilterButtonV2";
-import { FilterType } from "../components/data-table/data-table-filters/DataTableFilters";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
-}
-
-export const columnFilterToFilterData = (filter: ColumnFilter, columnFilterDefinitions: ColumFilterDefinition[]): DataTableFilterPropsV2 => {
-  const columnFilterDefinition = columnFilterDefinitions.find((f) => f.label === filter.id);
-  
-  return {
-    label: columnFilterDefinition?.label || "",
-    filter: filter,
-    type: columnFilterDefinition?.type || FilterType.TEXT,
-    options: columnFilterDefinition?.options,
-  };
 }
 
 /**
@@ -28,13 +16,10 @@ export const columnFilterToFilterData = (filter: ColumnFilter, columnFilterDefin
  * @param queryFilters filters from the URL
  * @returns filters from URL joined with column filters
  */
-export function queryFilterAdapter(
-  columnFilters: ColumFilterDefinition[],
-  queryFilters: ColumnFiltersState
-) {
+export function queryFilterAdapter(columnFilters: ColumFilterDefinition[], queryFilters: ColumnFiltersState) {
   const columnFilterMap: { [key: string]: ColumFilterDefinition } = {};
   columnFilters.forEach((filter) => {
-    columnFilterMap[filter.label] = filter;
+    columnFilterMap[filter.id] = filter;
   });
 
   let result: DataTableFilterPropsV2[] = [];

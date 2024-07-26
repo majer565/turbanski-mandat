@@ -1,53 +1,40 @@
 "use client";
 
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Table } from "@tanstack/react-table";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../../ui/button";
-import { DataTableFilterPropsV2 } from "./DataTableFilterButtonV2";
-import { Table } from "@tanstack/react-table";
+import { ColumFilterDefinition, DataTableFilterPropsV2 } from "./DataTableFilterButtonV2";
 
 interface DataTableFilterAddButtonProps<TData> {
-  options: DataTableFilterPropsV2[];
+  options: ColumFilterDefinition[];
+  onAddFilter: (filter: DataTableFilterPropsV2) => void;
   table: Table<TData>;
 }
 
-export default function DataTableFilterAddButton<TData>(
-  props: DataTableFilterAddButtonProps<TData>
-) {
+export default function DataTableFilterAddButton<TData>(props: DataTableFilterAddButtonProps<TData>) {
   const [open, setOpen] = useState(false);
 
   const getFilterById = (id: string): DataTableFilterPropsV2 | undefined => {
-    return props.options.find((f) => f.label === id);
+    const columnDef: ColumFilterDefinition | undefined = props.options.find((f) => f.id === id);
+
+    if (columnDef) return { ...columnDef, filter: { id: columnDef.id, value: "" } };
+    return undefined;
   };
 
-  const handleFilterSelect = (value: string) => {
-    const filter = getFilterById(value);
+  const handleFilterSelect = (id: string) => {
+    const filter = getFilterById(id);
 
-    if (filter) props.table.setColumnFilters((prev) => [...prev, {id: filter.label, value: ""}]);
+    if (filter) props.onAddFilter(filter);
     setOpen(false);
   };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          className="h-8 text-xs flex rounded-2xl bg-muted/40"
-        >
+        <Button variant="outline" size="sm" className="h-8 text-xs flex rounded-2xl bg-muted/40">
           <Plus className="h-4 w-4 mr-2 opacity-50" />
           Dodaj filtr
         </Button>
@@ -61,8 +48,8 @@ export default function DataTableFilterAddButton<TData>(
               {props.options.map((o) => (
                 <CommandItem
                   className="cursor-pointer"
-                  key={`command-item-${o.label}`}
-                  value={o.label}
+                  key={`command-item-${o.id}`}
+                  value={o.id}
                   onSelect={handleFilterSelect}
                 >
                   {o.label}

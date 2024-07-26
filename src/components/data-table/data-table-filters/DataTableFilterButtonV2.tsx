@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ColumnFilter, Table } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 import { Button } from "../../ui/button";
@@ -18,13 +14,14 @@ export interface DataTableFilterSelectOption {
 
 export interface DataTableFilterPropsOptions {
   selectOptions?: DataTableFilterSelectOption[];
-} 
+}
 
 export type ColumFilterDefinition = Omit<DataTableFilterPropsV2, "filter">;
 
 export interface DataTableFilterPropsV2 {
+  id: string;
   label: string;
-  filter?: ColumnFilter;
+  filter: ColumnFilter;
   type: FilterType;
   options?: DataTableFilterPropsOptions;
 }
@@ -35,39 +32,33 @@ interface DataTableFilterButtonV2Props<TData> {
   onRemoveFilter: (filterData: DataTableFilterPropsV2) => void;
 }
 
-//TODO:
-// - Can't remove filter
-export default function DataTableFilterButtonV2<TData>(
-  props: DataTableFilterButtonV2Props<TData>
-) {
+export default function DataTableFilterButtonV2<TData>(props: DataTableFilterButtonV2Props<TData>) {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState<string>(
-    (props.filterData.filter?.value as string) || ""
-  );
+  const [value, setValue] = useState<ColumnFilter>(props.filterData.filter);
 
   useEffect(() => {
     props.table.setColumnFilters((prev) => {
-      const filterId: string = props.filterData.filter?.id || props.filterData.label;
+      const filterId: string = props.filterData.id;
 
-      // if(!value) {
-      //   return prev.filter((f) => f.id !== filterId);
-      // }
+      if (!value.value) {
+        return prev.filter((f) => f.id !== filterId);
+      }
 
-      const filterToUpdate = prev.find((f) => f.id === filterId);
-  
-      if(filterToUpdate) {
-        const prevFiltered = prev.filter((f) => f.id !== filterId);
-        return [...prevFiltered, { id: filterId, value: value }];
-      } 
-      
-      return [...prev, { id: filterId, value: value }];
+      const filterToUpdate = prev.findIndex((f) => f.id === filterId);
+
+      if (filterToUpdate !== -1) {
+        const prevWithoutCurrentFilter = prev.filter((f) => f.id !== filterId);
+        return [...prevWithoutCurrentFilter, value];
+      }
+
+      return [...prev, value];
     });
   }, [value]);
 
   const handleRemove = () => {
-    setValue("");
+    setValue((prev) => ({ ...prev, value: "" }));
     props.onRemoveFilter(props.filterData);
-  }
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -78,11 +69,11 @@ export default function DataTableFilterButtonV2<TData>(
           className="h-8 flex text-xs rounded-2xl bg-muted/40"
           onClick={() => setOpen(true)}
         >
-          {props.filterData.filter?.id || props.filterData.label}
-          {value && (
+          {props.filterData.label}
+          {(value.value as string) && (
             <>
               <span>:</span>
-              <span className="ml-2 opacity-50">{value}</span>
+              <span className="ml-2 opacity-50">{value.value as string}</span>
             </>
           )}
         </Button>
@@ -92,7 +83,7 @@ export default function DataTableFilterButtonV2<TData>(
           value={value}
           handleValueChange={setValue}
           type={props.filterData.type}
-          id={props.filterData.label}
+          id={props.filterData.id}
           options={props.filterData.options}
           onRemove={handleRemove}
         />

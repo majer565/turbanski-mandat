@@ -1,28 +1,26 @@
-"use client"
+"use client";
 
+import { ColumnFilter } from "@tanstack/react-table";
 import { Dispatch, SetStateAction } from "react";
+import { DataTableFilterPropsOptions } from "./DataTableFilterButtonV2";
 import { FilterType } from "./DataTableFilters";
 import DateContent from "./popover-content/DateContent";
 import InputContent from "./popover-content/InputContent";
 import RangeContent from "./popover-content/RangeContent";
 import SelectContent from "./popover-content/SelectContent";
-import { DataTableFilterPropsOptions } from "./DataTableFilterButtonV2";
 
-export interface DataTablePopoverContentProps {
+export interface DataTableFilterPopoverContentProps {
   id: string;
   type: FilterType;
-  value: string;
-  handleValueChange: Dispatch<SetStateAction<string>>;
+  value: ColumnFilter;
+  handleValueChange: Dispatch<SetStateAction<ColumnFilter>>;
   onRemove: () => void;
   options?: DataTableFilterPropsOptions;
 }
 
-export type DataTableFilterPopoverContentProps = Omit<
-  DataTablePopoverContentProps,
-  "type"
->;
+export type DataTablePopoverContentProps = Omit<DataTableFilterPopoverContentProps, "type">;
 
-const DataTableFilterPopoverContent = (props: DataTablePopoverContentProps) => {
+const DataTableFilterPopoverContent = (props: DataTableFilterPopoverContentProps) => {
   switch (props.type) {
     case FilterType.TEXT: {
       return (

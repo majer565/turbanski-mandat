@@ -4,36 +4,31 @@ import { Trash } from "lucide-react";
 import { useDebouncedCallback } from "use-debounce";
 import { Button } from "../../../ui/button";
 import { Input } from "../../../ui/input";
-import { DataTableFilterPopoverContentProps } from "../DataTableFilterPopoverContent";
+import { DataTablePopoverContentProps } from "../DataTableFilterPopoverContent";
 
-const RangeContent = (props: DataTableFilterPopoverContentProps) => {
-  const handleChange = useDebouncedCallback(
-    (input: string, type: "min" | "max") => {
-      props.handleValueChange((prev) => {
-        let [min, max] = prev.split("-");
-        if (!min) min = "0";
-        if (!max) max = "0";
+const RangeContent = (props: DataTablePopoverContentProps) => {
+  const handleChange = useDebouncedCallback((input: string, type: "min" | "max") => {
+    props.handleValueChange((prev) => {
+      const prevAsString = String(prev.value);
 
-        if (type === "min") return `${input}-${max}`;
-        else return `${min}-${input}`;
-      });
-    },
-    300
-  );
+      let [min, max] = prevAsString.split("-");
+      if (!min) min = "0";
+      if (!max) max = "0";
 
-  const min = props.value.split("-")[0] || "";
-  const max = props.value.split("-")[1] || "";
+      if (type === "min") return { id: props.id, value: `${input}-${max}` };
+      else return { id: props.id, value: `${min}-${input}` };
+    });
+  }, 300);
+
+  const filterValue = String(props.value.value);
+  const min = filterValue.split("-")[0] || "";
+  const max = filterValue.split("-")[1] || "";
 
   return (
     <>
       <div className="w-full flex justify-between items-center">
         <span className="text-xs h-3 pl-1 opacity-50">{props.id}</span>
-        <Button
-          className="h-6 w-6"
-          variant="ghost"
-          size="icon"
-          onClick={() => props.onRemove()}
-        >
+        <Button className="h-6 w-6" variant="ghost" size="icon" onClick={() => props.onRemove()}>
           <Trash className="w-3 h-3 opacity-50" />
         </Button>
       </div>
