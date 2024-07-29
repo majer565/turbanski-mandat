@@ -10,39 +10,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-/**
- * Join column filters with query filters from URL
- * @param columnFilters all available filters from the table
- * @param queryFilters filters from the URL
- * @returns filters from URL joined with column filters
- */
-export function queryFilterAdapter(columnFilters: ColumFilterDefinition[], queryFilters: ColumnFiltersState) {
-  const columnFilterMap: { [key: string]: ColumFilterDefinition } = {};
-  columnFilters.forEach((filter) => {
-    columnFilterMap[filter.id] = filter;
-  });
-
-  let result: DataTableFilterPropsV2[] = [];
-
-  queryFilters.forEach((columnFilter) => {
-    const correspondingFilter = columnFilterMap[columnFilter.id];
-    if (correspondingFilter) {
-      result.push({
-        ...correspondingFilter,
-        filter: columnFilter,
-      });
-    }
-  });
-
-  return result;
-}
-
-function resolveFilterValue(value: string): string {
-  if (value.match(/^(\w+,\s)+\w+$/)) {
-    return value.replaceAll(", ", ".");
-  }
-
-  return value;
+function resolveFilterValue(value: string[]): string {
+  return value.join(".");
 }
 
 export function filterToQuery(columnState: ColumnFiltersState): {
@@ -53,7 +22,7 @@ export function filterToQuery(columnState: ColumnFiltersState): {
   columnState.forEach((filter) => {
     filters.push({
       id: filter.id,
-      param: resolveFilterValue(filter.value as string),
+      param: resolveFilterValue(filter.value as string[]),
     });
   });
 

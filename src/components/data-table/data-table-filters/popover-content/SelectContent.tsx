@@ -9,34 +9,22 @@ import { DataTablePopoverContentProps } from "../DataTableFilterPopoverContent";
 const SelectContent = (props: DataTablePopoverContentProps) => {
   const handleSelect = (value: string) => {
     props.handleValueChange((prev) => {
-      const prevValue = String(prev.value);
-
-      if (!prevValue) return { id: props.id, value };
-      else if (prevValue === value) return { id: props.id, value: "" };
-      else if (prevValue.includes(value)) {
-        const removedValue = prevValue
-          .replace(value, "")
-          .split(", ")
-          .filter((s) => s.length > 0)
-          .toString()
-          .replaceAll(",", ", ");
-
-        return { id: props.id, value: removedValue };
+      if (prev[0]) {
+        if (prev.find((p) => p === value)) return prev.filter((p) => p !== value);
+        return [...prev, value];
       }
-
-      return { id: props.id, value: prev.value + ", " + value };
+      return [value];
     });
   };
 
   const isSelected = (value: string): boolean => {
-    const valueAsString = String(props.value.value)
-    return valueAsString.includes(value);
+    return Boolean(props.value.find((v) => v === value));
   };
 
   return (
     <>
       <div className="w-full flex justify-between items-center">
-        <span className="text-xs h-3 pl-1 opacity-50">{props.id}</span>
+        <span className="text-xs h-3 pl-1 opacity-50">{props.label}</span>
         <Button className="h-6 w-6" variant="ghost" size="icon" onClick={() => props.onRemove()}>
           <Trash className="w-3 h-3 opacity-50" />
         </Button>

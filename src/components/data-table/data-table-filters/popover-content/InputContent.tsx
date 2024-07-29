@@ -8,20 +8,20 @@ import { DataTablePopoverContentProps } from "../DataTableFilterPopoverContent";
 
 const InputContent = (props: DataTablePopoverContentProps) => {
   const handleChange = useDebouncedCallback((input: string) => {
-    props.handleValueChange({ id: props.id, value: input });
+    props.handleValueChange([input]);
   }, 300);
 
   return (
     <>
       <div className="w-full flex justify-between items-center">
-        <span className="text-xs h-3 pl-1 opacity-50">{props.id}</span>
+        <span className="text-xs h-3 pl-1 opacity-50">{props.label}</span>
         <Button className="h-6 w-6" variant="ghost" size="icon" onClick={() => props.onRemove()}>
           <Trash className="w-3 h-3 opacity-50" />
         </Button>
       </div>
       <Input
         onChange={(e) => handleChange(e.target.value)}
-        defaultValue={String(props.value.value)}
+        defaultValue={props.value[0]}
         placeholder="Wpisz tutaj..."
         className="w-full h-8 text-sm px-2 py-4"
         type="text"

@@ -1,6 +1,6 @@
 "use client";
 
-import { ColumnDef, SortingState } from "@tanstack/react-table";
+import { ColumnDef, ColumnFiltersState, SortingState } from "@tanstack/react-table";
 import {
   ArrowDownNarrowWide,
   ArrowDownWideNarrow,
@@ -14,7 +14,10 @@ import { PaginationConfig } from "../../components/data-table/DataTablePaginatio
 import { Button } from "../../components/ui/button";
 import { MOCK_PAYMENTS } from "./mock-payments";
 import { COLUMN_LABELS, COLUMN_OPTIONS } from "./test-column-labels";
-import { ColumFilterDefinition, DataTableFilterPropsV2 } from "../../components/data-table/data-table-filters/DataTableFilterButtonV2";
+import {
+  ColumFilterDefinition,
+  DataTableFilterPropsV2,
+} from "../../components/data-table/data-table-filters/DataTableFilterButtonV2";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -49,7 +52,7 @@ export const columnFilters: ColumFilterDefinition[] = [
           icon: <CircleX className="w-4 h-4" />,
         },
       ],
-    }
+    },
   },
   {
     id: "email",
@@ -119,29 +122,29 @@ export const getPayments = (
   page: number,
   pageSize: number,
   sort: SortingState,
-  filter: DataTableFilterPropsV2[]
+  filter: ColumnFiltersState
 ): Promise<Payment[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
       let arr: Payment[];
       sort[0]
         ? (arr = [...MOCK_PAYMENTS].sort((a, b) =>
-            sort[0].desc
-              ? a.status.localeCompare(b.status)
-              : b.status.localeCompare(a.status)
+            sort[0].desc ? a.status.localeCompare(b.status) : b.status.localeCompare(a.status)
           ))
         : (arr = MOCK_PAYMENTS);
       arr = arr.filter((payment) => {
         return filter.every((f) => {
-          if (f.filter?.value) {
-            if (f.filter.id === "Status") {
-              return (f.filter.value as string).includes(payment.status);
+          const filterValue = f.value as string[];
+          if (filterValue) {
+            if (f.id === "status") {
+              return filterValue.includes(payment.status);
             }
-            if (f.filter.id === "Email") {
-              return payment.email.includes(f.filter.value as string);
+            if (f.id === "email") {
+              return payment.email.includes(filterValue[0]);
             }
-            if (f.filter.id === "Amount") {
-              const [min, max] = (f.filter.value as string).split("-");
+            if (f.id === "amount") {
+              const min = filterValue[0];
+              const max = filterValue[1];
               const minNum = parseInt(min) || 0;
               const maxNum = parseInt(max) || 0;
 

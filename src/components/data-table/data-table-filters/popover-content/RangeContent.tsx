@@ -9,32 +9,31 @@ import { DataTablePopoverContentProps } from "../DataTableFilterPopoverContent";
 const RangeContent = (props: DataTablePopoverContentProps) => {
   const handleChange = useDebouncedCallback((input: string, type: "min" | "max") => {
     props.handleValueChange((prev) => {
-      const prevAsString = String(prev.value);
+      let min = prev[0];
+      let max = prev[1];
 
-      let [min, max] = prevAsString.split("-");
       if (!min) min = "0";
       if (!max) max = "0";
 
-      if (type === "min") return { id: props.id, value: `${input}-${max}` };
-      else return { id: props.id, value: `${min}-${input}` };
+      if (type === "min") return [input, max];
+      return [min, input];
     });
   }, 300);
 
-  const filterValue = String(props.value.value);
-  const min = filterValue.split("-")[0] || "";
-  const max = filterValue.split("-")[1] || "";
+  const min = props.value[0] || "";
+  const max = props.value[1] || "";
 
   return (
     <>
       <div className="w-full flex justify-between items-center">
-        <span className="text-xs h-3 pl-1 opacity-50">{props.id}</span>
+        <span className="text-xs h-3 pl-1 opacity-50">{props.label}</span>
         <Button className="h-6 w-6" variant="ghost" size="icon" onClick={() => props.onRemove()}>
           <Trash className="w-3 h-3 opacity-50" />
         </Button>
       </div>
       <div className="flex">
         <Input
-          key={`filter-input-min-${props.id}`}
+          key={`filter-input-min-${props.label}`}
           onChange={(e) => handleChange(e.target.value, "min")}
           defaultValue={min}
           placeholder="Min"
@@ -43,7 +42,7 @@ const RangeContent = (props: DataTablePopoverContentProps) => {
         />
         <span className="w-12">-</span>
         <Input
-          key={`filter-input-max-${props.id}`}
+          key={`filter-input-max-${props.label}`}
           onChange={(e) => handleChange(e.target.value, "max")}
           defaultValue={max}
           placeholder="Max"

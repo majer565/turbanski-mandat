@@ -1,6 +1,5 @@
 "use client";
 
-import { ColumnFilter } from "@tanstack/react-table";
 import { Dispatch, SetStateAction } from "react";
 import { DataTableFilterPropsOptions } from "./DataTableFilterButtonV2";
 import { FilterType } from "./DataTableFilters";
@@ -10,10 +9,10 @@ import RangeContent from "./popover-content/RangeContent";
 import SelectContent from "./popover-content/SelectContent";
 
 export interface DataTableFilterPopoverContentProps {
-  id: string;
+  label: string;
   type: FilterType;
-  value: ColumnFilter;
-  handleValueChange: Dispatch<SetStateAction<ColumnFilter>>;
+  value: string[];
+  handleValueChange: Dispatch<SetStateAction<string[]>>;
   onRemove: () => void;
   options?: DataTableFilterPropsOptions;
 }
@@ -25,7 +24,7 @@ const DataTableFilterPopoverContent = (props: DataTableFilterPopoverContentProps
     case FilterType.TEXT: {
       return (
         <InputContent
-          id={props.id}
+          label={props.label}
           value={props.value}
           handleValueChange={props.handleValueChange}
           onRemove={props.onRemove}
@@ -35,7 +34,7 @@ const DataTableFilterPopoverContent = (props: DataTableFilterPopoverContentProps
     case FilterType.SELECT: {
       return (
         <SelectContent
-          id={props.id}
+          label={props.label}
           value={props.value}
           handleValueChange={props.handleValueChange}
           options={props.options}
@@ -46,7 +45,7 @@ const DataTableFilterPopoverContent = (props: DataTableFilterPopoverContentProps
     case FilterType.DATE: {
       return (
         <DateContent
-          id={props.id}
+          label={props.label}
           value={props.value}
           handleValueChange={props.handleValueChange}
           onRemove={props.onRemove}
@@ -56,7 +55,7 @@ const DataTableFilterPopoverContent = (props: DataTableFilterPopoverContentProps
     case FilterType.RANGE: {
       return (
         <RangeContent
-          id={props.id}
+          label={props.label}
           value={props.value}
           handleValueChange={props.handleValueChange}
           onRemove={props.onRemove}
@@ -66,7 +65,7 @@ const DataTableFilterPopoverContent = (props: DataTableFilterPopoverContentProps
     default: {
       return (
         <InputContent
-          id={props.id}
+          label={props.label}
           value={props.value}
           handleValueChange={props.handleValueChange}
           onRemove={props.onRemove}

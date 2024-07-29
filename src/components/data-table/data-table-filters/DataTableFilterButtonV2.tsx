@@ -28,36 +28,48 @@ export interface DataTableFilterPropsV2 {
 
 interface DataTableFilterButtonV2Props<TData> {
   table: Table<TData>;
-  filterData: DataTableFilterPropsV2;
-  onRemoveFilter: (filterData: DataTableFilterPropsV2) => void;
+  filter: ColumnFilter;
+  columnData: ColumFilterDefinition;
+  onRemoveFilter: (filterData: ColumnFilter) => void;
 }
 
-export default function DataTableFilterButtonV2<TData>(props: DataTableFilterButtonV2Props<TData>) {
+//TODO::
+//Amount display
+//remove of filter
+export default function DataTableFilterButtonV2<TData>({
+  table,
+  columnData,
+  filter,
+  onRemoveFilter,
+}: DataTableFilterButtonV2Props<TData>) {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState<ColumnFilter>(props.filterData.filter);
+  const [value, setValue] = useState<string[]>(filter.value as string[]);
 
   useEffect(() => {
-    props.table.setColumnFilters((prev) => {
-      const filterId: string = props.filterData.id;
+    table.setColumnFilters((prev) => {
+      const prevFilter = prev.find((p) => p.id === filter.id);
 
-      if (!value.value) {
-        return prev.filter((f) => f.id !== filterId);
+      if (prevFilter) {
+        const prevValue = prevFilter.value as string[];
+        if (prevValue.length === 1 && !prevValue[0]) {
+          return prev.filter((p) => p.id !== prevFilter.id);
+        }
+
+        return [...prev.filter((p) => p.id !== prevFilter.id), { id: prevFilter.id, value }];
       }
 
-      const filterToUpdate = prev.findIndex((f) => f.id === filterId);
-
-      if (filterToUpdate !== -1) {
-        const prevWithoutCurrentFilter = prev.filter((f) => f.id !== filterId);
-        return [...prevWithoutCurrentFilter, value];
-      }
-
-      return [...prev, value];
+      return [...prev, { id: filter.id, value }];
     });
   }, [value]);
 
   const handleRemove = () => {
-    setValue((prev) => ({ ...prev, value: "" }));
-    props.onRemoveFilter(props.filterData);
+    onRemoveFilter(filter);
+  };
+
+  const getValueAsText = (valueToChange: string[]): string => {
+    if (valueToChange.length > 2) return `${valueToChange.length} zaznaczone`;
+
+    return valueToChange.join(", ");
   };
 
   return (
@@ -69,11 +81,11 @@ export default function DataTableFilterButtonV2<TData>(props: DataTableFilterBut
           className="h-8 flex text-xs rounded-2xl bg-muted/40"
           onClick={() => setOpen(true)}
         >
-          {props.filterData.label}
-          {(value.value as string) && (
+          {columnData.label}
+          {value[0] && (
             <>
               <span>:</span>
-              <span className="ml-2 opacity-50">{value.value as string}</span>
+              <span className="ml-2 opacity-50">{getValueAsText(value)}</span>
             </>
           )}
         </Button>
@@ -82,9 +94,9 @@ export default function DataTableFilterButtonV2<TData>(props: DataTableFilterBut
         <DataTableFilterPopoverContent
           value={value}
           handleValueChange={setValue}
-          type={props.filterData.type}
-          id={props.filterData.id}
-          options={props.filterData.options}
+          type={columnData.type}
+          label={columnData.label}
+          options={columnData.options}
           onRemove={handleRemove}
         />
       </PopoverContent>

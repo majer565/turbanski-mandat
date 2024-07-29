@@ -2,7 +2,7 @@
 
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Table } from "@tanstack/react-table";
+import { ColumnFilter, Table } from "@tanstack/react-table";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../../ui/button";
@@ -10,24 +10,15 @@ import { ColumFilterDefinition, DataTableFilterPropsV2 } from "./DataTableFilter
 
 interface DataTableFilterAddButtonProps<TData> {
   options: ColumFilterDefinition[];
-  onAddFilter: (filter: DataTableFilterPropsV2) => void;
+  onAddFilter: (filter: ColumnFilter) => void;
   table: Table<TData>;
 }
 
 export default function DataTableFilterAddButton<TData>(props: DataTableFilterAddButtonProps<TData>) {
   const [open, setOpen] = useState(false);
 
-  const getFilterById = (id: string): DataTableFilterPropsV2 | undefined => {
-    const columnDef: ColumFilterDefinition | undefined = props.options.find((f) => f.id === id);
-
-    if (columnDef) return { ...columnDef, filter: { id: columnDef.id, value: "" } };
-    return undefined;
-  };
-
   const handleFilterSelect = (id: string) => {
-    const filter = getFilterById(id);
-
-    if (filter) props.onAddFilter(filter);
+    props.onAddFilter({ id, value: [""] });
     setOpen(false);
   };
 

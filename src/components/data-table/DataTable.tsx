@@ -30,11 +30,10 @@ export interface TableProps {
 export interface DataTableProps<TData> {
   table: TanstackTable<TData>;
   columnFilters: ColumFilterDefinition[];
-  queryFilters: DataTableFilterPropsV2[];
   isDataLoading: boolean;
 }
 
-export function DataTable<TData>({ table, columnFilters, queryFilters, isDataLoading }: DataTableProps<TData>) {
+export function DataTable<TData>({ table, columnFilters, isDataLoading }: DataTableProps<TData>) {
   const getSkeleton = () => {
     return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
       <TableRow key={n} className="border-border">
@@ -70,7 +69,7 @@ export function DataTable<TData>({ table, columnFilters, queryFilters, isDataLoa
   return (
     <DataTableWrapper>
       <DataTableHeaderWrapper>
-        <DataTableFilters columnFilters={columnFilters} queryFilters={queryFilters} table={table} />
+        <DataTableFilters columnFilters={columnFilters} table={table} />
         <DataTableViewOptions table={table} />
       </DataTableHeaderWrapper>
       <div className="rounded-md border border-border">

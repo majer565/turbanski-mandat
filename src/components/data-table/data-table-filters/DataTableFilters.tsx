@@ -1,6 +1,6 @@
 "use client";
 
-import { Table } from "@tanstack/react-table";
+import { ColumnFilter, ColumnFiltersState, Table } from "@tanstack/react-table";
 import { ReactNode, useState } from "react";
 import DataTableFilterAddButton from "./DataTableFilterAddButton";
 import DataTableFilterButtonV2, { ColumFilterDefinition, DataTableFilterPropsV2 } from "./DataTableFilterButtonV2";
@@ -28,7 +28,6 @@ export interface DataTableFilterOption {
 interface DataTableFiltersProps<TData> {
   table: Table<TData>;
   columnFilters: ColumFilterDefinition[];
-  queryFilters: DataTableFilterPropsV2[];
 }
 
 //State potrzebny do kontrolowania buttonów - OK
@@ -37,27 +36,33 @@ interface DataTableFiltersProps<TData> {
 //  - usunięcie ze state filtra - OK
 //  - usunięcie z table.ColumFilterState - OK
 //  - usunięcie z URL
-function DataTableFilters<TData>({ table, columnFilters, queryFilters }: DataTableFiltersProps<TData>) {
-  const [selectedFilters, setSelectedFilters] = useState<DataTableFilterPropsV2[]>(queryFilters);
+function DataTableFilters<TData>({ table, columnFilters }: DataTableFiltersProps<TData>) {
+  const [selectedFilters, setSelectedFilters] = useState<ColumnFiltersState>(table.getState().columnFilters);
 
-  const onAddFilter = (filter: DataTableFilterPropsV2) => {
+  const onAddFilter = (filter: ColumnFilter) => {
     setSelectedFilters((prev) => [...prev, filter]);
   };
 
-  const removeSelectedFilter = (filter: DataTableFilterPropsV2) => {
-    table.setColumnFilters((prev) => {
-      const filtered = prev.filter((f) => f.id !== filter.id);
+  const removeSelectedFilter = (filter: ColumnFilter) => {
+    const filtersToSet = (prev: ColumnFiltersState) => prev.filter((f) => f.id !== filter.id);
 
-      return [...filtered, { id: filter.id, value: "" }];
-    });
-    setSelectedFilters((prev) => {
-      const filters = prev.filter((f) => f.id !== filter.id);
-      return filters;
-    });
+    table.setColumnFilters(filtersToSet);
+    setSelectedFilters(filtersToSet);
   };
 
   const getNotSelectedFilters = () => {
     return columnFilters.filter((f) => !selectedFilters.find((s) => s.id === f.id));
+  };
+
+  const getColumnDataByFilterId = (filterId: string): ColumFilterDefinition => {
+    const columnData = columnFilters.find((cf) => cf.id === filterId);
+    return (
+      columnData || {
+        id: "",
+        label: "",
+        type: FilterType.TEXT,
+      }
+    );
   };
 
   return (
@@ -66,7 +71,8 @@ function DataTableFilters<TData>({ table, columnFilters, queryFilters }: DataTab
         <DataTableFilterButtonV2
           key={String(f.id)}
           table={table}
-          filterData={f}
+          filter={f}
+          columnData={getColumnDataByFilterId(f.id)}
           onRemoveFilter={removeSelectedFilter}
         />
       ))}

@@ -5,12 +5,10 @@ import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { DataTable, TableProps } from "../../components/data-table/DataTable";
 import { usePagination } from "../../hooks/usePagination";
 import { useSorting } from "../../hooks/useSorting";
-import { queryFilterAdapter } from "../utils";
 import { columnFilters, columns, getPayments } from "./test-columns";
 import { useColumnFilter } from "../../hooks/useColumnFilter";
 
 const PaymentsTable = (props: TableProps) => {
-  const queryFilters = queryFilterAdapter(columnFilters, props.filter);
 
   const { data, isPending, error } = useQuery({
     queryKey: [
@@ -21,7 +19,7 @@ const PaymentsTable = (props: TableProps) => {
       props.filter,
     ],
     queryFn: () =>
-      getPayments(props.page, props.pageSize, props.sort, queryFilters),
+      getPayments(props.page, props.pageSize, props.sort, props.filter),
   });
 
   const { pagination, setPagination } = usePagination({
@@ -54,7 +52,6 @@ const PaymentsTable = (props: TableProps) => {
   return (
     <DataTable
       columnFilters={columnFilters}
-      queryFilters={queryFilters}
       table={table}
       isDataLoading={isPending}
     />

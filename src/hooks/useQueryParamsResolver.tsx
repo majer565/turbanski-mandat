@@ -26,7 +26,7 @@ const getFilterOption = (filterOptions: {
   Object.keys(filterOptions).forEach((key) => {
     filters.push({
       id: key,
-      value: filterOptions[key]?.replaceAll(".", ", ") || [],
+      value: filterOptions[key]?.split(".") || [],
     });
   });
 
