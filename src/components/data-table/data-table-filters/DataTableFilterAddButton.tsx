@@ -8,13 +8,12 @@ import { useState } from "react";
 import { Button } from "../../ui/button";
 import { ColumFilterDefinition, DataTableFilterPropsV2 } from "./DataTableFilterButtonV2";
 
-interface DataTableFilterAddButtonProps<TData> {
+interface DataTableFilterAddButtonProps {
   options: ColumFilterDefinition[];
   onAddFilter: (filter: ColumnFilter) => void;
-  table: Table<TData>;
 }
 
-export default function DataTableFilterAddButton<TData>(props: DataTableFilterAddButtonProps<TData>) {
+export default function DataTableFilterAddButton(props: DataTableFilterAddButtonProps) {
   const [open, setOpen] = useState(false);
 
   const handleFilterSelect = (id: string) => {

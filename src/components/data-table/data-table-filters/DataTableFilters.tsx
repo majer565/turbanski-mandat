@@ -4,6 +4,8 @@ import { ColumnFilter, ColumnFiltersState, Table } from "@tanstack/react-table";
 import { ReactNode, useState } from "react";
 import DataTableFilterAddButton from "./DataTableFilterAddButton";
 import DataTableFilterButtonV2, { ColumFilterDefinition, DataTableFilterPropsV2 } from "./DataTableFilterButtonV2";
+import { Button } from "@/components/ui/button";
+import useSearchParamsUpdate from "@/hooks/useSearchParamsUpdate";
 
 export enum FilterType {
   TEXT,
@@ -39,16 +41,18 @@ interface DataTableFiltersProps<TData> {
 function DataTableFilters<TData>({ table, columnFilters }: DataTableFiltersProps<TData>) {
   const [selectedFilters, setSelectedFilters] = useState<ColumnFiltersState>(table.getState().columnFilters);
 
+  const removeSelectedFilter = (filter: ColumnFilter) => {
+    table.setColumnFilters((prev) => {
+      const filtersToSet = prev.filter((f) => f.id !== filter.id);
+      return [...filtersToSet, { id: filter.id, value: [] }];
+    });
+    setSelectedFilters((prev) => prev.filter((f) => f.id !== filter.id));
+  };
+
   const onAddFilter = (filter: ColumnFilter) => {
     setSelectedFilters((prev) => [...prev, filter]);
   };
 
-  const removeSelectedFilter = (filter: ColumnFilter) => {
-    const filtersToSet = (prev: ColumnFiltersState) => prev.filter((f) => f.id !== filter.id);
-
-    table.setColumnFilters(filtersToSet);
-    setSelectedFilters(filtersToSet);
-  };
 
   const getNotSelectedFilters = () => {
     return columnFilters.filter((f) => !selectedFilters.find((s) => s.id === f.id));
@@ -77,7 +81,7 @@ function DataTableFilters<TData>({ table, columnFilters }: DataTableFiltersProps
         />
       ))}
       {selectedFilters.length !== columnFilters.length && (
-        <DataTableFilterAddButton options={getNotSelectedFilters()} onAddFilter={onAddFilter} table={table} />
+        <DataTableFilterAddButton options={getNotSelectedFilters()} onAddFilter={onAddFilter} />
       )}
     </div>
   );

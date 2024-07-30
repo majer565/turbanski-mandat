@@ -35,7 +35,6 @@ interface DataTableFilterButtonV2Props<TData> {
 
 //TODO::
 //remove of filter
-//filter does not apply when trying to retype the same value in TEXT type
 export default function DataTableFilterButtonV2<TData>({
   table,
   columnData,

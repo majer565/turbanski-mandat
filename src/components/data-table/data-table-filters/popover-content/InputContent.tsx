@@ -8,7 +8,8 @@ import { DataTablePopoverContentProps } from "../DataTableFilterPopoverContent";
 
 const InputContent = (props: DataTablePopoverContentProps) => {
   const handleChange = useDebouncedCallback((input: string) => {
-    props.handleValueChange([input]);
+    if(input) props.handleValueChange([input]);
+    else props.handleValueChange([]);
   }, 300);
 
   return (
