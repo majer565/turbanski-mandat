@@ -1,5 +1,9 @@
-import { ColumnSort } from "@tanstack/react-table";
-import { QueryParams, SimpleFilter } from "../components/data-table/DataTable";
+import {
+  ColumnFilter,
+  ColumnFiltersState,
+  ColumnSort,
+} from "@tanstack/react-table";
+import { QueryParams } from "../components/data-table/DataTable";
 
 const isValidNumber = (value: string | undefined, base: number) => {
   if (!value) return base;
@@ -9,7 +13,7 @@ const isValidNumber = (value: string | undefined, base: number) => {
   return check < base ? base : check;
 };
 
-const getSortOption = (sortQuery: string) => {
+const getSortOption = (sortQuery: string): ColumnSort[] => {
   const [id, order] = sortQuery.split(".");
   return [{ id, desc: order === "desc" }];
 };
@@ -17,16 +21,21 @@ const getSortOption = (sortQuery: string) => {
 const getFilterOption = (filterOptions: {
   [key: string]: string | undefined;
 }) => {
-  let filters: SimpleFilter[] = [];
+  let filters: ColumnFilter[] = [];
 
   Object.keys(filterOptions).forEach((key) => {
-    filters.push({ id: key, value: filterOptions[key]?.split(".") || [] });
+    filters.push({
+      id: key,
+      value: filterOptions[key]?.split(".") || [],
+    });
   });
 
   return filters;
 };
 
-const resolveFiltersQuery = (queryParams?: QueryParams) => {
+const resolveFiltersQuery = (
+  queryParams?: QueryParams
+): ColumnFiltersState | undefined => {
   if (!queryParams) return undefined;
 
   let filter: { [key: string]: string | undefined } = {};

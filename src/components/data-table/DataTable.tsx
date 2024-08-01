@@ -1,14 +1,15 @@
 "use client";
 
-import { ColumnSort, flexRender, Table as TanstackTable } from "@tanstack/react-table";
+import { ColumnFiltersState, ColumnSort, flexRender, Table as TanstackTable } from "@tanstack/react-table";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PAGINATION_SETUP } from "../../lib/data-table-columns/test-columns";
+import { Skeleton } from "../ui/skeleton";
 import { DataTableHeaderWrapper, DataTableWrapper } from "../wrappers/DataTableWrappers";
-import DataTableFilters, { DataTableFilterOption } from "./data-table-filters/DataTableFilters";
+import { ColumnFilterDefinition } from "./data-table-filters/DataTableFilterButton";
+import DataTableFilters from "./data-table-filters/DataTableFilters";
 import { DataTablePagination } from "./DataTablePagination";
 import { DataTableViewOptions } from "./DataTableViewOptions";
-import { Skeleton } from "../ui/skeleton";
 
 export interface QueryParams {
   p?: string;
@@ -23,17 +24,16 @@ export interface TableProps {
   page: number;
   pageSize: number;
   sort: ColumnSort[];
-  filter: SimpleFilter[];
+  filter: ColumnFiltersState;
 }
 
 export interface DataTableProps<TData> {
   table: TanstackTable<TData>;
-  columnFilters: DataTableFilterOption[];
-  queryFilters: DataTableFilterOption[];
+  columnFilters: ColumnFilterDefinition[];
   isDataLoading: boolean;
 }
 
-export function DataTable<TData>({ table, columnFilters, queryFilters, isDataLoading }: DataTableProps<TData>) {
+export function DataTable<TData>({ table, columnFilters, isDataLoading }: DataTableProps<TData>) {
   const getSkeleton = () => {
     return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
       <TableRow key={n} className="border-border">
@@ -69,7 +69,7 @@ export function DataTable<TData>({ table, columnFilters, queryFilters, isDataLoa
   return (
     <DataTableWrapper>
       <DataTableHeaderWrapper>
-        <DataTableFilters columnFilters={columnFilters} queryFilters={queryFilters} />
+        <DataTableFilters columnFilters={columnFilters} table={table} />
         <DataTableViewOptions table={table} />
       </DataTableHeaderWrapper>
       <div className="rounded-md border border-border">

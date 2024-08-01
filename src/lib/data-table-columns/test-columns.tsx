@@ -1,6 +1,6 @@
 "use client";
 
-import { ColumnDef, SortingState } from "@tanstack/react-table";
+import { ColumnDef, ColumnFiltersState, SortingState } from "@tanstack/react-table";
 import {
   ArrowDownNarrowWide,
   ArrowDownWideNarrow,
@@ -9,57 +9,60 @@ import {
   CircleX,
   LoaderCircle,
 } from "lucide-react";
-import { DataTableFilterOption } from "../../components/data-table/data-table-filters/DataTableFilters";
+import { DataTableFilterOption, FilterType } from "../../components/data-table/data-table-filters/DataTableFilters";
 import { PaginationConfig } from "../../components/data-table/DataTablePagination";
 import { Button } from "../../components/ui/button";
 import { MOCK_PAYMENTS } from "./mock-payments";
 import { COLUMN_LABELS, COLUMN_OPTIONS } from "./test-column-labels";
+import {
+  ColumnFilterDefinition,
+  DataTableFilterPropsV2,
+} from "../../components/data-table/data-table-filters/DataTableFilterButton";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type Payment = {
   id: number;
   amount: number;
-  status: "pending" | "processing" | "success" | "failed";
+  status: "Pending" | "Processing" | "Success" | "Failed";
   email: string;
 };
 
-export const columnFilters: DataTableFilterOption[] = [
+export const columnFilters: ColumnFilterDefinition[] = [
   {
     id: "status",
     label: "Status",
-    options: [
-      {
-        value: "pending",
-        label: "Pending",
-        icon: <CircleDashed className="w-4 h-4" />,
-      },
-      {
-        value: "processing",
-        label: "Processing",
-        icon: <LoaderCircle className="w-4 h-4" />,
-      },
-      {
-        value: "success",
-        label: "Success",
-        icon: <CircleCheck className="w-4 h-4" />,
-      },
-      {
-        value: "failed",
-        label: "Failed",
-        icon: <CircleX className="w-4 h-4" />,
-      },
-    ],
+    type: FilterType.SELECT,
+    options: {
+      selectOptions: [
+        {
+          value: "Pending",
+          icon: <CircleDashed className="w-4 h-4" />,
+        },
+        {
+          value: "Processing",
+          icon: <LoaderCircle className="w-4 h-4" />,
+        },
+        {
+          value: "Success",
+          icon: <CircleCheck className="w-4 h-4" />,
+        },
+        {
+          value: "Failed",
+          icon: <CircleX className="w-4 h-4" />,
+        },
+      ],
+    },
   },
   {
     id: "email",
     label: "Email",
-    options: [],
+    type: FilterType.TEXT,
   },
   {
     id: "amount",
     label: "Amount",
-    options: [],
+    type: FilterType.RANGE,
   },
 ];
 
@@ -119,29 +122,33 @@ export const getPayments = (
   page: number,
   pageSize: number,
   sort: SortingState,
-  filter: DataTableFilterOption[]
+  filter: ColumnFiltersState
 ): Promise<Payment[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
       let arr: Payment[];
       sort[0]
         ? (arr = [...MOCK_PAYMENTS].sort((a, b) =>
-            sort[0].desc
-              ? a.status.localeCompare(b.status)
-              : b.status.localeCompare(a.status)
+            sort[0].desc ? a.status.localeCompare(b.status) : b.status.localeCompare(a.status)
           ))
         : (arr = MOCK_PAYMENTS);
       arr = arr.filter((payment) => {
         return filter.every((f) => {
-          if (f.value) {
+          const filterValue = f.value as string[];
+          if (filterValue) {
             if (f.id === "status") {
-              return f.value.includes(payment.status);
+              return filterValue.includes(payment.status);
             }
             if (f.id === "email") {
-              return payment.email.includes(f.value[0]);
+              return payment.email.includes(filterValue[0]);
             }
             if (f.id === "amount") {
-              return payment.amount.toString().includes(f.value[0]);
+              const min = filterValue[0];
+              const max = filterValue[1];
+              const minNum = parseInt(min) || 0;
+              const maxNum = parseInt(max) || 0;
+
+              return payment.amount >= minNum && payment.amount <= maxNum;
             }
             return true;
           }
