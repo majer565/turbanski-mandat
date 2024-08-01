@@ -1,96 +1,72 @@
 "use client";
 
-import { useEffect } from "react";
-
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Trash } from "lucide-react";
-import { useState } from "react";
-import { useDebouncedCallback } from "use-debounce";
-import useSearchParamsUpdate from "../../../hooks/useSearchParamsUpdate";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ColumnFilter, Table } from "@tanstack/react-table";
+import { useEffect, useState } from "react";
 import { Button } from "../../ui/button";
-import { Checkbox } from "../../ui/checkbox";
-import { DataTableFilterOption } from "./DataTableFilters";
-import { Table } from "@tanstack/react-table";
+import DataTableFilterPopoverContent from "./DataTableFilterPopoverContent";
+import { FilterType } from "./DataTableFilters";
 
-interface DataTableFiterProps {
-  filter: DataTableFilterOption;
-  onRemoveFilter: (filter: DataTableFilterOption) => void;
+export interface DataTableFilterSelectOption {
+  value: string;
+  icon?: React.ReactNode;
 }
 
-interface PopoverContentProps {
-  filter: DataTableFilterOption;
-  onRemove: () => void;
-  value: string[];
-  onValueChange: (valueToUpdate: string) => void;
+export interface DataTableFilterPropsOptions {
+  selectOptions?: DataTableFilterSelectOption[];
 }
 
-export default function DataTableFilterButton(props: DataTableFiterProps) {
+export type ColumnFilterDefinition = Omit<DataTableFilterPropsV2, "filter">;
+
+export interface DataTableFilterPropsV2 {
+  id: string;
+  label: string;
+  filter: ColumnFilter;
+  type: FilterType;
+  options?: DataTableFilterPropsOptions;
+}
+
+interface DataTableFilterButtonProps<TData> {
+  table: Table<TData>;
+  filter: ColumnFilter;
+  columnData: ColumnFilterDefinition;
+  onRemoveFilter: (filterData: ColumnFilter) => void;
+}
+
+export default function DataTableFilterButtonV2<TData>({
+  table,
+  columnData,
+  filter,
+  onRemoveFilter,
+}: DataTableFilterButtonProps<TData>) {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState<string[]>(props.filter.value || []);
-  const { updateSearchParams } = useSearchParamsUpdate();
+  const [value, setValue] = useState<string[]>(filter.value as string[]);
 
   useEffect(() => {
-    if (value.length === 0) {
-      updateSearchParams([{ id: props.filter.id, param: "" }]);
-    } else {
-      updateSearchParams([
-        { id: props.filter.id, param: value.map((v) => v).join(".") },
-      ]);
-    }
+    table.setColumnFilters((prev) => {
+      const prevFilter = prev.find((p) => p.id === filter.id);
+
+      if (prevFilter) {
+        const prevValue = prevFilter.value as string[];
+        if (prevValue.length === 1 && !prevValue[0]) {
+          return prev.filter((p) => p.id !== prevFilter.id);
+        }
+
+        return [...prev.filter((p) => p.id !== prevFilter.id), { id: prevFilter.id, value }];
+      }
+
+      return [...prev, { id: filter.id, value }];
+    });
   }, [value]);
 
-  const handleValueUpdate = (valueToUpdate: string) => {
-    if (props.filter.options.length === 0) {
-      if (valueToUpdate === "") {
-        setValue([]);
-      } else setValue([valueToUpdate]);
-      return;
-    }
-
-    if (value.some((v) => v === valueToUpdate)) {
-      setValue(value.filter((v) => v !== valueToUpdate));
-    } else setValue((prev) => [...prev, valueToUpdate]);
-  };
-
-  const getLabelByValue = (value: string): string => {
-    return props.filter.options.find((o) => o.value === value)?.label || value;
-  };
-
-  const getChoosenFiltersText = () => {
-    if (value.length === 1) {
-      return (
-        <span className="ml-2 opacity-50">{getLabelByValue(value[0])}</span>
-      );
-    } else {
-      return value.length > 2 ? (
-        <span className="ml-2 opacity-50">{value.length} zaznaczone</span>
-      ) : (
-        <span className="ml-2 opacity-50">
-          {value.map((v, i) => {
-            const label = getLabelByValue(v);
-            return i === 1 ? `${label}` : `${label}, `;
-          })}
-        </span>
-      );
-    }
-  };
-
   const handleRemove = () => {
-    updateSearchParams([{ id: props.filter.id, param: "" }]);
-    props.onRemoveFilter(props.filter);
+    onRemoveFilter(filter);
+  };
+
+  const getValueAsText = (valueToChange: string[]): string => {
+    if (valueToChange.length > 2) return `${valueToChange.length} zaznaczone`;
+
+    return valueToChange.join(", ");
   };
 
   return (
@@ -102,120 +78,25 @@ export default function DataTableFilterButton(props: DataTableFiterProps) {
           className="h-8 flex text-xs rounded-2xl bg-muted/40"
           onClick={() => setOpen(true)}
         >
-          {props.filter.label}
-          {value.length > 0 && (
+          {columnData.label}
+          {value[0] && (
             <>
               <span>:</span>
-              {value.length > 1 ? (
-                getChoosenFiltersText()
-              ) : (
-                <span className="ml-2 opacity-50">
-                  {getLabelByValue(value[0])}
-                </span>
-              )}
+              <span className="ml-2 opacity-50">{getValueAsText(value)}</span>
             </>
           )}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-60 p-2 flex gap-2 flex-col">
-        {props.filter.options.length === 0 ? (
-          <InputPopoverContent
-            filter={props.filter}
-            onRemove={handleRemove}
-            value={value}
-            onValueChange={handleValueUpdate}
-          />
-        ) : (
-          <SelectPopoverContent
-            filter={props.filter}
-            onRemove={handleRemove}
-            value={value}
-            onValueChange={handleValueUpdate}
-          />
-        )}
+        <DataTableFilterPopoverContent
+          value={value}
+          handleValueChange={setValue}
+          type={columnData.type}
+          label={columnData.label}
+          options={columnData.options}
+          onRemove={handleRemove}
+        />
       </PopoverContent>
     </Popover>
-  );
-}
-
-function InputPopoverContent(props: PopoverContentProps) {
-  const handleChange = useDebouncedCallback((input: string) => {
-    props.onValueChange(input);
-  }, 300);
-
-  return (
-    <>
-      <div className="w-full flex justify-between items-center">
-        <span className="text-xs h-3 pl-1 opacity-50">
-          {props.filter.label}
-        </span>
-        <Button
-          className="h-6 w-6"
-          variant="ghost"
-          size="icon"
-          onClick={() => props.onRemove()}
-        >
-          <Trash className="w-3 h-3 opacity-50" />
-        </Button>
-      </div>
-      <Input
-        onChange={(e) => handleChange(e.target.value)}
-        defaultValue={props.value[0] || ""}
-        placeholder="Wpisz tutaj..."
-        className="w-full h-8 text-sm px-2 py-4"
-        type="text"
-      />
-    </>
-  );
-}
-
-function SelectPopoverContent(props: PopoverContentProps) {
-  const handleSelect = (value: string) => {
-    props.onValueChange(value);
-  };
-
-  const isSelected = (value: string): boolean => {
-    return props.value.some((v) => v === value);
-  };
-
-  return (
-    <>
-      <div className="w-full flex justify-between items-center">
-        <span className="text-xs h-3 pl-1 opacity-50">
-          {props.filter.label}
-        </span>
-        <Button
-          className="h-6 w-6"
-          variant="ghost"
-          size="icon"
-          onClick={() => props.onRemove()}
-        >
-          <Trash className="w-3 h-3 opacity-50" />
-        </Button>
-      </div>
-      <Command>
-        <CommandInput className="text-xs" placeholder="Wybierz opcję..." />
-        <CommandList>
-          <CommandEmpty>Nie znaleziono opcji.</CommandEmpty>
-          <CommandGroup className="p-2">
-            {props.filter.options.map((o) => (
-              <CommandItem
-                className="cursor-pointer flex items-center gap-3"
-                key={`command-item-option-${o.value}`}
-                value={o.value}
-                onSelect={handleSelect}
-              >
-                <Checkbox
-                  checked={isSelected(o.value)}
-                  id={`command-item-option-${o.value}`}
-                />
-                {o.icon}
-                {o.label}
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </CommandList>
-      </Command>
-    </>
   );
 }

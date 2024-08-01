@@ -15,9 +15,9 @@ import { Button } from "../../components/ui/button";
 import { MOCK_PAYMENTS } from "./mock-payments";
 import { COLUMN_LABELS, COLUMN_OPTIONS } from "./test-column-labels";
 import {
-  ColumFilterDefinition,
+  ColumnFilterDefinition,
   DataTableFilterPropsV2,
-} from "../../components/data-table/data-table-filters/DataTableFilterButtonV2";
+} from "../../components/data-table/data-table-filters/DataTableFilterButton";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -28,7 +28,7 @@ export type Payment = {
   email: string;
 };
 
-export const columnFilters: ColumFilterDefinition[] = [
+export const columnFilters: ColumnFilterDefinition[] = [
   {
     id: "status",
     label: "Status",

@@ -2,16 +2,16 @@
 
 import { ColumnFiltersState } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
-import useSearchParamsUpdate from "./useSearchParamsUpdate";
 import { filterToQuery } from "../lib/utils";
+import useSearchParamsUpdate from "./useSearchParamsUpdate";
 
 export const useColumnFilter = (state: ColumnFiltersState) => {
   const [filters, setFilters] = useState<ColumnFiltersState>(state);
-  const { updateSearchParams } = useSearchParamsUpdate();
-console.log("filters:: ", filters)
+  const { updateFilterSearchParams } = useSearchParamsUpdate();
+
   useEffect(() => {
     const filtersQuery = filterToQuery(filters);
-    updateSearchParams(filtersQuery);
+    updateFilterSearchParams(filtersQuery);
   }, [filters]);
 
   return {

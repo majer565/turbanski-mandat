@@ -2,14 +2,14 @@
 
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ColumnFilter, Table } from "@tanstack/react-table";
+import { ColumnFilter } from "@tanstack/react-table";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../../ui/button";
-import { ColumFilterDefinition, DataTableFilterPropsV2 } from "./DataTableFilterButtonV2";
+import { ColumnFilterDefinition } from "./DataTableFilterButton";
 
 interface DataTableFilterAddButtonProps {
-  options: ColumFilterDefinition[];
+  options: ColumnFilterDefinition[];
   onAddFilter: (filter: ColumnFilter) => void;
 }
 

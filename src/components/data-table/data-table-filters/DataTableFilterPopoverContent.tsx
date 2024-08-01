@@ -1,7 +1,7 @@
 "use client";
 
 import { Dispatch, SetStateAction } from "react";
-import { DataTableFilterPropsOptions } from "./DataTableFilterButtonV2";
+import { DataTableFilterPropsOptions } from "./DataTableFilterButton";
 import { FilterType } from "./DataTableFilters";
 import DateContent from "./popover-content/DateContent";
 import InputContent from "./popover-content/InputContent";

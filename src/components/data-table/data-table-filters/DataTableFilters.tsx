@@ -3,9 +3,7 @@
 import { ColumnFilter, ColumnFiltersState, Table } from "@tanstack/react-table";
 import { ReactNode, useState } from "react";
 import DataTableFilterAddButton from "./DataTableFilterAddButton";
-import DataTableFilterButtonV2, { ColumFilterDefinition, DataTableFilterPropsV2 } from "./DataTableFilterButtonV2";
-import { Button } from "@/components/ui/button";
-import useSearchParamsUpdate from "@/hooks/useSearchParamsUpdate";
+import DataTableFilterButtonV2, { ColumnFilterDefinition } from "./DataTableFilterButton";
 
 export enum FilterType {
   TEXT,
@@ -29,36 +27,28 @@ export interface DataTableFilterOption {
 
 interface DataTableFiltersProps<TData> {
   table: Table<TData>;
-  columnFilters: ColumFilterDefinition[];
+  columnFilters: ColumnFilterDefinition[];
 }
 
-//State potrzebny do kontrolowania buttonów - OK
-//Potrzeba onAddFilter -> dodanie do state filtra - OK
-//Potrzeba removeSelectedFilter -> usunięcie ze state filtra - 2/3
-//  - usunięcie ze state filtra - OK
-//  - usunięcie z table.ColumFilterState - OK
-//  - usunięcie z URL
 function DataTableFilters<TData>({ table, columnFilters }: DataTableFiltersProps<TData>) {
   const [selectedFilters, setSelectedFilters] = useState<ColumnFiltersState>(table.getState().columnFilters);
 
   const removeSelectedFilter = (filter: ColumnFilter) => {
-    table.setColumnFilters((prev) => {
-      const filtersToSet = prev.filter((f) => f.id !== filter.id);
-      return [...filtersToSet, { id: filter.id, value: [] }];
-    });
-    setSelectedFilters((prev) => prev.filter((f) => f.id !== filter.id));
+    const filterFn = (prev: ColumnFiltersState) => prev.filter((f) => f.id !== filter.id);
+
+    table.setColumnFilters(filterFn);
+    setSelectedFilters(filterFn);
   };
 
   const onAddFilter = (filter: ColumnFilter) => {
     setSelectedFilters((prev) => [...prev, filter]);
   };
 
-
   const getNotSelectedFilters = () => {
     return columnFilters.filter((f) => !selectedFilters.find((s) => s.id === f.id));
   };
 
-  const getColumnDataByFilterId = (filterId: string): ColumFilterDefinition => {
+  const getColumnDataByFilterId = (filterId: string): ColumnFilterDefinition => {
     const columnData = columnFilters.find((cf) => cf.id === filterId);
     return (
       columnData || {

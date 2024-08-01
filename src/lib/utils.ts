@@ -1,10 +1,6 @@
 import { ColumnFiltersState } from "@tanstack/react-table";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import {
-  ColumFilterDefinition,
-  DataTableFilterPropsV2,
-} from "../components/data-table/data-table-filters/DataTableFilterButtonV2";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

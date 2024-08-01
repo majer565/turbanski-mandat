@@ -4,12 +4,12 @@ import { ColumnFiltersState, ColumnSort, flexRender, Table as TanstackTable } fr
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PAGINATION_SETUP } from "../../lib/data-table-columns/test-columns";
+import { Skeleton } from "../ui/skeleton";
 import { DataTableHeaderWrapper, DataTableWrapper } from "../wrappers/DataTableWrappers";
-import DataTableFilters, { DataTableFilterOption } from "./data-table-filters/DataTableFilters";
+import { ColumnFilterDefinition } from "./data-table-filters/DataTableFilterButton";
+import DataTableFilters from "./data-table-filters/DataTableFilters";
 import { DataTablePagination } from "./DataTablePagination";
 import { DataTableViewOptions } from "./DataTableViewOptions";
-import { Skeleton } from "../ui/skeleton";
-import { ColumFilterDefinition, DataTableFilterPropsV2 } from "./data-table-filters/DataTableFilterButtonV2";
 
 export interface QueryParams {
   p?: string;
@@ -29,7 +29,7 @@ export interface TableProps {
 
 export interface DataTableProps<TData> {
   table: TanstackTable<TData>;
-  columnFilters: ColumFilterDefinition[];
+  columnFilters: ColumnFilterDefinition[];
   isDataLoading: boolean;
 }
 
