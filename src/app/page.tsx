@@ -1,19 +1,9 @@
-import { QueryParams } from "../components/data-table/DataTable";
-import { useQueryParamsResolver } from "../hooks/useQueryParamsResolver";
-import PaymentsTable from "../lib/data-table-columns/payments-table";
+import TicketsTable from "@/components/data-table-implementation/TicketsTable";
 
-//TODO:
-//fix row count for datatable
-export default async function Home({
-  searchParams,
-}: {
-  searchParams?: QueryParams;
-}) {
-  const { p, ps, sort, filter } = useQueryParamsResolver(searchParams);
-
+export default async function Home() {
   return (
     <div className="container mx-auto py-10">
-      <PaymentsTable page={p} pageSize={ps} sort={sort} filter={filter} />
+      <TicketsTable />
     </div>
   );
 }
