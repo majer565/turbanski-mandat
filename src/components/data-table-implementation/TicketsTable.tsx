@@ -1,6 +1,6 @@
 "use client";
 
-import { MOCK_TICKETS } from "@/lib/data-table/mockTickets";
+import { useGetTickets } from "@/hooks/useGetTickets";
 import {
   getCoreRowModel,
   getFilteredRowModel,
@@ -15,6 +15,8 @@ import { ticketFilters as columnFilters, ticketColumns as columns } from "../../
 import { DataTable } from "../data-table/DataTable";
 
 const TicketsTable = () => {
+  const { data, isPending, isError } = useGetTickets();
+
   const { sorting, setSorting } = useSorting([]);
   const { pagination, setPagination } = usePagination({
     pageIndex: 0,
@@ -23,7 +25,7 @@ const TicketsTable = () => {
   const { filters, setFilters } = useColumnFilter([]);
 
   const table = useReactTable({
-    data: MOCK_TICKETS,
+    data: data ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -39,7 +41,9 @@ const TicketsTable = () => {
     },
   });
 
-  return <DataTable columnFilters={columnFilters} table={table} isDataLoading={false} />;
+  if (isError) return <div>Error</div>;
+
+  return <DataTable columnFilters={columnFilters} table={table} isDataLoading={isPending} />;
 };
 
 export default TicketsTable;
