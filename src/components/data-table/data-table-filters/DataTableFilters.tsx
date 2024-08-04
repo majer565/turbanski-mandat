@@ -60,7 +60,7 @@ function DataTableFilters<TData>({ table, columnFilters }: DataTableFiltersProps
   };
 
   return (
-    <div className="w-1/2 flex gap-2">
+    <div className="w-1/2 max-w-[50rem] flex flex-wrap gap-2">
       {selectedFilters.map((f) => (
         <DataTableFilterButtonV2
           key={String(f.id)}

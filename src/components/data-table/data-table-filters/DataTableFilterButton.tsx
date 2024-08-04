@@ -1,6 +1,10 @@
 "use client";
 
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { ColumnFilter, Table } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 import { Button } from "../../ui/button";
@@ -52,7 +56,10 @@ export default function DataTableFilterButtonV2<TData>({
           return prev.filter((p) => p.id !== prevFilter.id);
         }
 
-        return [...prev.filter((p) => p.id !== prevFilter.id), { id: prevFilter.id, value }];
+        return [
+          ...prev.filter((p) => p.id !== prevFilter.id),
+          { id: prevFilter.id, value },
+        ];
       }
 
       return [...prev, { id: filter.id, value }];
@@ -87,7 +94,7 @@ export default function DataTableFilterButtonV2<TData>({
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-60 p-2 flex gap-2 flex-col">
+      <PopoverContent className="max-w-96 p-2 flex gap-2 flex-col">
         <DataTableFilterPopoverContent
           value={value}
           handleValueChange={setValue}

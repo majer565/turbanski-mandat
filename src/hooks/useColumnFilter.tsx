@@ -5,13 +5,18 @@ import { useEffect, useState } from "react";
 import { filterToQuery } from "../lib/utils";
 import useSearchParamsUpdate from "./useSearchParamsUpdate";
 
-export const useColumnFilter = (state: ColumnFiltersState) => {
+export const useColumnFilter = (
+  state: ColumnFiltersState,
+  serverSide?: boolean
+) => {
   const [filters, setFilters] = useState<ColumnFiltersState>(state);
   const { updateFilterSearchParams } = useSearchParamsUpdate();
-
+  
   useEffect(() => {
-    const filtersQuery = filterToQuery(filters);
-    updateFilterSearchParams(filtersQuery);
+    if (serverSide) {
+      const filtersQuery = filterToQuery(filters);
+      updateFilterSearchParams(filtersQuery);
+    }
   }, [filters]);
 
   return {

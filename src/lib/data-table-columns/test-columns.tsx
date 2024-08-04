@@ -1,6 +1,11 @@
 "use client";
 
-import { ColumnDef, ColumnFiltersState, SortingState } from "@tanstack/react-table";
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  Row,
+  SortingState,
+} from "@tanstack/react-table";
 import {
   ArrowDownNarrowWide,
   ArrowDownWideNarrow,
@@ -9,7 +14,10 @@ import {
   CircleX,
   LoaderCircle,
 } from "lucide-react";
-import { DataTableFilterOption, FilterType } from "../../components/data-table/data-table-filters/DataTableFilters";
+import {
+  DataTableFilterOption,
+  FilterType,
+} from "../../components/data-table/data-table-filters/DataTableFilters";
 import { PaginationConfig } from "../../components/data-table/DataTablePagination";
 import { Button } from "../../components/ui/button";
 import { MOCK_PAYMENTS } from "./mock-payments";
@@ -18,6 +26,7 @@ import {
   ColumnFilterDefinition,
   DataTableFilterPropsV2,
 } from "../../components/data-table/data-table-filters/DataTableFilterButton";
+import { dateFilterFn, rangeFilterFn, selectFilterFn, textFilterFn } from "../data-table/data-table-filter-fns";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -26,6 +35,7 @@ export type Payment = {
   amount: number;
   status: "Pending" | "Processing" | "Success" | "Failed";
   email: string;
+  date: string;
 };
 
 export const columnFilters: ColumnFilterDefinition[] = [
@@ -64,6 +74,11 @@ export const columnFilters: ColumnFilterDefinition[] = [
     label: "Amount",
     type: FilterType.RANGE,
   },
+  {
+    id: "date",
+    label: "Date",
+    type: FilterType.DATE,
+  },
 ];
 
 const renderSortIcon = (sortOption: string | false) => {
@@ -87,14 +102,22 @@ export const columns: ColumnDef<Payment>[] = [
         </Button>
       );
     },
+    filterFn: selectFilterFn,
   },
   {
     accessorKey: "email",
     header: "Email",
+    filterFn: textFilterFn,
   },
   {
     accessorKey: "amount",
     header: "Amount",
+    filterFn: rangeFilterFn,
+  },
+  {
+    accessorKey: "date",
+    header: "Date",
+    filterFn: dateFilterFn,
   },
 ];
 
@@ -129,7 +152,9 @@ export const getPayments = (
       let arr: Payment[];
       sort[0]
         ? (arr = [...MOCK_PAYMENTS].sort((a, b) =>
-            sort[0].desc ? a.status.localeCompare(b.status) : b.status.localeCompare(a.status)
+            sort[0].desc
+              ? a.status.localeCompare(b.status)
+              : b.status.localeCompare(a.status)
           ))
         : (arr = MOCK_PAYMENTS);
       arr = arr.filter((payment) => {
