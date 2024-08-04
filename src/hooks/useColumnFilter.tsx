@@ -11,7 +11,7 @@ export const useColumnFilter = (
 ) => {
   const [filters, setFilters] = useState<ColumnFiltersState>(state);
   const { updateFilterSearchParams } = useSearchParamsUpdate();
-
+  
   useEffect(() => {
     if (serverSide) {
       const filtersQuery = filterToQuery(filters);

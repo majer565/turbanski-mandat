@@ -8,6 +8,7 @@ import {
   DataTableFilterSelectOption,
 } from "@/components/data-table/data-table-filters/DataTableFilterButton";
 import { FilterType } from "@/components/data-table/data-table-filters/DataTableFilters";
+import { dateFilterFn, rangeFilterFn, textFilterFn } from "./data-table-filter-fns";
 
 const renderSortIcon = (sortOption: string | false) => {
   if (!sortOption) return;
@@ -30,6 +31,7 @@ export const ticketColumns: ColumnDef<TicketWithDriver>[] = [
         </Button>
       );
     },
+    filterFn: textFilterFn,
   },
   {
     accessorKey: "date",
@@ -41,6 +43,7 @@ export const ticketColumns: ColumnDef<TicketWithDriver>[] = [
         </Button>
       );
     },
+    filterFn: dateFilterFn,
   },
   {
     accessorKey: "driver",
@@ -55,6 +58,7 @@ export const ticketColumns: ColumnDef<TicketWithDriver>[] = [
         </Button>
       );
     },
+    filterFn: textFilterFn,
   },
   {
     accessorKey: "vehiclePlate",
@@ -66,6 +70,7 @@ export const ticketColumns: ColumnDef<TicketWithDriver>[] = [
         </Button>
       );
     },
+    filterFn: textFilterFn,
   },
   {
     accessorKey: "amount",
@@ -77,6 +82,7 @@ export const ticketColumns: ColumnDef<TicketWithDriver>[] = [
         </Button>
       );
     },
+    filterFn: rangeFilterFn,
   },
   {
     accessorKey: "currency",
@@ -88,6 +94,7 @@ export const ticketColumns: ColumnDef<TicketWithDriver>[] = [
         </Button>
       );
     },
+    filterFn: textFilterFn,
   },
   {
     accessorKey: "postPayoutDate",
@@ -99,6 +106,7 @@ export const ticketColumns: ColumnDef<TicketWithDriver>[] = [
         </Button>
       );
     },
+    filterFn: dateFilterFn,
   },
 ];
 

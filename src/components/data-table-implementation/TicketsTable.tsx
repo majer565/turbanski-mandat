@@ -1,10 +1,6 @@
 "use client";
 
-// import { ticketFilters as columnFilters, ticketColumns as columns } from "@/lib/data-table-columns/ticket-columns";
-import {
-  columns,
-  columnFilters,
-} from "../../lib/data-table-columns/test-columns";
+import { MOCK_TICKETS } from "@/lib/data-table/mockTickets";
 import {
   getCoreRowModel,
   getFilteredRowModel,
@@ -12,13 +8,12 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { DataTable } from "../data-table/DataTable";
-import { MOCK_PAYMENTS } from "@/lib/data-table-columns/mock-payments";
-import { useSorting } from "../../hooks/useSorting";
-import { usePagination } from "../../hooks/usePagination";
 import { useColumnFilter } from "../../hooks/useColumnFilter";
+import { usePagination } from "../../hooks/usePagination";
+import { useSorting } from "../../hooks/useSorting";
+import { ticketFilters as columnFilters, ticketColumns as columns } from "../../lib/data-table/ticket-columns";
+import { DataTable } from "../data-table/DataTable";
 
-//Client side table does not work
 const TicketsTable = () => {
   const { sorting, setSorting } = useSorting([]);
   const { pagination, setPagination } = usePagination({
@@ -28,7 +23,7 @@ const TicketsTable = () => {
   const { filters, setFilters } = useColumnFilter([]);
 
   const table = useReactTable({
-    data: MOCK_PAYMENTS,
+    data: MOCK_TICKETS,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -44,13 +39,7 @@ const TicketsTable = () => {
     },
   });
 
-  return (
-    <DataTable
-      columnFilters={columnFilters}
-      table={table}
-      isDataLoading={false}
-    />
-  );
+  return <DataTable columnFilters={columnFilters} table={table} isDataLoading={false} />;
 };
 
 export default TicketsTable;
