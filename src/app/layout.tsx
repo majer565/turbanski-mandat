@@ -1,12 +1,13 @@
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import Sidebar from "@/components/Sidebar";
+import { Toaster } from "@/components/ui/toaster";
 import FlexRowWrapper from "@/components/wrappers/FlexRowWrapper";
+import PageWrapper from "@/components/wrappers/PageWrapper";
+import RootWrapper from "@/components/wrappers/RootWrapper";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
-import RootWrapper from "@/components/wrappers/RootWrapper";
-import PageWrapper from "@/components/wrappers/PageWrapper";
 import { ReactQueryClientProvider } from "../components/providers/react-query-client-provider";
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,6 +30,7 @@ export default function RootLayout({
               <RootWrapper>
                 <Sidebar />
                 <PageWrapper>{children}</PageWrapper>
+                <Toaster />
               </RootWrapper>
             </FlexRowWrapper>
           </ThemeProvider>
