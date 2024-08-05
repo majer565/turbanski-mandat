@@ -28,7 +28,7 @@ const TicketsTable = () => {
   const { toast } = useToast();
 
   const table = useReactTable({
-    data: data ?? [],
+    data: !isError ? data ?? [] : [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -48,15 +48,11 @@ const TicketsTable = () => {
     if (isError) {
       toast({
         variant: "destructive",
-        title: "404 | Błąd podczas operacji",
+        title: "Błąd | Nie można wczytać danych",
         description: "Wystąpił problem przy ładowaniu danych. Spórbuj ponownie",
       });
     }
   }, [isError]);
-
-  if (isError) {
-    return <div>Error</div>;
-  }
 
   return <DataTable columnFilters={columnFilters} table={table} isDataLoading={isPending} />;
 };
