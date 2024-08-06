@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Ticket } from "@prisma/client";
-import { ArrowDownNarrowWide, ArrowDownWideNarrow } from "lucide-react";
+import { ArrowDownNarrowWide, ArrowDownWideNarrow, FileSearch } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TicketWithDriver } from "../types/ticket";
 import {
@@ -9,6 +9,7 @@ import {
 } from "@/components/data-table/data-table-filters/DataTableFilterButton";
 import { FilterType } from "@/components/data-table/data-table-filters/DataTableFilters";
 import { dateFilterFn, rangeFilterFn, textFilterFn } from "./data-table-filter-fns";
+import TicketFileDialog from "@/components/dialog/ticket-file-dialog";
 
 const renderSortIcon = (sortOption: string | false) => {
   if (!sortOption) return;
@@ -26,7 +27,7 @@ export const ticketColumns: ColumnDef<TicketWithDriver>[] = [
     header: ({ column }) => {
       return (
         <Button variant="ghost" onClick={() => column.toggleSorting()}>
-          Numer mandatu
+          Numer
           {renderSortIcon(column.getIsSorted())}
         </Button>
       );
@@ -38,12 +39,24 @@ export const ticketColumns: ColumnDef<TicketWithDriver>[] = [
     header: ({ column }) => {
       return (
         <Button variant="ghost" onClick={() => column.toggleSorting()}>
-          Data mandatu
+          Data
           {renderSortIcon(column.getIsSorted())}
         </Button>
       );
     },
     filterFn: dateFilterFn,
+  },
+  {
+    accessorKey: "time",
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting()}>
+          Godzina
+          {renderSortIcon(column.getIsSorted())}
+        </Button>
+      );
+    },
+    filterFn: textFilterFn,
   },
   {
     accessorKey: "driver",
@@ -107,6 +120,13 @@ export const ticketColumns: ColumnDef<TicketWithDriver>[] = [
       );
     },
     filterFn: dateFilterFn,
+  },
+  {
+    accessorKey: "file",
+    header: "Plik",
+    cell: ({ row }) => <TicketFileDialog filePath={row.original.file} ticketNumber={row.original.number} />,
+    enableSorting: false,
+    enableColumnFilter: false,
   },
 ];
 
