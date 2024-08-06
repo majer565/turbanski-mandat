@@ -10,6 +10,8 @@ import { ColumnFilterDefinition } from "./data-table-filters/DataTableFilterButt
 import DataTableFilters from "./data-table-filters/DataTableFilters";
 import { DataTablePagination } from "./DataTablePagination";
 import { DataTableViewOptions } from "./DataTableViewOptions";
+import DataTableNewRow from "./data-table-new-row";
+import FlexRow from "../wrappers/FlexRowWrapper";
 
 export interface QueryParams {
   p?: string;
@@ -70,7 +72,10 @@ export function DataTable<TData>({ table, columnFilters, isDataLoading }: DataTa
     <DataTableWrapper>
       <DataTableHeaderWrapper>
         <DataTableFilters columnFilters={columnFilters} table={table} />
-        <DataTableViewOptions table={table} />
+        <FlexRow className="gap-3">
+          <DataTableNewRow />
+          <DataTableViewOptions table={table} />
+        </FlexRow>
       </DataTableHeaderWrapper>
       <div className="rounded-md border border-border">
         <Table>
