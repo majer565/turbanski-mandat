@@ -30,10 +30,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Print vars
-        run: |
-          echo "direct url variable : $DIRECT_URL"
-          echo "database url : $DATABASE_URL"
       - name: Detect package manager
         id: detect-package-manager
         run: |
