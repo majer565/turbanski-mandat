@@ -47,6 +47,10 @@ jobs:
         with:
           node-version: "20"
           cache: ${{ steps.detect-package-manager.outputs.manager }}
+      - name: Set up Prisma
+        run: |
+          npx prisma generate
+          npx prisma migrate deploy
       - name: Restore cache
         uses: actions/cache@v4
         with:
