@@ -1,7 +1,14 @@
+"use client";
+
 import React from "react";
 
-const FlexRow = ({ children }: React.PropsWithChildren) => {
-  return <div className="flex">{children}</div>;
+interface FlexRowProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+const FlexRow = ({ children, className }: FlexRowProps) => {
+  return <div className={`flex ${className}`}>{children}</div>;
 };
 
 export default FlexRow;
