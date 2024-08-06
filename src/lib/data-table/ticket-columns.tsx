@@ -1,15 +1,14 @@
-import { ColumnDef } from "@tanstack/react-table";
-import { Ticket } from "@prisma/client";
-import { ArrowDownNarrowWide, ArrowDownWideNarrow, FileSearch } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { TicketWithDriver } from "../types/ticket";
 import {
   ColumnFilterDefinition,
   DataTableFilterSelectOption,
 } from "@/components/data-table/data-table-filters/DataTableFilterButton";
 import { FilterType } from "@/components/data-table/data-table-filters/DataTableFilters";
-import { dateFilterFn, rangeFilterFn, textFilterFn } from "./data-table-filter-fns";
 import TicketFileDialog from "@/components/dialog/ticket-file-dialog";
+import { Button } from "@/components/ui/button";
+import { ColumnDef } from "@tanstack/react-table";
+import { ArrowDownNarrowWide, ArrowDownWideNarrow } from "lucide-react";
+import { TicketWithDriver } from "../types/ticket";
+import { dateFilterFn, rangeFilterFn, textFilterFn } from "./data-table-filter-fns";
 
 const renderSortIcon = (sortOption: string | false) => {
   if (!sortOption) return;
