@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { FieldValues, Path, UseFormReturn } from "react-hook-form";
 import { Input } from "../../ui/input";
 
@@ -34,13 +27,13 @@ const FormFileItem = <T extends FieldValues>(props: FormFileProps<T>) => {
             <Input
               id="picture"
               type="file"
+              accept=".pdf"
               placeholder={props.placeholder}
               {...field}
+              value={undefined}
             />
           </FormControl>
-          {props.description && (
-            <FormDescription>{props.description}</FormDescription>
-          )}
+          {props.description && <FormDescription>{props.description}</FormDescription>}
           <FormMessage />
         </FormItem>
       )}

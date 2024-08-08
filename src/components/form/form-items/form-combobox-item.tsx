@@ -40,7 +40,7 @@ const FormComboboxItem = <T extends FieldValues>(props: FormComboboxProps<T>) =>
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent className="p-0">
+            <PopoverContent align="start" className="p-0">
               <Command>
                 <CommandInput placeholder={props.placeholder} />
                 <CommandList>

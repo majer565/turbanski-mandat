@@ -8,14 +8,15 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Clock } from "lucide-react";
 import { Button } from "../../ui/button";
 import { pl } from "date-fns/locale";
+import { Input } from "@/components/ui/input";
 
-interface FormDateProps<T extends FieldValues> extends FormItemProps<T> {
+interface FormTimeProps<T extends FieldValues> extends FormItemProps<T> {
   placeholder: string;
 }
-const FormDateItem = <T extends FieldValues>(props: FormDateProps<T>) => {
+const FormTimeItem = <T extends FieldValues>(props: FormTimeProps<T>) => {
   return (
     <FormField
       control={props.form.control}
@@ -23,7 +24,7 @@ const FormDateItem = <T extends FieldValues>(props: FormDateProps<T>) => {
       render={({ field }) => (
         <FormItem className="flex flex-col">
           <FormLabel className="h-[24px]">{props.label}</FormLabel>
-          <Popover>
+          {/* <Popover>
             <PopoverTrigger asChild>
               <FormControl>
                 <Button
@@ -35,16 +36,15 @@ const FormDateItem = <T extends FieldValues>(props: FormDateProps<T>) => {
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="single"
-                selected={field.value}
-                onSelect={field.onChange}
-                disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
+            <PopoverContent className="w-auto p-0" align="start"> */}
+          <div className="relative">
+            <div className="absolute inset-y-0 end-0 top-0 flex items-center pe-3.5 pointer-events-none">
+              <Clock className="w-4 h-4 opacity-50 bg-background" />
+            </div>
+            <Input type="time" className="block" placeholder={props.placeholder} {...field} />
+          </div>
+          {/* </PopoverContent>
+          </Popover> */}
           {props.description && <FormDescription>{props.description}</FormDescription>}
           <FormMessage />
         </FormItem>
@@ -53,4 +53,4 @@ const FormDateItem = <T extends FieldValues>(props: FormDateProps<T>) => {
   );
 };
 
-export default FormDateItem;
+export default FormTimeItem;

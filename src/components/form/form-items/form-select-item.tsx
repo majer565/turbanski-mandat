@@ -1,24 +1,11 @@
 "use client";
 
 import { Option } from "@/components/data-table/data-table-filters/DataTableFilters";
-import {
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { FieldValues } from "react-hook-form";
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { FieldValues, Path } from "react-hook-form";
 import { FormItemProps } from "./form-input-item";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface FormSelectProps<T extends FieldValues> extends FormItemProps<T> {
   placeholder: string;
@@ -28,7 +15,7 @@ const FormSelectItem = <T extends FieldValues>(props: FormSelectProps<T>) => {
   return (
     <FormField
       control={props.form.control}
-      name="email"
+      name={props.name as Path<T>}
       render={({ field }) => (
         <FormItem>
           <FormLabel>{props.label}</FormLabel>
@@ -40,13 +27,11 @@ const FormSelectItem = <T extends FieldValues>(props: FormSelectProps<T>) => {
             </FormControl>
             <SelectContent>
               {props.options.map((o) => (
-                <SelectItem value={o.value}>{o.label}</SelectItem>
+                <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
               ))}
             </SelectContent>
           </Select>
-          {props.description && (
-            <FormDescription>{props.description}</FormDescription>
-          )}
+          {props.description && <FormDescription>{props.description}</FormDescription>}
           <FormMessage />
         </FormItem>
       )}
