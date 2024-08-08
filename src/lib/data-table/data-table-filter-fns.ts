@@ -3,11 +3,7 @@ import { parse } from "date-fns";
 import { pl } from "date-fns/locale";
 import { resolveDateFromString } from "../utils";
 
-export function textFilterFn<TData>(
-  row: Row<TData>,
-  id: string,
-  filterValue: any
-) {
+export function textFilterFn<TData>(row: Row<TData>, id: string, filterValue: any) {
   const rowValue = row.getValue(id) as string[];
   const input = filterValue as string[];
   if (rowValue.length > 0 && input[0]) {
@@ -17,11 +13,7 @@ export function textFilterFn<TData>(
   return undefined;
 }
 
-export function rangeFilterFn<TData>(
-  row: Row<TData>,
-  id: string,
-  filterValue: any
-): any {
+export function rangeFilterFn<TData>(row: Row<TData>, id: string, filterValue: any): any {
   const rowValue = row.getValue(id) as number;
   const input = filterValue as string[];
   if (input.length === 2) {
@@ -34,11 +26,7 @@ export function rangeFilterFn<TData>(
   return undefined;
 }
 
-export function selectFilterFn<TData>(
-  row: Row<TData>,
-  id: string,
-  filterValue: any
-): any {
+export function selectFilterFn<TData>(row: Row<TData>, id: string, filterValue: any): any {
   const rowValue = row.getValue(id) as string;
   const input = filterValue as string[];
 
@@ -46,17 +34,13 @@ export function selectFilterFn<TData>(
   return undefined;
 }
 
-export function dateFilterFn<TData>(
-  row: Row<TData>,
-  id: string,
-  filterValue: any
-): any {
+export function dateFilterFn<TData>(row: Row<TData>, id: string, filterValue: any): any {
   const rowValue = row.getValue(id) as string;
   const input = filterValue as string[];
 
   if (input.length === 2) {
-    const dateRange = resolveDateFromString(input, "LLL dd, y");
-    const value = parse(rowValue, "LLL dd, y", new Date(), { locale: pl });
+    const dateRange = resolveDateFromString(input);
+    const value = new Date(rowValue);
 
     if (!dateRange) return undefined;
     return value >= dateRange.from! && value <= dateRange.to!;

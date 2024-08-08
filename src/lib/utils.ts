@@ -1,6 +1,6 @@
 import { ColumnFiltersState } from "@tanstack/react-table";
 import { type ClassValue, clsx } from "clsx";
-import { parse } from "date-fns";
+import { format, parse } from "date-fns";
 import { pl } from "date-fns/locale";
 import { DateRange } from "react-day-picker";
 import { twMerge } from "tailwind-merge";
@@ -29,12 +29,18 @@ export function filterToQuery(columnState: ColumnFiltersState): {
 }
 
 export const resolveDateFromString = (
-  value: string[],
-  format: string
+  value: string[]
+  // format: string
 ): DateRange | undefined => {
   if (value.length !== 2) return undefined;
-  const from = parse(value[0], format, new Date(), { locale: pl });
-  const to = parse(value[1], format, new Date(), { locale: pl });
+  // const from = parse(value[0], format, new Date(), { locale: pl });
+  // const to = parse(value[1], format, new Date(), { locale: pl });
+  const from = new Date(value[0]);
+  const to = new Date(value[1]);
 
   return { from, to };
+};
+
+export const formatDateValueToString = (dateToChange: string) => {
+  return format(new Date(dateToChange), "LLL dd, y", { locale: pl });
 };
