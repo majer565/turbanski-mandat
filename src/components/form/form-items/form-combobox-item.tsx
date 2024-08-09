@@ -51,7 +51,7 @@ const FormComboboxItem = <T extends FieldValues>(props: FormComboboxProps<T>) =>
                         value={option.label}
                         key={option.value}
                         onSelect={() => {
-                          props.form.setValue(props.name as Path<T>, option.value as PathValue<T, Path<T>>);
+                          field.onChange(option.value as PathValue<T, Path<T>>);
                         }}
                       >
                         <Check

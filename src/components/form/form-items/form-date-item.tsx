@@ -8,9 +8,9 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { pl } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
 import { Button } from "../../ui/button";
-import { pl } from "date-fns/locale";
 
 interface FormDateProps<T extends FieldValues> extends FormItemProps<T> {
   placeholder: string;
@@ -39,7 +39,7 @@ const FormDateItem = <T extends FieldValues>(props: FormDateProps<T>) => {
               <Calendar
                 mode="single"
                 selected={field.value}
-                onSelect={field.onChange}
+                onSelect={(e) => field.onChange(String(e))}
                 disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
                 initialFocus
               />

@@ -2,6 +2,7 @@
 
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { InputHTMLAttributes } from "react";
 import { FieldValues, Path, UseFormReturn } from "react-hook-form";
 
 export interface FormItemProps<T extends FieldValues> {
@@ -11,11 +12,13 @@ export interface FormItemProps<T extends FieldValues> {
   description?: string;
 }
 
-interface FormInputProps<T extends FieldValues> extends FormItemProps<T> {
-  placeholder: string;
-}
+interface FormInputProps<T extends FieldValues>
+  extends FormItemProps<T>,
+    Omit<InputHTMLAttributes<HTMLInputElement>, "form" | "label" | "name" | "description"> {}
 
 const FormInputItem = <T extends FieldValues>(props: FormInputProps<T>) => {
+  const { form, label, name, description, ...rest } = props;
+
   return (
     <FormField
       control={props.form.control}
@@ -24,7 +27,11 @@ const FormInputItem = <T extends FieldValues>(props: FormInputProps<T>) => {
         <FormItem>
           <FormLabel>{props.label}</FormLabel>
           <FormControl>
-            <Input placeholder={props.placeholder} {...field} />
+            <Input
+              className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              {...field}
+              {...rest}
+            />
           </FormControl>
           {props.description && <FormDescription>{props.description}</FormDescription>}
           <FormMessage />
