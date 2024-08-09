@@ -49,7 +49,7 @@ const TicketsTable = () => {
       toast({
         variant: "destructive",
         title: "Błąd | Nie można wczytać danych",
-        description: "Wystąpił problem przy ładowaniu danych. Spórbuj ponownie",
+        description: "Wystąpił problem przy ładowaniu danych. Spróbuj ponownie",
       });
     }
   }, [isError]);
