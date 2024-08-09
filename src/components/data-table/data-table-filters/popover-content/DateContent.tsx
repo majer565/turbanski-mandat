@@ -9,11 +9,7 @@ import { Calendar as CalendarIcon } from "lucide-react";
 import { DateRange } from "react-day-picker";
 
 import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn, resolveDateFromString } from "@/lib/utils";
 import { pl } from "date-fns/locale";
 
@@ -22,27 +18,17 @@ const DateContent = (props: DataTablePopoverContentProps) => {
     const from = value?.from || new Date();
     const to = value?.to || new Date();
 
-    props.handleValueChange([
-      format(from, "LLL dd, y", { locale: pl }),
-      format(to, "LLL dd, y", { locale: pl }),
-    ]);
+    props.handleValueChange([String(from), String(to)]);
   };
 
-  const date: DateRange | undefined = resolveDateFromString(
-    props.value,
-    "LLL dd, y"
-  );
+  const date: DateRange | undefined = resolveDateFromString(props.value);
+  // const date: DateRange | undefined = resolveDateFromString(props.value, "LLL dd, y");
 
   return (
     <>
       <div className="w-full flex justify-between items-center">
         <span className="text-xs h-3 pl-1 opacity-50">{props.label}</span>
-        <Button
-          className="h-6 w-6"
-          variant="ghost"
-          size="icon"
-          onClick={() => props.onRemove()}
-        >
+        <Button className="h-6 w-6" variant="ghost" size="icon" onClick={() => props.onRemove()}>
           <Trash className="w-3 h-3 opacity-50" />
         </Button>
       </div>
@@ -52,23 +38,19 @@ const DateContent = (props: DataTablePopoverContentProps) => {
             <Button
               id="date"
               variant={"outline"}
-              className={cn(
-                "justify-start text-left font-normal",
-                !date && "text-muted-foreground"
-              )}
+              className={cn("justify-start text-left font-normal", !date && "text-muted-foreground")}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
               {date?.from ? (
                 date.to ? (
                   <>
-                    {format(date.from, "LLL dd, y", { locale: pl })} -{" "}
-                    {format(date.to, "LLL dd, y", { locale: pl })}
+                    {format(date.from, "LLL dd, y", { locale: pl })} - {format(date.to, "LLL dd, y", { locale: pl })}
                   </>
                 ) : (
                   format(date.from, "LLL dd, y", { locale: pl })
                 )
               ) : (
-                <span>Pick a date</span>
+                <span>Wybierz datę</span>
               )}
             </Button>
           </PopoverTrigger>

@@ -1,15 +1,12 @@
 "use client";
 
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ColumnFilter, Table } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 import { Button } from "../../ui/button";
 import DataTableFilterPopoverContent from "./DataTableFilterPopoverContent";
 import { FilterType } from "./DataTableFilters";
+import { formatDateValueToString } from "@/lib/utils";
 
 export interface DataTableFilterSelectOption {
   value: string;
@@ -56,10 +53,7 @@ export default function DataTableFilterButtonV2<TData>({
           return prev.filter((p) => p.id !== prevFilter.id);
         }
 
-        return [
-          ...prev.filter((p) => p.id !== prevFilter.id),
-          { id: prevFilter.id, value },
-        ];
+        return [...prev.filter((p) => p.id !== prevFilter.id), { id: prevFilter.id, value }];
       }
 
       return [...prev, { id: filter.id, value }];
@@ -70,8 +64,9 @@ export default function DataTableFilterButtonV2<TData>({
     onRemoveFilter(filter);
   };
 
-  const getValueAsText = (valueToChange: string[]): string => {
+  const getValueAsText = (valueToChange: string[], type: FilterType): string => {
     if (valueToChange.length > 2) return `${valueToChange.length} zaznaczone`;
+    if (type === FilterType.DATE) return `${formatDateValueToString(value[0])}, ${formatDateValueToString(value[1])}`;
 
     return valueToChange.join(", ");
   };
@@ -89,7 +84,7 @@ export default function DataTableFilterButtonV2<TData>({
           {value[0] && (
             <>
               <span>:</span>
-              <span className="ml-2 opacity-50">{getValueAsText(value)}</span>
+              <span className="ml-2 opacity-50">{getValueAsText(value, columnData.type)}</span>
             </>
           )}
         </Button>

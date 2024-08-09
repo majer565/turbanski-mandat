@@ -9,6 +9,9 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowDownNarrowWide, ArrowDownWideNarrow } from "lucide-react";
 import { TicketWithDriver } from "../types/ticket";
 import { dateFilterFn, rangeFilterFn, textFilterFn } from "./data-table-filter-fns";
+import { format } from "date-fns";
+import { pl } from "date-fns/locale";
+import { formatDateValueToString } from "../utils";
 
 const renderSortIcon = (sortOption: string | false) => {
   if (!sortOption) return;
@@ -43,6 +46,7 @@ export const ticketColumns: ColumnDef<TicketWithDriver>[] = [
         </Button>
       );
     },
+    cell: ({ cell }) => formatDateValueToString(cell.getValue() as string),
     filterFn: dateFilterFn,
   },
   {
@@ -118,6 +122,7 @@ export const ticketColumns: ColumnDef<TicketWithDriver>[] = [
         </Button>
       );
     },
+    cell: ({ cell }) => formatDateValueToString(cell.getValue() as string),
     filterFn: dateFilterFn,
   },
   {
