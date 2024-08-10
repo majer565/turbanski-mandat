@@ -1,8 +1,5 @@
 import { ThemeProvider } from "@/components/providers/theme-provider";
-import Sidebar from "@/components/Sidebar";
 import { Toaster } from "@/components/ui/toaster";
-import FlexRow from "@/components/wrappers/FlexRowWrapper";
-import PageWrapper from "@/components/wrappers/PageWrapper";
 import RootWrapper from "@/components/wrappers/RootWrapper";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -27,10 +24,7 @@ export default function RootLayout({
         <ReactQueryClientProvider>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
             <RootWrapper>
-              <FlexRow>
-                <Sidebar />
-                <PageWrapper>{children}</PageWrapper>
-              </FlexRow>
+              {children}
               <Toaster />
             </RootWrapper>
           </ThemeProvider>
