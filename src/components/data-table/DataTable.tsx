@@ -3,7 +3,6 @@
 import { ColumnFiltersState, ColumnSort, flexRender, Table as TanstackTable } from "@tanstack/react-table";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PAGINATION_SETUP } from "../../lib/data-table-columns/test-columns";
 import { Skeleton } from "../ui/skeleton";
 import { DataTableHeaderWrapper, DataTableWrapper } from "../wrappers/DataTableWrappers";
 import { ColumnFilterDefinition } from "./data-table-filters/DataTableFilterButton";
@@ -12,6 +11,7 @@ import { DataTablePagination } from "./DataTablePagination";
 import { DataTableViewOptions } from "./DataTableViewOptions";
 import DataTableNewRow from "./data-table-new-row";
 import FlexRow from "../wrappers/FlexRowWrapper";
+import { PAGINATION_SETUP } from "@/lib/data-table/data-table-config";
 
 export interface QueryParams {
   p?: string;

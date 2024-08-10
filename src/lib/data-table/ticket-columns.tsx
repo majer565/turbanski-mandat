@@ -8,10 +8,8 @@ import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowDownNarrowWide, ArrowDownWideNarrow } from "lucide-react";
 import { TicketWithDriver } from "../types/ticket";
-import { dateFilterFn, rangeFilterFn, textFilterFn } from "./data-table-filter-fns";
-import { format } from "date-fns";
-import { pl } from "date-fns/locale";
 import { formatDateValueToString } from "../utils";
+import { dateFilterFn, rangeFilterFn, textFilterFn } from "./data-table-filter-fns";
 
 const renderSortIcon = (sortOption: string | false) => {
   if (!sortOption) return;
@@ -134,16 +132,7 @@ export const ticketColumns: ColumnDef<TicketWithDriver>[] = [
   },
 ];
 
-const CURRENCY_OPTIONS: DataTableFilterSelectOption[] = [
-  { value: "EUR" },
-  { value: "BGN" },
-  { value: "CZK" },
-  { value: "DKK" },
-  { value: "HUF" },
-  { value: "PLN" },
-  { value: "RON" },
-  { value: "SEK" },
-];
+const CURRENCY_OPTIONS: DataTableFilterSelectOption[] = [{ value: "EUR" }, { value: "PLN" }];
 
 export const ticketFilters: ColumnFilterDefinition[] = [
   {

@@ -1,11 +1,11 @@
 "use client";
 
-import { getDrivers } from "@/actions/getDrivers";
-import { saveTicket } from "@/actions/saveTickets";
+import { saveTicket } from "@/actions/saveTicket";
 import { uploadFile } from "@/actions/uploadFile";
+import { useGetDrivers } from "@/hooks/useGetDrivers";
 import { ticketSchema } from "@/lib/form/ticket-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { LoaderCircle } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -17,13 +17,14 @@ import FormComboboxItem from "./form-items/form-combobox-item";
 import FormDateItem from "./form-items/form-date-item";
 import FormFileItem from "./form-items/form-file-item";
 import FormInputItem from "./form-items/form-input-item";
+import FormSelectItem from "./form-items/form-select-item";
 import FormTimeItem from "./form-items/form-time-item";
 
 const TicketForm = () => {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const { toast } = useToast();
-  const { data: driversOptions } = useQuery({ queryKey: ["getDrivers"], queryFn: getDrivers });
+  const { data: driversOptions } = useGetDrivers();
   const mutation = useMutation({
     mutationFn: saveTicket,
     onError: (e) => {
@@ -40,7 +41,7 @@ const TicketForm = () => {
       toast({
         variant: "default",
         title: "Pomyślnie zapisano mandat",
-        description: `Mandat o numerze ${data.number} został zapisany.`,
+        description: `Mandat o numerze ${data.number} został zapisany`,
       });
       setLoading(false);
     },
@@ -112,7 +113,7 @@ const TicketForm = () => {
             name="amount"
             placeholder="Wprowadź kwotę"
           />
-          <FormComboboxItem
+          <FormSelectItem
             form={form}
             label="Waluta"
             name="currency"
