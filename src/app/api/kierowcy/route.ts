@@ -1,3 +1,4 @@
+import { verifySession } from "@/lib/session";
 import { DriverWithoutId } from "@/lib/types/driver";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../../prisma/client";
@@ -13,6 +14,9 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
+    const session = await verifySession();
+    if (!session) throw new Error("Sesja wygasła");
+
     const driver: DriverWithoutId = await req.json();
     const driverInDb = await prisma.driver.findFirst({
       where: {

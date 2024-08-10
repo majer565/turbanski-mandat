@@ -1,6 +1,7 @@
+import { verifySession } from "@/lib/session";
 import { TicketWithoutId } from "@/lib/types/ticket";
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "../../../prisma/client";
+import { prisma } from "../../../../prisma/client";
 
 export async function GET() {
   try {
@@ -13,6 +14,9 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
+    const session = await verifySession();
+    if (!session) throw new Error("Sesja wygasła");
+
     const ticket: TicketWithoutId = await req.json();
     const ticketFromDb = await prisma.ticket.findFirst({
       where: {
