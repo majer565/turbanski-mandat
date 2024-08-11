@@ -46,7 +46,7 @@ const Settings = ({ userEmail }: { userEmail: string }) => {
                 </div>
               </div>
             </div>
-            <span className="block w-full p-2 text-center font-normal">Dark</span>
+            <span className="block w-full p-2 text-center font-normal">Ciemny</span>
           </ButtonGroupItem>
           <ButtonGroupItem label={"Light"} value={"light"}>
             <div className="items-center rounded-md border-2 border-muted p-1 hover:border-accent">
@@ -65,7 +65,7 @@ const Settings = ({ userEmail }: { userEmail: string }) => {
                 </div>
               </div>
             </div>
-            <span className="block w-full p-2 text-center font-normal">Light</span>
+            <span className="block w-full p-2 text-center font-normal">Jasny</span>
           </ButtonGroupItem>
         </ButtonGroup>
       </div>
