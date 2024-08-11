@@ -25,8 +25,8 @@ const TicketFileDialog = ({ filePath, ticketNumber }: TicketFileDialogProps) => 
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-[70rem] border-border">
-        <DialogHeader>
-          <DialogTitle>{ticketNumber}</DialogTitle>
+        <DialogHeader className="space-y-4">
+          <DialogTitle>Numer mandatu - {ticketNumber}</DialogTitle>
           <DialogDescription>
             <iframe  src={`/ticket_files/${filePath}`} className="w-full h-[48rem]" />
           </DialogDescription>

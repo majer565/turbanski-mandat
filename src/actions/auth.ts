@@ -3,7 +3,7 @@ import { User } from "@prisma/client";
 import { redirect } from "next/navigation";
 
 export async function login(user: User) {
-  await createSession(String(user.id));
+  await createSession(String(user.id), String(user.email));
   redirect("/mandaty");
 }
 

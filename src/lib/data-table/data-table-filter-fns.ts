@@ -1,6 +1,4 @@
 import { Row } from "@tanstack/react-table";
-import { parse } from "date-fns";
-import { pl } from "date-fns/locale";
 import { resolveDateFromString } from "../utils";
 
 export function textFilterFn<TData>(row: Row<TData>, id: string, filterValue: any) {

@@ -2,7 +2,7 @@
 
 import { signin } from "@/actions/signin";
 import { LoaderCircle } from "lucide-react";
-import { useFormState } from "react-dom";
+import { useFormState, useFormStatus } from "react-dom";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Input } from "../ui/input";
@@ -19,7 +19,7 @@ export type LoginFormState =
   | undefined;
 
 const LoginForm = () => {
-  const [state, formAction, pending] = useFormState<LoginFormState, FormData>(signin, undefined);
+  const [state, formAction] = useFormState<LoginFormState, FormData>(signin, undefined);
 
   return (
     <div className="mx-auto my-auto w-1/4">
@@ -40,13 +40,21 @@ const LoginForm = () => {
             </div>
             {state?.errors?.email && <p className="text-destructive text-sm">{state.errors.email}</p>}
             {state?.errors?.password && <p className="text-destructive text-sm">{state.errors.password}</p>}
-            <Button className="w-1/3" disabled={pending} type="submit">
-              {pending ? <LoaderCircle className="w-4 h-4 animate-spin" /> : "Zatwierdź"}
-            </Button>
+            <SubmitButton />
           </form>
         </CardContent>
       </Card>
     </div>
+  );
+};
+
+const SubmitButton = () => {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button className="w-1/3" disabled={pending} type="submit">
+      {pending ? <LoaderCircle className="w-4 h-4 animate-spin" /> : "Zatwierdź"}
+    </Button>
   );
 };
 

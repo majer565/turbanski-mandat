@@ -10,6 +10,7 @@ import { ArrowDownNarrowWide, ArrowDownWideNarrow } from "lucide-react";
 import { TicketWithDriver } from "../types/ticket";
 import { formatDateValueToString } from "../utils";
 import { dateFilterFn, rangeFilterFn, textFilterFn } from "./data-table-filter-fns";
+import { dateSortFn } from "./data-table-sort-fns";
 
 const renderSortIcon = (sortOption: string | false) => {
   if (!sortOption) return;
@@ -46,6 +47,7 @@ export const ticketColumns: ColumnDef<TicketWithDriver>[] = [
     },
     cell: ({ cell }) => formatDateValueToString(cell.getValue() as string),
     filterFn: dateFilterFn,
+    sortingFn: dateSortFn,
   },
   {
     accessorKey: "time",
@@ -122,6 +124,7 @@ export const ticketColumns: ColumnDef<TicketWithDriver>[] = [
     },
     cell: ({ cell }) => formatDateValueToString(cell.getValue() as string),
     filterFn: dateFilterFn,
+    sortingFn: dateSortFn,
   },
   {
     accessorKey: "file",
