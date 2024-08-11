@@ -4,7 +4,7 @@ import { TicketWithoutId } from "@/lib/types/ticket";
 
 export const saveTicket = async (ticket: TicketWithoutId) => {
   try {
-    const response = await fetch("/api/", {
+    const response = await fetch("/api/mandaty", {
       method: "POST",
       body: JSON.stringify(ticket),
     });

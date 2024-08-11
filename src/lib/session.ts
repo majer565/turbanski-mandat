@@ -25,9 +25,9 @@ export async function decrypt(session: string | undefined = "") {
   }
 }
 
-export async function createSession(userId: string) {
+export async function createSession(userId: string, userEmail: string) {
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-  const session = await encrypt({ userId, expiresAt });
+  const session = await encrypt({ userId, userEmail, expiresAt });
 
   cookies().set("session", session, {
     httpOnly: true,
@@ -45,11 +45,11 @@ export async function verifySession() {
   const cookie = cookies().get("session")?.value;
   const session = await decrypt(cookie);
 
-  if (!session?.userId) {
+  if (!session?.userId || !session?.userEmail) {
     redirect("/");
   }
 
-  return { userId: session.userId };
+  return { userId: session.userId, userEmail: session.userEmail };
 }
 
 export async function getSession() {

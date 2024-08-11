@@ -19,7 +19,7 @@ const FormSelectItem = <T extends FieldValues>(props: FormSelectProps<T>) => {
       render={({ field }) => (
         <FormItem>
           <FormLabel>{props.label}</FormLabel>
-          <Select onValueChange={field.onChange} defaultValue={field.value}>
+          <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
             <FormControl>
               <SelectTrigger>
                 <SelectValue placeholder={props.placeholder} />

@@ -78,8 +78,8 @@ export function DataTable<TData>({ table, columnFilters, isDataLoading }: DataTa
         </FlexRow>
       </DataTableHeaderWrapper>
       <div className="rounded-md border border-border">
-        <Table>
-          <TableHeader>
+        <Table className="">
+          <TableHeader className="sticky top-0 bg-muted/40">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow className="border-border" key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
@@ -92,7 +92,7 @@ export function DataTable<TData>({ table, columnFilters, isDataLoading }: DataTa
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>{getTableBody(isDataLoading)}</TableBody>
+          <TableBody className="max-h-[30rem] overflow-y-auto">{getTableBody(isDataLoading)}</TableBody>
         </Table>
       </div>
       <DataTablePagination config={PAGINATION_SETUP} table={table} />
