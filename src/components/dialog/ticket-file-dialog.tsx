@@ -17,6 +17,8 @@ interface TicketFileDialogProps {
 }
 
 const TicketFileDialog = ({ filePath, ticketNumber }: TicketFileDialogProps) => {
+  const srcPath = `/api/mandaty/${filePath}`;
+
   return (
     <Dialog>
       <DialogTrigger>
@@ -28,7 +30,7 @@ const TicketFileDialog = ({ filePath, ticketNumber }: TicketFileDialogProps) => 
         <DialogHeader className="space-y-4">
           <DialogTitle>Numer mandatu - {ticketNumber}</DialogTitle>
           <DialogDescription>
-            <iframe  src={`/ticket_files/${filePath}`} className="w-full h-[48rem]" />
+            <iframe src={srcPath} className="w-full h-[48rem]" />
           </DialogDescription>
         </DialogHeader>
       </DialogContent>

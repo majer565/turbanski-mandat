@@ -20,8 +20,9 @@ export async function POST(request: NextRequest) {
       throw new Error("Unsupported FormDataEntryValue type");
     }
 
+    const storageDir = process.env.PDF_STORAGE_PATH || "/ticket_files";
     const filename = "mandat-" + nanoid() + ".pdf";
-    await writeFile(path.join(process.cwd(), "public/ticket_files/" + filename), buffer);
+    await writeFile(path.join(storageDir, filename), buffer);
 
     return NextResponse.json(filename);
   } catch (e) {
