@@ -12,6 +12,7 @@ import { DataTableViewOptions } from "./DataTableViewOptions";
 import DataTableNewRow from "./data-table-new-row";
 import FlexRow from "../wrappers/FlexRowWrapper";
 import { PAGINATION_SETUP } from "@/lib/data-table/data-table-config";
+import { DataTableExportButton } from "./data-table-export-button";
 
 export interface QueryParams {
   p?: string;
@@ -33,9 +34,10 @@ export interface DataTableProps<TData> {
   table: TanstackTable<TData>;
   columnFilters: ColumnFilterDefinition[];
   isDataLoading: boolean;
+  viewDataMap: Map<string, string>;
 }
 
-export function DataTable<TData>({ table, columnFilters, isDataLoading }: DataTableProps<TData>) {
+export function DataTable<TData>({ table, columnFilters, isDataLoading, viewDataMap }: DataTableProps<TData>) {
   const getSkeleton = () => {
     return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
       <TableRow key={n} className="border-border">
@@ -74,7 +76,8 @@ export function DataTable<TData>({ table, columnFilters, isDataLoading }: DataTa
         <DataTableFilters columnFilters={columnFilters} table={table} />
         <FlexRow className="gap-3">
           <DataTableNewRow />
-          <DataTableViewOptions table={table} />
+          <DataTableExportButton dataMap={viewDataMap} table={table} />
+          <DataTableViewOptions dataMap={viewDataMap} table={table} />
         </FlexRow>
       </DataTableHeaderWrapper>
       <div className="rounded-md border border-border">
@@ -92,7 +95,7 @@ export function DataTable<TData>({ table, columnFilters, isDataLoading }: DataTa
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody className="max-h-[30rem] overflow-y-auto">{getTableBody(isDataLoading)}</TableBody>
+          <TableBody className="max-h-[29rem] overflow-y-auto">{getTableBody(isDataLoading)}</TableBody>
         </Table>
       </div>
       <DataTablePagination config={PAGINATION_SETUP} table={table} />

@@ -20,7 +20,7 @@ interface FormFileProps<T extends FieldValues> extends FormItemProps<T> {
 const FormFileItem = <T extends FieldValues>(props: FormFileProps<T>) => {
   const handleChangeEvent = (e: ChangeEvent<HTMLInputElement>, field: ControllerRenderProps<T, Path<T>>) => {
     const file = e.target.files;
-    if (file && file[0].type === "application/pdf") {
+    if (file && file[0]?.type === "application/pdf") {
       props.setFile(file[0]);
     } else props.setFile(null);
 

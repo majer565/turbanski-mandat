@@ -14,9 +14,10 @@ import {
 
 interface DataTableViewOptionsProps<TData> {
   table: Table<TData>;
+  dataMap: Map<string, string>;
 }
 
-export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps<TData>) {
+export function DataTableViewOptions<TData>({ table, dataMap }: DataTableViewOptionsProps<TData>) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -25,7 +26,7 @@ export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps
           Widok
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[150px]">
+      <DropdownMenuContent align="end">
         <DropdownMenuLabel>Ukryj kolumny</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {table
@@ -35,11 +36,10 @@ export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps
             return (
               <DropdownMenuCheckboxItem
                 key={column.id}
-                className="capitalize"
                 checked={column.getIsVisible()}
                 onCheckedChange={(value) => column.toggleVisibility(!!value)}
               >
-                {column.id}
+                {dataMap.get(column.id) ?? column.id}
               </DropdownMenuCheckboxItem>
             );
           })}

@@ -55,3 +55,8 @@ export const driverFilters: ColumnFilterDefinition[] = [
     type: FilterType.TEXT,
   },
 ];
+
+export const driverColumnsMap = new Map<string, string>([
+  ["name", "Imię"],
+  ["surname", "Nazwisko"],
+]);

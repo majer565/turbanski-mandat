@@ -12,7 +12,7 @@ import { useEffect } from "react";
 import { useColumnFilter } from "../../hooks/useColumnFilter";
 import { usePagination } from "../../hooks/usePagination";
 import { useSorting } from "../../hooks/useSorting";
-import { driverFilters as columnFilters, driverColumns as columns } from "../../lib/data-table/driver-columns";
+import { driverFilters as columnFilters, driverColumns as columns, driverColumnsMap } from "../../lib/data-table/driver-columns";
 import { DataTable } from "../data-table/DataTable";
 import { useToast } from "../ui/use-toast";
 
@@ -54,7 +54,7 @@ const DriversTable = () => {
     }
   }, [isError]);
 
-  return <DataTable columnFilters={columnFilters} table={table} isDataLoading={isPending} />;
+  return <DataTable viewDataMap={driverColumnsMap} columnFilters={columnFilters} table={table} isDataLoading={isPending} />;
 };
 
 export default DriversTable;

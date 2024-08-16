@@ -1,17 +1,28 @@
 import { Row } from "@tanstack/react-table";
 import { resolveDateFromString } from "../utils";
 
-export function textFilterFn<TData>(row: Row<TData>, id: string, filterValue: any) {
-  const rowValue = row.getValue(id) as string[];
+export function textFilterFn<TData>(
+  row: Row<TData>,
+  id: string,
+  filterValue: any
+) {
+  const rowValue = row.getValue(id) as string;
   const input = filterValue as string[];
-  if (rowValue.length > 0 && input[0]) {
-    return filterValue.some((value: string) => rowValue.includes(value));
+  if (rowValue.length > 0) {
+    if (!input[0]) return true;
+    return input.some((value: string) =>
+      rowValue.toLocaleLowerCase().includes(value.toLocaleLowerCase())
+    );
   }
 
-  return undefined;
+  return false;
 }
 
-export function rangeFilterFn<TData>(row: Row<TData>, id: string, filterValue: any): any {
+export function rangeFilterFn<TData>(
+  row: Row<TData>,
+  id: string,
+  filterValue: any
+): any {
   const rowValue = row.getValue(id) as number;
   const input = filterValue as string[];
   if (input.length === 2) {
@@ -24,7 +35,11 @@ export function rangeFilterFn<TData>(row: Row<TData>, id: string, filterValue: a
   return undefined;
 }
 
-export function selectFilterFn<TData>(row: Row<TData>, id: string, filterValue: any): any {
+export function selectFilterFn<TData>(
+  row: Row<TData>,
+  id: string,
+  filterValue: any
+): any {
   const rowValue = row.getValue(id) as string;
   const input = filterValue as string[];
 
@@ -32,7 +47,11 @@ export function selectFilterFn<TData>(row: Row<TData>, id: string, filterValue: 
   return undefined;
 }
 
-export function dateFilterFn<TData>(row: Row<TData>, id: string, filterValue: any): any {
+export function dateFilterFn<TData>(
+  row: Row<TData>,
+  id: string,
+  filterValue: any
+): any {
   const rowValue = row.getValue(id) as string;
   const input = filterValue as string[];
 

@@ -12,7 +12,7 @@ import { useEffect } from "react";
 import { useColumnFilter } from "../../hooks/useColumnFilter";
 import { usePagination } from "../../hooks/usePagination";
 import { useSorting } from "../../hooks/useSorting";
-import { ticketFilters as columnFilters, ticketColumns as columns } from "../../lib/data-table/ticket-columns";
+import { ticketFilters as columnFilters, ticketColumns as columns, ticketColumnsMap } from "../../lib/data-table/ticket-columns";
 import { DataTable } from "../data-table/DataTable";
 import { useToast } from "../ui/use-toast";
 
@@ -54,7 +54,7 @@ const TicketsTable = () => {
     }
   }, [isError]);
 
-  return <DataTable columnFilters={columnFilters} table={table} isDataLoading={isPending} />;
+  return <DataTable viewDataMap={ticketColumnsMap} columnFilters={columnFilters} table={table} isDataLoading={isPending} />;
 };
 
 export default TicketsTable;

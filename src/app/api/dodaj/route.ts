@@ -25,6 +25,6 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(filename);
   } catch (e) {
-    return NextResponse.json({ message: "Failed", status: 500 });
+    return NextResponse.json({ message: "Failed" }, { status: 500 });
   }
 }
