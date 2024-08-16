@@ -123,7 +123,7 @@ const TicketForm = () => {
               { value: "PLN", label: "PLN" },
             ]}
           />
-          <FormDateItem form={form} label="Data płatności poczty" name="postPayoutDate" placeholder="Wybierz datę" />
+          <FormDateItem form={form} label="Data wpływu poczty" name="postPayoutDate" placeholder="Wybierz datę" />
           <FormFileItem form={form} label="Plik" name="file" placeholder="Dodaj plik" setFile={setPdfFile} />
           <FormComboboxItem
             form={form}

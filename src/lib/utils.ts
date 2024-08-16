@@ -30,11 +30,8 @@ export function filterToQuery(columnState: ColumnFiltersState): {
 
 export const resolveDateFromString = (
   value: string[]
-  // format: string
 ): DateRange | undefined => {
   if (value.length !== 2) return undefined;
-  // const from = parse(value[0], format, new Date(), { locale: pl });
-  // const to = parse(value[1], format, new Date(), { locale: pl });
   const from = new Date(value[0]);
   const to = new Date(value[1]);
 

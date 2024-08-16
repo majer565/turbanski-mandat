@@ -72,7 +72,7 @@ const DriverForm = () => {
           <FormInputItem form={form} label="Nazwisko" name="surname" placeholder="Wprowadź nazwisko" />
           <div className="col-start-1 col-end-3 flex justify-center">
             <Button type="submit" disabled={loading} className="w-1/4">
-              {loading ? <LoaderCircle className="w-4 h-4 animate-spin" /> : "Dodaj mandat"}
+              {loading ? <LoaderCircle className="w-4 h-4 animate-spin" /> : "Dodaj kierowcę"}
             </Button>
           </div>
         </form>

@@ -1,9 +1,16 @@
 import { logout } from "@/actions/auth";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { CircleDotDashed, LogOut, Settings, Tickets, User } from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import SideBarWrapper from "./wrappers/SideBarWrapper";
+import Image from "next/image";
+import logoIcon from "../../public/icon.png";
 
 const Sidebar = () => {
   return (
@@ -11,7 +18,7 @@ const Sidebar = () => {
       <TooltipProvider>
         <div className="flex flex-col gap-8 items-center">
           <div>
-            <CircleDotDashed className="w-7 h-7" />
+            <Image src={logoIcon} width={30} height={30} alt={"T"} />
           </div>
           <div className="gap-3 flex flex-col items-center">
             <Tooltip>

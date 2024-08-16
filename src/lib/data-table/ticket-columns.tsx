@@ -173,7 +173,19 @@ export const ticketFilters: ColumnFilterDefinition[] = [
   },
   {
     id: "postPayoutDate",
-    label: "Data poczty",
+    label: "Data wpływu poczty",
     type: FilterType.DATE,
   },
 ];
+
+export const ticketColumnsMap = new Map<string, string>([
+  ["number", "Numer mandatu"],
+  ["date", "Data mandatu"],
+  ["time", "Godzina mandatu"],
+  ["driver", "Kierowca"],
+  ["vehiclePlate", "Numer rejestracyjny"],
+  ["amount", "Kwota"],
+  ["currency", "Waluta"],
+  ["postPayoutDate", "Data wpływu poczty"],
+  ["file", "Plik"],
+]);
