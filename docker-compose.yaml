@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  turbanscy-mandaty:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - PDF_STORAGE_PATH=/ticket_files
+    volumes:
+      - pdf_storage:/ticket_files
+
+volumes:
+  pdf_storage:
