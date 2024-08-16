@@ -95,7 +95,7 @@ export function DataTable<TData>({ table, columnFilters, isDataLoading, viewData
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody className="max-h-[30rem] overflow-y-auto">{getTableBody(isDataLoading)}</TableBody>
+          <TableBody className="max-h-[29rem] overflow-y-auto">{getTableBody(isDataLoading)}</TableBody>
         </Table>
       </div>
       <DataTablePagination config={PAGINATION_SETUP} table={table} />
