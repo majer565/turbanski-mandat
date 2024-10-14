@@ -5,7 +5,7 @@ import { uploadFile } from "@/actions/uploadFile";
 import { useGetDrivers } from "@/hooks/useGetDrivers";
 import { ticketSchema } from "@/lib/form/ticket-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { LoaderCircle } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -19,12 +19,15 @@ import FormFileItem from "./form-items/form-file-item";
 import FormInputItem from "./form-items/form-input-item";
 import FormSelectItem from "./form-items/form-select-item";
 import FormTimeItem from "./form-items/form-time-item";
+import { removeFile } from "../../actions/removeFile";
+import { getTicketByName } from "../../actions/getTicketByName";
 
 const TicketForm = () => {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const { toast } = useToast();
   const { data: driversOptions } = useGetDrivers();
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: saveTicket,
     onError: (e) => {
@@ -43,6 +46,7 @@ const TicketForm = () => {
         title: "Pomyślnie zapisano mandat",
         description: `Mandat o numerze ${data.number} został zapisany`,
       });
+      queryClient.invalidateQueries({ queryKey: ["tickets"] });
       setLoading(false);
     },
   });
@@ -66,15 +70,21 @@ const TicketForm = () => {
 
   const onSubmit = async (values: z.infer<typeof ticketSchema>) => {
     setLoading(true);
-    try {
-      if (!pdfFile) throw new Error("Nie udało się wczytać poprawnie pliku");
-      const savedFile = await uploadFile(pdfFile);
+    let savedFile: string | null = null;
 
+    try {
       const amount = Number(values.amount) || null;
       const driverId = Number(values.driverId) || null;
 
       if (!amount) throw new Error("Kwota mandatu nie może być równa NULL");
       if (!driverId) throw new Error("Identyfikator kierowcy nie może być równy NULL");
+
+      const ticketInDb = await getTicketByName(values.number);
+      if(ticketInDb?.number) throw new Error("Mandat o takim numerze już istnieje");
+
+      if (!pdfFile) throw new Error("Nie udało się wczytać poprawnie pliku");
+      savedFile = await uploadFile(pdfFile);
+      if(!savedFile) throw new Error("Nie udało się zapisać pliku");
 
       mutation.mutate({
         number: values.number,
@@ -93,6 +103,8 @@ const TicketForm = () => {
         title: "Błąd | Nie udało się zapisać mandatu",
         description: String(e),
       });
+
+      if(savedFile !== null) await removeFile(savedFile);
       setLoading(false);
     }
   };

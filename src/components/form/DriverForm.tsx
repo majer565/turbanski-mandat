@@ -3,7 +3,7 @@
 import { saveDriver } from "@/actions/saveDriver";
 import { driverSchema } from "@/lib/form/driver-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { LoaderCircle } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -16,6 +16,7 @@ import FormInputItem from "./form-items/form-input-item";
 const DriverForm = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: saveDriver,
     onError: (e) => {
@@ -27,12 +28,15 @@ const DriverForm = () => {
       setLoading(false);
     },
     onSuccess: (data) => {
+      console.log("On success call in driver form");
       form.reset(defaultValues);
       toast({
         variant: "default",
         title: "Pomyślnie dodano kierowcę",
         description: `Kierowca ${data.name} ${data.surname} został dodany`,
       });
+      console.log("On success call in driver form");
+      queryClient.invalidateQueries({ queryKey: ["drivers"] });
       setLoading(false);
     },
   });
@@ -50,6 +54,7 @@ const DriverForm = () => {
   const onSubmit = async (values: z.infer<typeof driverSchema>) => {
     setLoading(true);
     try {
+      console.log("Trying mutation");
       mutation.mutate({
         name: values.name,
         surname: values.surname,
