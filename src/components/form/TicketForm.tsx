@@ -7,9 +7,11 @@ import { ticketSchema } from "@/lib/form/ticket-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { LoaderCircle } from "lucide-react";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { getTicketByName } from "../../actions/getTicketByName";
+import { removeFile } from "../../actions/removeFile";
 import { Button } from "../ui/button";
 import { Form } from "../ui/form";
 import { useToast } from "../ui/use-toast";
@@ -19,8 +21,6 @@ import FormFileItem from "./form-items/form-file-item";
 import FormInputItem from "./form-items/form-input-item";
 import FormSelectItem from "./form-items/form-select-item";
 import FormTimeItem from "./form-items/form-time-item";
-import { removeFile } from "../../actions/removeFile";
-import { getTicketByName } from "../../actions/getTicketByName";
 
 const TicketForm = () => {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
@@ -72,8 +72,7 @@ const TicketForm = () => {
   const payment = form.watch("payment");
 
   useEffect(() => {
-    if(payment === "Nieopłacone")
-    form.setValue("paymentDate", undefined)
+    if (payment === "Nieopłacone") form.setValue("paymentDate", undefined);
   }, [payment]);
 
   const onSubmit = async (values: z.infer<typeof ticketSchema>) => {
@@ -88,12 +87,12 @@ const TicketForm = () => {
       if (!driverId)
         throw new Error("Identyfikator kierowcy nie może być równy NULL");
 
-      // const ticketInDb = await getTicketByName(values.number);
-      // if (ticketInDb?.number)
-      //   throw new Error("Mandat o takim numerze już istnieje");
+      const ticketInDb = await getTicketByName(values.number);
+      if (ticketInDb?.number)
+        throw new Error("Mandat o takim numerze już istnieje");
 
       if (!pdfFile) throw new Error("Nie udało się wczytać poprawnie pliku");
-      // savedFile = await uploadFile(pdfFile);
+      savedFile = await uploadFile(pdfFile);
       savedFile = "test.pdf";
       if (!savedFile) throw new Error("Nie udało się zapisać pliku");
 
