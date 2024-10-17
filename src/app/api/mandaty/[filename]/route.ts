@@ -9,7 +9,7 @@ export async function GET(
   try {
     const filename = params.filename;
 
-    const filePath = path.join("/ticket_files/", filename);
+    const filePath = path.join("/app/ticket_storage/", filename);
 
     if (!fs.existsSync(filePath)) {
       return NextResponse.json(

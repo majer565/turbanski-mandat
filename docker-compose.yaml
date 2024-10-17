@@ -1,13 +1,34 @@
-version: "3.8"
 services:
-  turbanscy-mandaty:
+  app:
     build: .
     ports:
       - "3000:3000"
-    environment:
-      - PDF_STORAGE_PATH=/ticket_files
+    depends_on:
+      - postgres
+    env_file:
+      - .env
     volumes:
-      - pdf_storage:/ticket_files
+      - ticket_storage:/app/ticket_storage
+  postgres:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        ["CMD", "pg_isready", "-U", "postgres", "-d", "db-turbanscy-mandaty"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
 
 volumes:
-  pdf_storage:
+  ticket_storage:
+  postgres_data:

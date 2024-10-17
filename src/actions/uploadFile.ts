@@ -10,7 +10,8 @@ export const uploadFile = async (file: File) => {
       body: formData,
     });
 
-    if (response.status === 500) throw new Error("Request faild");
+    if (response.status === 500)
+      throw new Error("Błąd przy zapisywaniu mandatu. Kod błędu: #UPL_FL");
 
     return response.json();
   } catch (e) {
