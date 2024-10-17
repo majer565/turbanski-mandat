@@ -4,7 +4,8 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url       = env("DATABASE_URL")
+  url       = env("SUPA_DB_URL")
+  directUrl = env("SUPA_DIR_URL")
 }
 
 model Ticket {
@@ -17,6 +18,8 @@ model Ticket {
   currency        String  @db.VarChar(8)
   postPayoutDate  String  @db.VarChar(128)
   file            String  @db.VarChar(128)
+  payment         String  @db.VarChar(11)
+  paymentDate     String? @db.VarChar(128)
   driver          Driver  @relation(fields: [driverId], references: [id])
   driverId        Int
 }

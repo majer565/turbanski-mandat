@@ -38,6 +38,7 @@ export function DataTableViewOptions<TData>({ table, dataMap }: DataTableViewOpt
                 key={column.id}
                 checked={column.getIsVisible()}
                 onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                onSelect={(e) => e.preventDefault()}
               >
                 {dataMap.get(column.id) ?? column.id}
               </DropdownMenuCheckboxItem>

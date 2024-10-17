@@ -7,7 +7,7 @@ import { ticketSchema } from "@/lib/form/ticket-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { LoaderCircle } from "lucide-react";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
@@ -60,6 +60,7 @@ const TicketForm = () => {
     currency: "",
     postPayoutDate: "",
     file: "",
+    payment: "",
     driverId: "",
   };
 
@@ -67,6 +68,13 @@ const TicketForm = () => {
     resolver: zodResolver(ticketSchema),
     defaultValues,
   });
+
+  const payment = form.watch("payment");
+
+  useEffect(() => {
+    if(payment === "Nieopłacone")
+    form.setValue("paymentDate", undefined)
+  }, [payment]);
 
   const onSubmit = async (values: z.infer<typeof ticketSchema>) => {
     setLoading(true);
@@ -77,14 +85,17 @@ const TicketForm = () => {
       const driverId = Number(values.driverId) || null;
 
       if (!amount) throw new Error("Kwota mandatu nie może być równa NULL");
-      if (!driverId) throw new Error("Identyfikator kierowcy nie może być równy NULL");
+      if (!driverId)
+        throw new Error("Identyfikator kierowcy nie może być równy NULL");
 
-      const ticketInDb = await getTicketByName(values.number);
-      if(ticketInDb?.number) throw new Error("Mandat o takim numerze już istnieje");
+      // const ticketInDb = await getTicketByName(values.number);
+      // if (ticketInDb?.number)
+      //   throw new Error("Mandat o takim numerze już istnieje");
 
       if (!pdfFile) throw new Error("Nie udało się wczytać poprawnie pliku");
-      savedFile = await uploadFile(pdfFile);
-      if(!savedFile) throw new Error("Nie udało się zapisać pliku");
+      // savedFile = await uploadFile(pdfFile);
+      savedFile = "test.pdf";
+      if (!savedFile) throw new Error("Nie udało się zapisać pliku");
 
       mutation.mutate({
         number: values.number,
@@ -95,6 +106,8 @@ const TicketForm = () => {
         currency: values.currency,
         postPayoutDate: values.postPayoutDate,
         file: savedFile,
+        payment: values.payment,
+        paymentDate: values.paymentDate || null,
         driverId,
       });
     } catch (e) {
@@ -104,7 +117,7 @@ const TicketForm = () => {
         description: String(e),
       });
 
-      if(savedFile !== null) await removeFile(savedFile);
+      if (savedFile !== null) await removeFile(savedFile);
       setLoading(false);
     }
   };
@@ -112,11 +125,34 @@ const TicketForm = () => {
   return (
     <div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-2 gap-x-16 gap-y-8">
-          <FormInputItem form={form} label="Numer mandatu" name="number" placeholder="Wprowadź numer" />
-          <FormDateItem form={form} label="Data mandatu" name="date" placeholder="Wybierz datę" />
-          <FormTimeItem form={form} label="Godzina mandatu" name="time" placeholder="Wybierz godzinę" />
-          <FormInputItem form={form} label="Numer rejestracyjny" name="vehiclePlate" placeholder="Wprowadź numer" />
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="grid grid-cols-2 gap-x-16 gap-y-8"
+        >
+          <FormInputItem
+            form={form}
+            label="Numer mandatu"
+            name="number"
+            placeholder="Wprowadź numer"
+          />
+          <FormDateItem
+            form={form}
+            label="Data mandatu"
+            name="date"
+            placeholder="Wybierz datę"
+          />
+          <FormTimeItem
+            form={form}
+            label="Godzina mandatu"
+            name="time"
+            placeholder="Wybierz godzinę"
+          />
+          <FormInputItem
+            form={form}
+            label="Numer rejestracyjny"
+            name="vehiclePlate"
+            placeholder="Wprowadź numer"
+          />
           <FormInputItem
             form={form}
             label="Kwota mandatu"
@@ -135,18 +171,55 @@ const TicketForm = () => {
               { value: "PLN", label: "PLN" },
             ]}
           />
-          <FormDateItem form={form} label="Data wpływu poczty" name="postPayoutDate" placeholder="Wybierz datę" />
-          <FormFileItem form={form} label="Plik" name="file" placeholder="Dodaj plik" setFile={setPdfFile} />
+          <FormDateItem
+            form={form}
+            label="Data wpływu poczty"
+            name="postPayoutDate"
+            placeholder="Wybierz datę"
+          />
+          <FormSelectItem
+            form={form}
+            label="Płatność"
+            name="payment"
+            placeholder="Wybierz status płatności"
+            options={[
+              { value: "Opłacone", label: "Opłacone" },
+              { value: "Nieopłacone", label: "Nieopłacone" },
+            ]}
+          />
+          <FormDateItem
+            form={form}
+            label="Data płatności"
+            name="paymentDate"
+            placeholder="Wybierz datę"
+            disabled={payment === "Nieopłacone"}
+          />
+          <FormFileItem
+            form={form}
+            label="Plik"
+            name="file"
+            placeholder="Dodaj plik"
+            setFile={setPdfFile}
+          />
           <FormComboboxItem
             form={form}
             label="Kierowca"
             name="driverId"
             placeholder="Wybierz kierowcę"
-            options={driversOptions?.map((a) => ({ value: String(a.id), label: `${a.name} ${a.surname}` })) ?? []}
+            options={
+              driversOptions?.map((a) => ({
+                value: String(a.id),
+                label: `${a.name} ${a.surname}`,
+              })) ?? []
+            }
           />
           <div className="col-start-1 col-end-3 flex justify-center">
             <Button type="submit" disabled={loading} className="w-1/4">
-              {loading ? <LoaderCircle className="w-4 h-4 animate-spin" /> : "Dodaj mandat"}
+              {loading ? (
+                <LoaderCircle className="w-4 h-4 animate-spin" />
+              ) : (
+                "Dodaj mandat"
+              )}
             </Button>
           </div>
         </form>
