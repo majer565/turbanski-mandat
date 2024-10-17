@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     
     env:
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres?schema=public
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/mydatabase?schema=public
 
     services:
       postgres:
@@ -44,6 +44,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Detect package manager
         id: detect-package-manager
         run: |
@@ -61,21 +62,25 @@ jobs:
             echo "Unable to determine package manager"
             exit 1
           fi
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: ${{ steps.detect-package-manager.outputs.manager }}
+
       - name: Wait for PostgreSQL to be ready
         run: |
-          until pg_isready -h localhost -p 5432; do
-            echo "Waiting for PostgreSQL to be ready..."
-            sleep 5
-          done
+            until pg_isready -h localhost -p 5432; do
+              echo "Waiting for PostgreSQL to be ready..."
+              sleep 5
+            done
+  
       - name: Set up Prisma
         run: |
           npx prisma generate
           npx prisma migrate deploy
+
       - name: Restore cache
         uses: actions/cache@v4
         with:
@@ -86,9 +91,12 @@ jobs:
           # If source files changed but packages didn't, rebuild from a prior cache.
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
+
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
+
       - name: Lint
         run: ${{ steps.detect-package-manager.outputs.runner }} next lint
+
       - name: Build with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
