@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Ticket" ALTER COLUMN "payment" SET DATA TYPE VARCHAR(11);

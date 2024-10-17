@@ -81,7 +81,7 @@ export function DataTable<TData>({ table, columnFilters, isDataLoading, viewData
         </FlexRow>
       </DataTableHeaderWrapper>
       <div className="rounded-md border border-border">
-        <Table className="">
+        <Table>
           <TableHeader className="sticky top-0 bg-muted/40">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow className="border-border" key={headerGroup.id}>

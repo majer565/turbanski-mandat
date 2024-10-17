@@ -10,6 +10,7 @@ export interface FormItemProps<T extends FieldValues> {
   label: string;
   name: string;
   description?: string;
+  disabled?: boolean;
 }
 
 interface FormInputProps<T extends FieldValues>
