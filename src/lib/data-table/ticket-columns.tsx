@@ -6,11 +6,22 @@ import { FilterType } from "@/components/data-table/data-table-filters/DataTable
 import TicketFileDialog from "@/components/dialog/ticket-file-dialog";
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowDownNarrowWide, ArrowDownWideNarrow } from "lucide-react";
+import {
+  ArrowDownNarrowWide,
+  ArrowDownWideNarrow,
+  CheckIcon,
+  XIcon,
+} from "lucide-react";
 import { TicketWithDriver } from "../types/ticket";
 import { formatDateValueToString } from "../utils";
-import { dateFilterFn, rangeFilterFn, textFilterFn } from "./data-table-filter-fns";
+import {
+  dateFilterFn,
+  rangeFilterFn,
+  selectFilterFn,
+  textFilterFn,
+} from "./data-table-filter-fns";
 import { dateSortFn } from "./data-table-sort-fns";
+import TicketPaymentWrapper from "../../components/wrappers/TicketPaymentWrapper";
 
 const renderSortIcon = (sortOption: string | false) => {
   if (!sortOption) return;
@@ -28,7 +39,7 @@ export const ticketColumns: ColumnDef<TicketWithDriver>[] = [
     header: ({ column }) => {
       return (
         <Button variant="ghost" onClick={() => column.toggleSorting()}>
-          Numer
+          Numer mandatu
           {renderSortIcon(column.getIsSorted())}
         </Button>
       );
@@ -117,7 +128,7 @@ export const ticketColumns: ColumnDef<TicketWithDriver>[] = [
     header: ({ column }) => {
       return (
         <Button variant="ghost" onClick={() => column.toggleSorting()}>
-          Data poczty
+          Data wpływu poczty
           {renderSortIcon(column.getIsSorted())}
         </Button>
       );
@@ -127,15 +138,58 @@ export const ticketColumns: ColumnDef<TicketWithDriver>[] = [
     sortingFn: dateSortFn,
   },
   {
+    accessorKey: "payment",
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting()}>
+          Płatność
+          {renderSortIcon(column.getIsSorted())}
+        </Button>
+      );
+    },
+    cell: ({ cell }) => (
+      <TicketPaymentWrapper
+        content={cell.getValue() as string}
+        paid={cell.getValue() === "Opłacone"}
+      />
+    ),
+    filterFn: selectFilterFn,
+  },
+  {
+    accessorKey: "paymentDate",
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting()}>
+          Data płatności
+          {renderSortIcon(column.getIsSorted())}
+        </Button>
+      );
+    },
+    cell: ({ cell }) =>
+      cell.getValue()
+        ? formatDateValueToString(cell.getValue() as string)
+        : "Brak",
+    filterFn: dateFilterFn,
+    sortingFn: dateSortFn,
+  },
+  {
     accessorKey: "file",
     header: "Plik",
-    cell: ({ row }) => <TicketFileDialog filePath={row.original.file} ticketNumber={row.original.number} />,
+    cell: ({ row }) => (
+      <TicketFileDialog
+        filePath={row.original.file}
+        ticketNumber={row.original.number}
+      />
+    ),
     enableSorting: false,
     enableColumnFilter: false,
   },
 ];
 
-const CURRENCY_OPTIONS: DataTableFilterSelectOption[] = [{ value: "EUR" }, { value: "PLN" }];
+const CURRENCY_OPTIONS: DataTableFilterSelectOption[] = [
+  { value: "EUR" },
+  { value: "PLN" },
+];
 
 export const ticketFilters: ColumnFilterDefinition[] = [
   {
@@ -176,6 +230,22 @@ export const ticketFilters: ColumnFilterDefinition[] = [
     label: "Data wpływu poczty",
     type: FilterType.DATE,
   },
+  {
+    id: "payment",
+    label: "Płatność",
+    type: FilterType.SELECT,
+    options: {
+      selectOptions: [
+        { value: "Opłacone", icon: <CheckIcon className="w-4 h-4" /> },
+        { value: "Nieopłacone", icon: <XIcon className="w-4 h-4" /> },
+      ],
+    },
+  },
+  {
+    id: "paymentDate",
+    label: "Data płatności",
+    type: FilterType.DATE,
+  },
 ];
 
 export const ticketColumnsMap = new Map<string, string>([
@@ -188,4 +258,6 @@ export const ticketColumnsMap = new Map<string, string>([
   ["currency", "Waluta"],
   ["postPayoutDate", "Data wpływu poczty"],
   ["file", "Plik"],
+  ["payment", "Płatność"],
+  ["paymentDate", "Data płatności"],
 ]);

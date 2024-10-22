@@ -26,6 +26,10 @@ export const ticketSchema = z
     postPayoutDate: z
       .string({ required_error: "To pole jest wymagane" })
       .min(2, { message: "To pole jest wymagane" }),
+    payment: z
+      .string({ required_error: "To pole jest wymagane" })
+      .min(2, { message: "To pole jest wymagane" }),
+    paymentDate: z.string().optional(),
     file: z
       .string({ required_error: "To pole jest wymagane" })
       .min(2, { message: "To pole jest wymagane" }),
