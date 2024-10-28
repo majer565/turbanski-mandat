@@ -1,11 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
 import fs from "fs";
+import { NextResponse } from "next/server";
 import path from "path";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { filename: string } }
-) {
+export async function GET(_req: Request, { params }: { params: { filename: string } }) {
   try {
     const filename = params.filename;
 

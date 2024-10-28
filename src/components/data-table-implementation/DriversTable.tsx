@@ -8,11 +8,16 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useColumnFilter } from "../../hooks/useColumnFilter";
 import { usePagination } from "../../hooks/usePagination";
 import { useSorting } from "../../hooks/useSorting";
-import { driverFilters as columnFilters, driverColumns as columns, driverColumnsMap } from "../../lib/data-table/driver-columns";
+import {
+  driverFilters as columnFilters,
+  driverColumnsMap,
+  getDriverColumns,
+} from "../../lib/data-table/driver-columns";
 import { DataTable } from "../data-table/DataTable";
 import { useToast } from "../ui/use-toast";
 
@@ -27,9 +32,14 @@ const DriversTable = () => {
   const { filters, setFilters } = useColumnFilter([]);
   const { toast } = useToast();
 
+  const router = useRouter();
+  const handleEdit = (id: string) => {
+    router.push(`/kierowcy/edytuj/${id}`);
+  };
+
   const table = useReactTable({
     data: !isError ? data ?? [] : [],
-    columns,
+    columns: getDriverColumns(handleEdit),
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -54,7 +64,14 @@ const DriversTable = () => {
     }
   }, [isError]);
 
-  return <DataTable viewDataMap={driverColumnsMap} columnFilters={columnFilters} table={table} isDataLoading={isPending} />;
+  return (
+    <DataTable
+      viewDataMap={driverColumnsMap}
+      columnFilters={columnFilters}
+      table={table}
+      isDataLoading={isPending}
+    />
+  );
 };
 
 export default DriversTable;

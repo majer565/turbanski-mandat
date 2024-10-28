@@ -12,57 +12,68 @@ import { Button } from "../ui/button";
 import { Form } from "../ui/form";
 import { useToast } from "../ui/use-toast";
 import FormInputItem from "./form-items/form-input-item";
+import { Driver } from "@prisma/client";
+import { updateDriver } from "../../actions/updateDriver";
 
-const DriverForm = () => {
+interface DriverEditFormProps {
+  defaultData?: Driver;
+}
+
+const defaultValues: Driver = {
+  id: -1,
+  name: "",
+  surname: "",
+}
+
+const DriverEditForm = ({ defaultData }: DriverEditFormProps) => {
+  const [driver, setDriver] = useState<Driver>(defaultData || defaultValues);
   const [loading, setLoading] = useState<boolean>(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: saveDriver,
+    mutationFn: updateDriver,
     onError: (e) => {
       toast({
         variant: "destructive",
-        title: "Błąd | Nie udało się dodać kierowcy",
+        title: "Błąd | Nie udało się edytować kierowcy",
         description: e.message,
       });
       setLoading(false);
     },
     onSuccess: (data) => {
-      form.reset(defaultValues);
+      form.reset(driver);
       toast({
         variant: "default",
-        title: "Pomyślnie dodano kierowcę",
-        description: `Kierowca ${data.name} ${data.surname} został dodany`,
+        title: "Pomyślnie edytowano kierowcę",
+        description: `Kierowca ${data.name} ${data.surname} został zauktualizowany`,
       });
       queryClient.invalidateQueries({ queryKey: ["drivers"] });
       setLoading(false);
     },
   });
 
-  const defaultValues = {
-    name: "",
-    surname: "",
-  };
-
   const form = useForm<z.infer<typeof driverSchema>>({
     resolver: zodResolver(driverSchema),
-    defaultValues,
+    defaultValues: driver,
   });
 
   const onSubmit = async (values: z.infer<typeof driverSchema>) => {
     setLoading(true);
     try {
-      console.log("Trying mutation");
-      mutation.mutate({
+      const driverToSave = {
+        id: defaultData?.id || -1,
         name: values.name,
         surname: values.surname,
-      });
+      }
+      mutation.mutate(driverToSave);
+      setDriver(driverToSave);
     } catch (e) {
       toast({
         variant: "destructive",
-        title: "Błąd | Nie udało się dodać kierowcy",
+        title: "Błąd | Nie udało się edytować kierowcy",
         description: String(e),
       });
+      setDriver(defaultValues);
       setLoading(false);
     }
   };
@@ -70,12 +81,29 @@ const DriverForm = () => {
   return (
     <div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-2 gap-x-16 gap-y-8">
-          <FormInputItem form={form} label="Imię" name="name" placeholder="Wprowadź imię" />
-          <FormInputItem form={form} label="Nazwisko" name="surname" placeholder="Wprowadź nazwisko" />
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="grid grid-cols-2 gap-x-16 gap-y-8"
+        >
+          <FormInputItem
+            form={form}
+            label="Imię"
+            name="name"
+            placeholder="Wprowadź imię"
+          />
+          <FormInputItem
+            form={form}
+            label="Nazwisko"
+            name="surname"
+            placeholder="Wprowadź nazwisko"
+          />
           <div className="col-start-1 col-end-3 flex justify-center">
             <Button type="submit" disabled={loading} className="w-1/4">
-              {loading ? <LoaderCircle className="w-4 h-4 animate-spin" /> : "Dodaj kierowcę"}
+              {loading ? (
+                <LoaderCircle className="w-4 h-4 animate-spin" />
+              ) : (
+                "Edytuj kierowcę"
+              )}
             </Button>
           </div>
         </form>
@@ -84,4 +112,4 @@ const DriverForm = () => {
   );
 };
 
-export default DriverForm;
+export default DriverEditForm;

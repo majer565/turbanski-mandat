@@ -1,11 +1,11 @@
 "use client";
 
-import { DriverWithoutId } from "@/lib/types/driver";
+import { Driver } from "@prisma/client";
 
-export const saveDriver = async (driver: DriverWithoutId) => {
+export const updateDriver = async (driver: Driver) => {
   try {
     const response = await fetch("/api/kierowcy", {
-      method: "POST",
+      method: "PUT",
       body: JSON.stringify(driver),
     });
 
