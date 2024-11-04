@@ -1,9 +1,11 @@
+import { Ticket } from "@prisma/client";
 import { ColumnFiltersState } from "@tanstack/react-table";
 import { type ClassValue, clsx } from "clsx";
-import { format, parse } from "date-fns";
+import { format } from "date-fns";
 import { pl } from "date-fns/locale";
 import { DateRange } from "react-day-picker";
 import { twMerge } from "tailwind-merge";
+import { FormTicket } from "../components/form/TicketEditForm";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -40,4 +42,17 @@ export const resolveDateFromString = (
 
 export const formatDateValueToString = (dateToChange: string) => {
   return format(new Date(dateToChange), "LLL dd, y", { locale: pl });
+};
+
+export const transformTicketToFormTicket = (
+  ticket?: Ticket
+): FormTicket | undefined => {
+  if (!ticket) return undefined;
+
+  return {
+    ...ticket,
+    amount: String(ticket.amount),
+    driverId: String(ticket.driverId),
+    paymentDate: ticket.paymentDate ? String(ticket.paymentDate) : undefined,
+  };
 };
