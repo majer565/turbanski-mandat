@@ -5,14 +5,25 @@ import {
 import { FilterType } from "@/components/data-table/data-table-filters/DataTableFilters";
 import TicketFileDialog from "@/components/dialog/ticket-file-dialog";
 import { Button } from "@/components/ui/button";
+import { Driver, Ticket } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   ArrowDownNarrowWide,
   ArrowDownWideNarrow,
   CheckIcon,
+  MoreHorizontal,
+  Pencil,
   XIcon,
 } from "lucide-react";
-import { TicketWithDriver } from "../types/ticket";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../../components/ui/dropdown-menu";
+import TicketPaymentWrapper from "../../components/wrappers/TicketPaymentWrapper";
 import { formatDateValueToString } from "../utils";
 import {
   dateFilterFn,
@@ -21,7 +32,6 @@ import {
   textFilterFn,
 } from "./data-table-filter-fns";
 import { dateSortFn } from "./data-table-sort-fns";
-import TicketPaymentWrapper from "../../components/wrappers/TicketPaymentWrapper";
 
 const renderSortIcon = (sortOption: string | false) => {
   if (!sortOption) return;
@@ -33,158 +43,189 @@ const renderSortIcon = (sortOption: string | false) => {
   );
 };
 
-export const ticketColumns: ColumnDef<TicketWithDriver>[] = [
-  {
-    accessorKey: "number",
-    header: ({ column }) => {
-      return (
-        <Button variant="ghost" onClick={() => column.toggleSorting()}>
-          Numer mandatu
-          {renderSortIcon(column.getIsSorted())}
-        </Button>
-      );
+export const getTicketColumns = (
+  handleEdit: (id: string) => void
+): ColumnDef<Ticket & { driver: Driver }>[] => {
+  return [
+    {
+      id: "actions",
+      enableHiding: false,
+      cell: ({ row }) => {
+        const ticket = row.original;
+
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel color="primary">Akcje</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => handleEdit(String(ticket.number))}>
+                <Pencil className="h-4 w-4 mr-2 text-primary" />
+                <span>Edytuj</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
+      size: 20,
     },
-    filterFn: textFilterFn,
-  },
-  {
-    accessorKey: "date",
-    header: ({ column }) => {
-      return (
-        <Button variant="ghost" onClick={() => column.toggleSorting()}>
-          Data
-          {renderSortIcon(column.getIsSorted())}
-        </Button>
-      );
+    {
+      accessorKey: "number",
+      header: ({ column }) => {
+        return (
+          <Button variant="ghost" onClick={() => column.toggleSorting()}>
+            Numer mandatu
+            {renderSortIcon(column.getIsSorted())}
+          </Button>
+        );
+      },
+      filterFn: textFilterFn,
     },
-    cell: ({ cell }) => formatDateValueToString(cell.getValue() as string),
-    filterFn: dateFilterFn,
-    sortingFn: dateSortFn,
-  },
-  {
-    accessorKey: "time",
-    header: ({ column }) => {
-      return (
-        <Button variant="ghost" onClick={() => column.toggleSorting()}>
-          Godzina
-          {renderSortIcon(column.getIsSorted())}
-        </Button>
-      );
+    {
+      accessorKey: "date",
+      header: ({ column }) => {
+        return (
+          <Button variant="ghost" onClick={() => column.toggleSorting()}>
+            Data
+            {renderSortIcon(column.getIsSorted())}
+          </Button>
+        );
+      },
+      cell: ({ cell }) => formatDateValueToString(cell.getValue() as string),
+      filterFn: dateFilterFn,
+      sortingFn: dateSortFn,
     },
-    filterFn: textFilterFn,
-  },
-  {
-    accessorKey: "driver",
-    accessorFn: (ticket) => {
-      return `${ticket.driver.name} ${ticket.driver.surname}`;
+    {
+      accessorKey: "time",
+      header: ({ column }) => {
+        return (
+          <Button variant="ghost" onClick={() => column.toggleSorting()}>
+            Godzina
+            {renderSortIcon(column.getIsSorted())}
+          </Button>
+        );
+      },
+      filterFn: textFilterFn,
     },
-    header: ({ column }) => {
-      return (
-        <Button variant="ghost" onClick={() => column.toggleSorting()}>
-          Kierowca
-          {renderSortIcon(column.getIsSorted())}
-        </Button>
-      );
+    {
+      accessorKey: "driver",
+      accessorFn: (ticket) => {
+        return `${ticket.driver.name} ${ticket.driver.surname}`;
+      },
+      header: ({ column }) => {
+        return (
+          <Button variant="ghost" onClick={() => column.toggleSorting()}>
+            Kierowca
+            {renderSortIcon(column.getIsSorted())}
+          </Button>
+        );
+      },
+      filterFn: textFilterFn,
     },
-    filterFn: textFilterFn,
-  },
-  {
-    accessorKey: "vehiclePlate",
-    header: ({ column }) => {
-      return (
-        <Button variant="ghost" onClick={() => column.toggleSorting()}>
-          Numer rejestracyjny
-          {renderSortIcon(column.getIsSorted())}
-        </Button>
-      );
+    {
+      accessorKey: "vehiclePlate",
+      header: ({ column }) => {
+        return (
+          <Button variant="ghost" onClick={() => column.toggleSorting()}>
+            Numer rejestracyjny
+            {renderSortIcon(column.getIsSorted())}
+          </Button>
+        );
+      },
+      filterFn: textFilterFn,
     },
-    filterFn: textFilterFn,
-  },
-  {
-    accessorKey: "amount",
-    header: ({ column }) => {
-      return (
-        <Button variant="ghost" onClick={() => column.toggleSorting()}>
-          Kwota
-          {renderSortIcon(column.getIsSorted())}
-        </Button>
-      );
+    {
+      accessorKey: "amount",
+      header: ({ column }) => {
+        return (
+          <Button variant="ghost" onClick={() => column.toggleSorting()}>
+            Kwota
+            {renderSortIcon(column.getIsSorted())}
+          </Button>
+        );
+      },
+      filterFn: rangeFilterFn,
     },
-    filterFn: rangeFilterFn,
-  },
-  {
-    accessorKey: "currency",
-    header: ({ column }) => {
-      return (
-        <Button variant="ghost" onClick={() => column.toggleSorting()}>
-          Waluta
-          {renderSortIcon(column.getIsSorted())}
-        </Button>
-      );
+    {
+      accessorKey: "currency",
+      header: ({ column }) => {
+        return (
+          <Button variant="ghost" onClick={() => column.toggleSorting()}>
+            Waluta
+            {renderSortIcon(column.getIsSorted())}
+          </Button>
+        );
+      },
+      filterFn: textFilterFn,
     },
-    filterFn: textFilterFn,
-  },
-  {
-    accessorKey: "postPayoutDate",
-    header: ({ column }) => {
-      return (
-        <Button variant="ghost" onClick={() => column.toggleSorting()}>
-          Data wpływu poczty
-          {renderSortIcon(column.getIsSorted())}
-        </Button>
-      );
+    {
+      accessorKey: "postPayoutDate",
+      header: ({ column }) => {
+        return (
+          <Button variant="ghost" onClick={() => column.toggleSorting()}>
+            Data wpływu poczty
+            {renderSortIcon(column.getIsSorted())}
+          </Button>
+        );
+      },
+      cell: ({ cell }) => formatDateValueToString(cell.getValue() as string),
+      filterFn: dateFilterFn,
+      sortingFn: dateSortFn,
     },
-    cell: ({ cell }) => formatDateValueToString(cell.getValue() as string),
-    filterFn: dateFilterFn,
-    sortingFn: dateSortFn,
-  },
-  {
-    accessorKey: "payment",
-    header: ({ column }) => {
-      return (
-        <Button variant="ghost" onClick={() => column.toggleSorting()}>
-          Płatność
-          {renderSortIcon(column.getIsSorted())}
-        </Button>
-      );
+    {
+      accessorKey: "payment",
+      header: ({ column }) => {
+        return (
+          <Button variant="ghost" onClick={() => column.toggleSorting()}>
+            Płatność
+            {renderSortIcon(column.getIsSorted())}
+          </Button>
+        );
+      },
+      cell: ({ cell }) => (
+        <TicketPaymentWrapper
+          content={cell.getValue() as string}
+          paid={cell.getValue() === "Opłacone"}
+        />
+      ),
+      filterFn: selectFilterFn,
     },
-    cell: ({ cell }) => (
-      <TicketPaymentWrapper
-        content={cell.getValue() as string}
-        paid={cell.getValue() === "Opłacone"}
-      />
-    ),
-    filterFn: selectFilterFn,
-  },
-  {
-    accessorKey: "paymentDate",
-    header: ({ column }) => {
-      return (
-        <Button variant="ghost" onClick={() => column.toggleSorting()}>
-          Data płatności
-          {renderSortIcon(column.getIsSorted())}
-        </Button>
-      );
+    {
+      accessorKey: "paymentDate",
+      header: ({ column }) => {
+        return (
+          <Button variant="ghost" onClick={() => column.toggleSorting()}>
+            Data płatności
+            {renderSortIcon(column.getIsSorted())}
+          </Button>
+        );
+      },
+      cell: ({ cell }) =>
+        cell.getValue()
+          ? formatDateValueToString(cell.getValue() as string)
+          : "Brak",
+      filterFn: dateFilterFn,
+      sortingFn: dateSortFn,
     },
-    cell: ({ cell }) =>
-      cell.getValue()
-        ? formatDateValueToString(cell.getValue() as string)
-        : "Brak",
-    filterFn: dateFilterFn,
-    sortingFn: dateSortFn,
-  },
-  {
-    accessorKey: "file",
-    header: "Plik",
-    cell: ({ row }) => (
-      <TicketFileDialog
-        filePath={row.original.file}
-        ticketNumber={row.original.number}
-      />
-    ),
-    enableSorting: false,
-    enableColumnFilter: false,
-  },
-];
+    {
+      accessorKey: "file",
+      header: "Plik",
+      cell: ({ row }) => (
+        <TicketFileDialog
+          filePath={row.original.file}
+          ticketNumber={row.original.number}
+        />
+      ),
+      enableSorting: false,
+      enableColumnFilter: false,
+    },
+  ];
+};
 
 const CURRENCY_OPTIONS: DataTableFilterSelectOption[] = [
   { value: "EUR" },

@@ -12,9 +12,10 @@ import { useEffect } from "react";
 import { useColumnFilter } from "../../hooks/useColumnFilter";
 import { usePagination } from "../../hooks/usePagination";
 import { useSorting } from "../../hooks/useSorting";
-import { ticketFilters as columnFilters, ticketColumns as columns, ticketColumnsMap } from "../../lib/data-table/ticket-columns";
+import { ticketFilters as columnFilters, getTicketColumns, ticketColumnsMap } from "../../lib/data-table/ticket-columns";
 import { DataTable } from "../data-table/DataTable";
 import { useToast } from "../ui/use-toast";
+import { useRouter } from "next/navigation";
 
 const TicketsTable = () => {
   const { data, isPending, isError } = useGetTickets();
@@ -27,9 +28,14 @@ const TicketsTable = () => {
   const { filters, setFilters } = useColumnFilter([]);
   const { toast } = useToast();
 
+  const router = useRouter();
+  const handleEdit = (id: string) => {
+    router.push(`/mandaty/edytuj/${id}`);
+  };
+
   const table = useReactTable({
     data: !isError ? data ?? [] : [],
-    columns,
+    columns: getTicketColumns(handleEdit),
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),

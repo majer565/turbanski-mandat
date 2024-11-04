@@ -11,15 +11,18 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useParams, useRouter } from "next/navigation";
 import { FadeLoader } from "react-spinners";
-import { useGetDriver } from "../../hooks/useGetDriver";
+import { useGetTicketByNumber } from "../../hooks/useGetTicket";
+import { transformTicketToFormTicket } from "../../lib/utils";
 import FlexRow from "../wrappers/FlexRowWrapper";
-import DriverEditForm from "./DriverEditForm";
+import TicketEditForm from "./TicketEditForm";
 
-const DriverEdit = () => {
+const TicketEdit = () => {
   const params = useParams();
   const router = useRouter();
 
-  const { data, isLoading, isError } = useGetDriver(params.id as string);
+  const { data, isLoading, isError } = useGetTicketByNumber(
+    params.id as string
+  );
 
   if (isLoading)
     return (
@@ -29,7 +32,7 @@ const DriverEdit = () => {
     );
 
   const handleClose = () => {
-    router.push("/kierowcy");
+    router.push("/mandaty");
   };
 
   return (
@@ -39,7 +42,7 @@ const DriverEdit = () => {
           <AlertDialogHeader>
             <AlertDialogTitle>Wystąpił błąd</AlertDialogTitle>
             <AlertDialogDescription>
-              Nie znaleziono kierowcy o podanym identyfikatorze.
+              Nie znaleziono mandatu o podanym numerze.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -47,9 +50,9 @@ const DriverEdit = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      <DriverEditForm defaultData={data} />
+      <TicketEditForm defaultData={transformTicketToFormTicket(data)} />
     </>
   );
 };
 
-export default DriverEdit;
+export default TicketEdit;
