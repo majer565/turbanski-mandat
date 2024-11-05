@@ -5,7 +5,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { CircleDotDashed, LogOut, Settings, Tickets, User } from "lucide-react";
+import { CircleDotDashed, House, LogOut, Settings, Tickets, User } from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import SideBarWrapper from "./wrappers/SideBarWrapper";
@@ -21,6 +21,18 @@ const Sidebar = () => {
             <Image src={logoIcon} width={30} height={30} alt={"T"} />
           </div>
           <div className="gap-3 flex flex-col items-center">
+          <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href="/home"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                >
+                  <House className="h-5 w-5" />
+                  <span className="sr-only">Home</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">Home</TooltipContent>
+            </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link

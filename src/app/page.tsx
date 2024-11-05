@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 export default async function Home() {
   const session = await getSession();
-  if (session?.userId) redirect("/mandaty");
+  if (session?.userId) redirect("/home");
 
   return <LoginForm />;
 }

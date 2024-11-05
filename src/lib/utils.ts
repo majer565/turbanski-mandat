@@ -56,3 +56,10 @@ export const transformTicketToFormTicket = (
     paymentDate: ticket.paymentDate ? String(ticket.paymentDate) : undefined,
   };
 };
+
+export const compareTwoValuesToPercent = (a: number, b: number): string => {
+  if (a === 0) return `${b * 100}`;
+
+  const percent = ((b - a) / a) * 100;
+  return Math.abs(percent).toFixed(1);
+};
