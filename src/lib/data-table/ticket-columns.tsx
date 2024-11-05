@@ -11,6 +11,7 @@ import {
   ArrowDownNarrowWide,
   ArrowDownWideNarrow,
   CheckIcon,
+  FilePen,
   MoreHorizontal,
   Pencil,
   XIcon,
@@ -44,7 +45,8 @@ const renderSortIcon = (sortOption: string | false) => {
 };
 
 export const getTicketColumns = (
-  handleEdit: (id: string) => void
+  handleEdit: (id: string) => void,
+  handleFileEdit: (number: string) => void
 ): ColumnDef<Ticket & { driver: Driver }>[] => {
   return [
     {
@@ -64,9 +66,17 @@ export const getTicketColumns = (
             <DropdownMenuContent align="end">
               <DropdownMenuLabel color="primary">Akcje</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => handleEdit(String(ticket.number))}>
+              <DropdownMenuItem
+                onClick={() => handleEdit(String(ticket.number))}
+              >
                 <Pencil className="h-4 w-4 mr-2 text-primary" />
                 <span>Edytuj</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleFileEdit(String(ticket.number))}
+              >
+                <FilePen className="h-4 w-4 mr-2 text-primary" />
+                <span>Edytuj plik</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

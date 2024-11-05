@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "prisma-migrate-dev": "docker exec turbanski-mandat-app-1 npx prisma migrate deploy",
-    "prisma-studio": "docker exec turbanski-mandat-app-1 npx prisma studio"
+    "prisma-studio": "docker exec turbanski-mandat-app-1 npx prisma studio",
+    "start:migrate": "npx prisma migrate deploy && npm run start"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
