@@ -10,6 +10,7 @@ export interface FormItemProps<T extends FieldValues> {
   label: string;
   name: string;
   description?: string;
+  className?: string;
 }
 
 interface FormFileProps<T extends FieldValues> extends FormItemProps<T> {
@@ -37,6 +38,7 @@ const FormFileItem = <T extends FieldValues>(props: FormFileProps<T>) => {
           <FormControl>
             <Input
               id="picture"
+              className={props.className}
               type="file"
               accept=".pdf"
               placeholder={props.placeholder}

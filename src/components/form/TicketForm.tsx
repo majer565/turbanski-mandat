@@ -93,7 +93,6 @@ const TicketForm = () => {
 
       if (!pdfFile) throw new Error("Nie udało się wczytać poprawnie pliku");
       savedFile = await uploadFile(pdfFile);
-      savedFile = "test.pdf";
       if (!savedFile) throw new Error("Nie udało się zapisać pliku");
 
       mutation.mutate({

@@ -9,7 +9,7 @@ export async function GET() {
     const res = await prisma.ticket.findMany({ include: { driver: true } });
     return Response.json(res);
   } catch (e) {
-    throw new Error("Can't fetch data from database");
+    throw new Error("Can't fetch data from database:: " + e);
   }
 }
 

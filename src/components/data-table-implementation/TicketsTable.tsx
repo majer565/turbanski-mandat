@@ -32,10 +32,13 @@ const TicketsTable = () => {
   const handleEdit = (id: string) => {
     router.push(`/mandaty/edytuj/${id}`);
   };
+  const handleFileEdit = (number: string) => {
+    router.push(`/mandaty/edytuj/${number}/plik`);
+  };
 
   const table = useReactTable({
     data: !isError ? data ?? [] : [],
-    columns: getTicketColumns(handleEdit),
+    columns: getTicketColumns(handleEdit, handleFileEdit),
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
