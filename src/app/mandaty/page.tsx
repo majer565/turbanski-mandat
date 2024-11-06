@@ -1,5 +1,10 @@
 import TicketsTable from "@/components/data-table-implementation/TicketsTable";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbPage,
+} from "@/components/ui/breadcrumb";
 import FlexColumn from "@/components/wrappers/flex-column-wrapper";
 import { verifySession } from "@/lib/session";
 import { redirect } from "next/navigation";

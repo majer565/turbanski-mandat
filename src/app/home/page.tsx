@@ -8,12 +8,9 @@ import FlexColumn from "@/components/wrappers/flex-column-wrapper";
 import { verifySession } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
-import HomeCharts from "../../components/charts/home-charts";
-import FlexRow from "../../components/wrappers/FlexRowWrapper";
-import HomeTable from "../../components/tables/home-table";
 import HomeWrapper from "../../components/wrappers/home-wrapper";
 
-export default async function Home() {
+export default async function HomePage() {
   const session = await verifySession();
   if (!session.userId) redirect("/");
 
