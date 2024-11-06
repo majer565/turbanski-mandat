@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 export async function login(user: User) {
   await createSession(String(user.id), String(user.email));
-  redirect("/mandaty");
+  redirect("/home");
 }
 
 export async function logout() {
