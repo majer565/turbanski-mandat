@@ -30,7 +30,7 @@ const chartConfig = {
   },
   unpaid: {
     label: "Nieopłacone",
-    color: "hsl(var(--chart-2))",
+    color: "hsl(var(--chart-1))",
   },
 } satisfies ChartConfig;
 
@@ -50,7 +50,7 @@ const HomeCharts = ({ tickets, isLoading, isError }: HomeData) => {
     {
       payment: "unpaid",
       tickets: getUnpaidTickets(),
-      fill: "hsl(var(--chart-5))",
+      fill: "hsl(var(--chart-1))",
     },
   ];
 

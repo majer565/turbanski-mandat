@@ -63,3 +63,9 @@ export const compareTwoValuesToPercent = (a: number, b: number): string => {
   const percent = ((b - a) / a) * 100;
   return Math.abs(percent).toFixed(1);
 };
+
+export const isValidDate = (dateString: string): boolean => {
+  const date = new Date(dateString);
+
+  return !isNaN(date.getTime());
+};

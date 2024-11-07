@@ -2,6 +2,7 @@ import { Row, Table } from "@tanstack/react-table";
 import { download, generateCsv, mkConfig } from "export-to-csv";
 import { Button } from "../ui/button";
 import { Download } from "lucide-react";
+import { formatDateValueToString, isValidDate } from "../../lib/utils";
 
 interface DataTableExportButtonProps<TData> {
   table: Table<TData>;
@@ -25,7 +26,11 @@ export function DataTableExportButton<TData>({
     const rowData = rows.map((row: Row<TData>) => {
       const rowDataObj: { [key: string]: any } = {};
       columns.forEach((column) => {
-        rowDataObj[`${dataMap.get(column.id)}`] = row.getValue(column.id);
+        rowDataObj[`${dataMap.get(column.id)}`] = isValidDate(
+          row.getValue(column.id)
+        )
+          ? formatDateValueToString(row.getValue(column.id))
+          : row.getValue(column.id);
       });
       return rowDataObj;
     });
