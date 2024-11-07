@@ -21,7 +21,7 @@ export default async function AddTicket() {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="/">Mandaty</BreadcrumbLink>
+              <BreadcrumbLink href="/mandaty">Mandaty</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
