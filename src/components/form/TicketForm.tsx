@@ -6,8 +6,8 @@ import { useGetDrivers } from "@/hooks/useGetDrivers";
 import { ticketSchema } from "@/lib/form/ticket-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { LoaderCircle } from "lucide-react";
-import { useEffect, useState } from "react";
+import { LoaderCircle, UserRoundPlus } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { getTicketByName } from "../../actions/getTicketByName";
@@ -21,10 +21,21 @@ import FormFileItem from "./form-items/form-file-item";
 import FormInputItem from "./form-items/form-input-item";
 import FormSelectItem from "./form-items/form-select-item";
 import FormTimeItem from "./form-items/form-time-item";
+import { Separator } from "../ui/separator";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import DriverForm from "./DriverForm";
 
 const TicketForm = () => {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const formRef = useRef<HTMLFormElement>(null);
   const { toast } = useToast();
   const { data: driversOptions } = useGetDrivers();
   const queryClient = useQueryClient();
@@ -124,8 +135,9 @@ const TicketForm = () => {
     <div>
       <Form {...form}>
         <form
+          ref={formRef}
           onSubmit={form.handleSubmit(onSubmit)}
-          className="grid grid-cols-2 gap-x-16 gap-y-8"
+          className="grid grid-cols-2 gap-x-16 gap-y-2"
         >
           <FormInputItem
             form={form}
@@ -133,71 +145,17 @@ const TicketForm = () => {
             name="number"
             placeholder="Wprowadź numer"
           />
-          <FormDateItem
-            form={form}
-            label="Data mandatu"
-            name="date"
-            placeholder="Wybierz datę"
-          />
-          <FormTimeItem
-            form={form}
-            label="Godzina mandatu"
-            name="time"
-            placeholder="Wybierz godzinę"
-          />
           <FormInputItem
             form={form}
             label="Numer rejestracyjny"
             name="vehiclePlate"
             placeholder="Wprowadź numer"
           />
-          <FormInputItem
-            form={form}
-            label="Kwota mandatu"
-            type="number"
-            min="0"
-            name="amount"
-            placeholder="Wprowadź kwotę"
-          />
-          <FormSelectItem
-            form={form}
-            label="Waluta"
-            name="currency"
-            placeholder="Wybierz walutę"
-            options={[
-              { value: "EUR", label: "EUR" },
-              { value: "PLN", label: "PLN" },
-            ]}
-          />
           <FormDateItem
             form={form}
-            label="Data wpływu poczty"
-            name="postPayoutDate"
+            label="Data mandatu"
+            name="date"
             placeholder="Wybierz datę"
-          />
-          <FormSelectItem
-            form={form}
-            label="Płatność"
-            name="payment"
-            placeholder="Wybierz status płatności"
-            options={[
-              { value: "Opłacone", label: "Opłacone" },
-              { value: "Nieopłacone", label: "Nieopłacone" },
-            ]}
-          />
-          <FormDateItem
-            form={form}
-            label="Data płatności"
-            name="paymentDate"
-            placeholder="Wybierz datę"
-            disabled={payment === "Nieopłacone"}
-          />
-          <FormFileItem
-            form={form}
-            label="Plik"
-            name="file"
-            placeholder="Dodaj plik"
-            setFile={setPdfFile}
           />
           <FormComboboxItem
             form={form}
@@ -211,17 +169,101 @@ const TicketForm = () => {
               })) ?? []
             }
           />
-          <div className="col-start-1 col-end-3 flex justify-center">
-            <Button type="submit" disabled={loading} className="w-1/4">
-              {loading ? (
-                <LoaderCircle className="w-4 h-4 animate-spin" />
-              ) : (
-                "Dodaj mandat"
-              )}
-            </Button>
-          </div>
+          <FormTimeItem
+            form={form}
+            label="Godzina mandatu"
+            name="time"
+            placeholder="Wybierz godzinę"
+          />
+          <FormSelectItem
+            form={form}
+            label="Płatność"
+            name="payment"
+            placeholder="Wybierz status płatności"
+            options={[
+              { value: "Opłacone", label: "Opłacone" },
+              { value: "Nieopłacone", label: "Nieopłacone" },
+            ]}
+          />
+          <FormInputItem
+            form={form}
+            label="Kwota mandatu"
+            type="number"
+            min="0"
+            name="amount"
+            placeholder="Wprowadź kwotę"
+          />
+          <FormDateItem
+            form={form}
+            label="Data płatności"
+            name="paymentDate"
+            placeholder="Wybierz datę"
+            disabled={payment === "Nieopłacone"}
+          />
+          <FormSelectItem
+            form={form}
+            label="Waluta"
+            name="currency"
+            placeholder="Wybierz walutę"
+            options={[
+              { value: "EUR", label: "EUR" },
+              { value: "PLN", label: "PLN" },
+            ]}
+          />
+          <FormFileItem
+            form={form}
+            label="Plik"
+            name="file"
+            placeholder="Dodaj plik"
+            setFile={setPdfFile}
+          />
+          <FormDateItem
+            form={form}
+            label="Data wpływu poczty"
+            name="postPayoutDate"
+            placeholder="Wybierz datę"
+          />
         </form>
       </Form>
+      <div className="mt-8 flex flex-col gap-4 justify-center">
+        <Separator />
+        <div className="flex justify-between">
+          <Button
+            type="submit"
+            disabled={loading}
+            className="w-1/4"
+            onClick={() => formRef.current?.requestSubmit()}
+          >
+            {loading ? (
+              <LoaderCircle className="w-4 h-4 animate-spin" />
+            ) : (
+              "Dodaj mandat"
+            )}
+          </Button>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button
+                className="bg-transparent"
+                type="button"
+                variant="outline"
+              >
+                <UserRoundPlus className="w-4 h-4 mr-2" />
+                <span>Dodaj kierowcę</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[500px]">
+              <SheetHeader>
+                <SheetTitle>Dodaj kierowcę z panelu mandatu</SheetTitle>
+                <SheetDescription className="mb-3">
+                  W tym panelu możesz dodać kierowcę bezpośrednio, bez konieczności odwiedzania
+                  strony wszystkich kierowców.
+                </SheetDescription>
+                <DriverForm />
+              </SheetHeader>
+            </SheetContent>
+          </Sheet>
+        </div>
+      </div>
     </div>
   );
 };

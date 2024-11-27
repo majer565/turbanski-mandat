@@ -24,7 +24,7 @@ const FormComboboxItem = <T extends FieldValues>(props: FormComboboxProps<T>) =>
       name={props.name as Path<T>}
       render={({ field }) => (
         <FormItem className="flex flex-col">
-          <FormLabel className="h-[24px]">{props.label}</FormLabel>
+          <FormLabel className="h-[18px] mt-[6px]">{props.label}</FormLabel>
           <Popover>
             <PopoverTrigger asChild>
               <FormControl>
