@@ -70,11 +70,11 @@ const DriverForm = () => {
   return (
     <div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-2 gap-x-16 gap-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-y-2">
           <FormInputItem form={form} label="Imię" name="name" placeholder="Wprowadź imię" />
           <FormInputItem form={form} label="Nazwisko" name="surname" placeholder="Wprowadź nazwisko" />
-          <div className="col-start-1 col-end-3 flex justify-center">
-            <Button type="submit" disabled={loading} className="w-1/4">
+          <div>
+            <Button type="submit" disabled={loading} className="w-1/2">
               {loading ? <LoaderCircle className="w-4 h-4 animate-spin" /> : "Dodaj kierowcę"}
             </Button>
           </div>

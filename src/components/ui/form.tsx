@@ -150,7 +150,7 @@ const FormMessage = React.forwardRef<
   const body = error ? String(error?.message) : children
 
   if (!body) {
-    return null
+    return <p className="text-sm font-medium opacity-0">Automatic field</p>
   }
 
   return (
