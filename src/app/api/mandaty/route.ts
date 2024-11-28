@@ -4,7 +4,7 @@ import { Ticket } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../../prisma/client";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     const res = await prisma.ticket.findMany({ include: { driver: true } });
     return Response.json(res);

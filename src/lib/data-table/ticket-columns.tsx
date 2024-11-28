@@ -67,13 +67,13 @@ export const getTicketColumns = (
               <DropdownMenuLabel color="primary">Akcje</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem
-                onClick={() => handleEdit(String(ticket.number))}
+                onClick={() => handleEdit(String(ticket.id))}
               >
                 <Pencil className="h-4 w-4 mr-2 text-primary" />
                 <span>Edytuj</span>
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => handleFileEdit(String(ticket.number))}
+                onClick={() => handleFileEdit(String(ticket.id))}
               >
                 <FilePen className="h-4 w-4 mr-2 text-primary" />
                 <span>Edytuj plik</span>

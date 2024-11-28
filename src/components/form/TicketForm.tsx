@@ -10,7 +10,6 @@ import { LoaderCircle, UserRoundPlus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { getTicketByName } from "../../actions/getTicketByName";
 import { removeFile } from "../../actions/removeFile";
 import { Button } from "../ui/button";
 import { Form } from "../ui/form";
@@ -31,6 +30,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import DriverForm from "./DriverForm";
+import { findFormTicket } from "../../actions/findFormTicket";
 
 const TicketForm = () => {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
@@ -98,11 +98,16 @@ const TicketForm = () => {
       if (!driverId)
         throw new Error("Identyfikator kierowcy nie może być równy NULL");
 
-      const ticketInDb = await getTicketByName(values.number);
+      const ticketInDb = await findFormTicket({
+        number: values.number,
+        date: values.date,
+        time: values.time,
+      });
       if (ticketInDb?.number)
         throw new Error("Mandat o takim numerze już istnieje");
 
       if (!pdfFile) throw new Error("Nie udało się wczytać poprawnie pliku");
+      console.log(pdfFile);
       savedFile = await uploadFile(pdfFile);
       if (!savedFile) throw new Error("Nie udało się zapisać pliku");
 
@@ -255,8 +260,8 @@ const TicketForm = () => {
               <SheetHeader>
                 <SheetTitle>Dodaj kierowcę z panelu mandatu</SheetTitle>
                 <SheetDescription className="mb-3">
-                  W tym panelu możesz dodać kierowcę bezpośrednio, bez konieczności odwiedzania
-                  strony wszystkich kierowców.
+                  W tym panelu możesz dodać kierowcę bezpośrednio, bez
+                  konieczności odwiedzania strony wszystkich kierowców.
                 </SheetDescription>
                 <DriverForm />
               </SheetHeader>

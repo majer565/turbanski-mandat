@@ -3,11 +3,13 @@ import { prisma } from "../../../../../../prisma/client";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { number: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
+    const idAsNumber = parseInt(params.id);
+
     const res = await prisma.ticket.findFirst({
-      where: { number: params.number },
+      where: { id: idAsNumber },
     });
     return Response.json(res);
   } catch (error) {

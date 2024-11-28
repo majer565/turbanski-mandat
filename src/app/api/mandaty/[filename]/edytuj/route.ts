@@ -8,10 +8,10 @@ export async function PUT(req: NextRequest) {
     const session = await verifySession();
     if (!session) throw new Error("Sesja wygasła");
 
-    const ticket: Pick<Ticket, "number" | "file"> = await req.json();
+    const ticket: Pick<Ticket, "id" | "file"> = await req.json();
     const ticketInDb = await prisma.ticket.findFirst({
       where: {
-        number: ticket.number,
+        id: ticket.id,
       },
     });
 

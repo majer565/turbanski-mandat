@@ -2,12 +2,13 @@
 
 import { Ticket } from "@prisma/client";
 
-
-export const updateTicketFile = async (ticketFile: Pick<Ticket, 'id' | 'file'>) => {
+export const findFormTicket= async (
+  ticket: Pick<Ticket, "number" | "date" | "time">
+) => {
   try {
-    const response = await fetch(`/api/mandaty/${ticketFile.id}/edytuj`, {
-      method: "PUT",
-      body: JSON.stringify(ticketFile),
+    const response = await fetch("/api/mandaty/find", {
+      method: "POST",
+      body: JSON.stringify(ticket),
     });
 
     if (!response.ok) {

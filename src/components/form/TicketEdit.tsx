@@ -11,16 +11,16 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useParams, useRouter } from "next/navigation";
 import { FadeLoader } from "react-spinners";
-import { useGetTicketByNumber } from "../../hooks/useGetTicket";
 import { transformTicketToFormTicket } from "../../lib/utils";
 import FlexRow from "../wrappers/FlexRowWrapper";
 import TicketEditForm from "./TicketEditForm";
+import { useGetTicketById } from "../../hooks/useGetTicket";
 
 const TicketEdit = () => {
   const params = useParams();
   const router = useRouter();
 
-  const { data, isLoading, isError } = useGetTicketByNumber(
+  const { data, isLoading, isError } = useGetTicketById(
     params.id as string
   );
 

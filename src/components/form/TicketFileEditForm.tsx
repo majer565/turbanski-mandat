@@ -16,10 +16,10 @@ import FormFileItem from "./form-items/form-file-item";
 import { Ticket } from "@prisma/client";
 
 interface TicketEditFormProps {
-  number?: string;
+  id?: number;
 }
 
-const TicketFileEditForm = ({ number }: TicketEditFormProps) => {
+const TicketFileEditForm = ({ id }: TicketEditFormProps) => {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const { toast } = useToast();
@@ -35,7 +35,7 @@ const TicketFileEditForm = ({ number }: TicketEditFormProps) => {
       setLoading(false);
     },
     onSuccess: (data) => {
-      form.reset({ filename: "", number: data.number });
+      form.reset({ filename: "", id: data.id });
       toast({
         variant: "default",
         title: "Pomyślnie zaktualizowano mandat",
@@ -47,7 +47,7 @@ const TicketFileEditForm = ({ number }: TicketEditFormProps) => {
   });
 
   const fileSchema = z.object({
-    number: z.string().default(number || ""),
+    id: z.number().default(id || -1),
     filename: z.string(),
   });
 
@@ -64,11 +64,11 @@ const TicketFileEditForm = ({ number }: TicketEditFormProps) => {
       if (!pdfFile) throw new Error("Nie udało się wczytać poprawnie pliku");
       savedFile = await uploadFile(pdfFile);
       if (!savedFile) throw new Error("Nie udało się zapisać pliku");
-      if (!values.number)
+      if (!values.id)
         throw new Error("Nie udało się pobrać numeru mandatu");
 
       const ticketFile = {
-        number: values.number,
+        id: values.id,
         file: savedFile,
       };
 

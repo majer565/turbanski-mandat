@@ -1,11 +1,11 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { getTicketByName } from "../actions/getTicketByName";
+import { getTicketById } from "../actions/getTicketById";
 
-export const useGetTicketByNumber = (number: string) => {
+export const useGetTicketById = (id: string) => {
   return useQuery({
     queryKey: ["ticket"],
-    queryFn: () => getTicketByName(number),
+    queryFn: () => getTicketById(id),
   });
 };
