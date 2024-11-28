@@ -11,15 +11,15 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useParams, useRouter } from "next/navigation";
 import { FadeLoader } from "react-spinners";
-import { useGetTicketByNumber } from "../../hooks/useGetTicket";
 import FlexRow from "../wrappers/FlexRowWrapper";
 import TicketFileEditForm from "./TicketFileEditForm";
+import { useGetTicketById } from "../../hooks/useGetTicket";
 
 const TicketFileEdit = () => {
   const params = useParams();
   const router = useRouter();
 
-  const { data, isLoading, isError } = useGetTicketByNumber(
+  const { data, isLoading, isError } = useGetTicketById(
     params.id as string
   );
 
@@ -49,7 +49,7 @@ const TicketFileEdit = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      <TicketFileEditForm number={data?.number} />
+      <TicketFileEditForm id={data?.id} />
     </>
   );
 };

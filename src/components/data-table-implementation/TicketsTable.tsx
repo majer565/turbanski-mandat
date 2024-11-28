@@ -32,8 +32,8 @@ const TicketsTable = () => {
   const handleEdit = (id: string) => {
     router.push(`/mandaty/edytuj/${id}`);
   };
-  const handleFileEdit = (number: string) => {
-    router.push(`/mandaty/edytuj/${number}/plik`);
+  const handleFileEdit = (id: string) => {
+    router.push(`/mandaty/edytuj/${id}/plik`);
   };
 
   const table = useReactTable({
