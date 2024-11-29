@@ -5,7 +5,7 @@ import { getTicketById } from "../actions/getTicketById";
 
 export const useGetTicketById = (id: string) => {
   return useQuery({
-    queryKey: ["ticket"],
+    queryKey: ["ticket", id],
     queryFn: () => getTicketById(id),
   });
 };

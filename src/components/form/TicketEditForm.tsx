@@ -19,6 +19,8 @@ import FormInputItem from "./form-items/form-input-item";
 import FormSelectItem from "./form-items/form-select-item";
 import FormTimeItem from "./form-items/form-time-item";
 import { updateTicket } from "../../actions/updateTicket";
+import { useRouter } from "next/navigation";
+import { ro } from "date-fns/locale";
 
 export interface FormTicket
   extends Omit<Ticket, "amount" | "driverId" | "paymentDate"> {
@@ -46,11 +48,9 @@ const defaultValues: FormTicket = {
 };
 
 const TicketEditForm = ({ defaultData }: TicketEditFormProps) => {
-  const [ticket, setTicket] = useState<FormTicket>(
-    defaultData || defaultValues
-  );
   const [loading, setLoading] = useState<boolean>(false);
   const { toast } = useToast();
+  const router = useRouter();
   const { data: driversOptions } = useGetDrivers();
   const queryClient = useQueryClient();
   const mutation = useMutation({
@@ -63,21 +63,22 @@ const TicketEditForm = ({ defaultData }: TicketEditFormProps) => {
       });
       setLoading(false);
     },
-    onSuccess: (data) => {
-      form.reset(ticket);
+    onSuccess: (data: FormTicket) => {
+      form.reset(defaultValues);
       toast({
         variant: "default",
         title: "Pomyślnie edytowano mandat",
         description: `Mandat o numerze ${data.number} został zaktualizowany`,
       });
-      queryClient.invalidateQueries({ queryKey: ["tickets"] });
+      queryClient.invalidateQueries({ queryKey: ["ticket", String(data.id)] });
       setLoading(false);
+      handleRedirect();
     },
   });
 
   const form = useForm<z.infer<typeof ticketSchema>>({
     resolver: zodResolver(ticketSchema),
-    defaultValues: ticket,
+    defaultValues: defaultData || defaultValues,
   });
 
   const payment = form.watch("payment");
@@ -85,6 +86,10 @@ const TicketEditForm = ({ defaultData }: TicketEditFormProps) => {
   useEffect(() => {
     if (payment === "Nieopłacone") form.setValue("paymentDate", undefined);
   }, [payment]);
+
+  const handleRedirect = () => {
+    router.push("/mandaty");
+  };
 
   const onSubmit = async (values: z.infer<typeof ticketSchema>) => {
     setLoading(true);
@@ -112,13 +117,6 @@ const TicketEditForm = ({ defaultData }: TicketEditFormProps) => {
       };
 
       mutation.mutate({ ...ticketToSave, file: defaultValues.file });
-      setTicket({
-        ...ticketToSave,
-        amount: String(amount),
-        driverId: String(driverId),
-        paymentDate: values.paymentDate || undefined,
-        file: defaultValues.file,
-      });
     } catch (e) {
       toast({
         variant: "destructive",
@@ -135,7 +133,7 @@ const TicketEditForm = ({ defaultData }: TicketEditFormProps) => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="grid grid-cols-2 gap-x-16 gap-y-8"
+          className="grid grid-cols-2 gap-x-16 gap-y-2"
         >
           <FormInputItem
             form={form}
@@ -219,7 +217,7 @@ const TicketEditForm = ({ defaultData }: TicketEditFormProps) => {
               {loading ? (
                 <LoaderCircle className="w-4 h-4 animate-spin" />
               ) : (
-                "Edytuj mandat"
+                "Zatwierdź"
               )}
             </Button>
           </div>
