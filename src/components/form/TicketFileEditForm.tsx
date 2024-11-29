@@ -18,9 +18,10 @@ import { useRouter } from "next/navigation";
 
 interface TicketEditFormProps {
   id?: number;
+  closeDialog: () => void;
 }
 
-const TicketFileEditForm = ({ id }: TicketEditFormProps) => {
+const TicketFileEditForm = ({ id, closeDialog }: TicketEditFormProps) => {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const { toast } = useToast();
@@ -45,13 +46,9 @@ const TicketFileEditForm = ({ id }: TicketEditFormProps) => {
       });
       queryClient.invalidateQueries({ queryKey: ["tickets"] });
       setLoading(false);
-      handleRedirect();
+      closeDialog();
     },
   });
-
-  const handleRedirect = () => {
-    router.push("/mandaty");
-  }
 
   const fileSchema = z.object({
     id: z.number().default(id || -1),
@@ -97,13 +94,13 @@ const TicketFileEditForm = ({ id }: TicketEditFormProps) => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-4"
+          className="flex flex-col gap-y-2"
         >
           <FormFileItem
             form={form}
             label="Plik"
             name="file"
-            className="w-1/2"
+            className="w-[27rem]"
             placeholder="Dodaj plik"
             setFile={setPdfFile}
           />

@@ -1,22 +1,22 @@
 "use client";
 
-import { saveDriver } from "@/actions/saveDriver";
 import { driverSchema } from "@/lib/form/driver-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Driver } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { LoaderCircle } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { updateDriver } from "../../actions/updateDriver";
 import { Button } from "../ui/button";
 import { Form } from "../ui/form";
 import { useToast } from "../ui/use-toast";
 import FormInputItem from "./form-items/form-input-item";
-import { Driver } from "@prisma/client";
-import { updateDriver } from "../../actions/updateDriver";
 
 interface DriverEditFormProps {
   defaultData?: Driver;
+  closeDialog: () => void;
 }
 
 const defaultValues: Driver = {
@@ -25,7 +25,7 @@ const defaultValues: Driver = {
   surname: "",
 };
 
-const DriverEditForm = ({ defaultData }: DriverEditFormProps) => {
+const DriverEditForm = ({ defaultData, closeDialog }: DriverEditFormProps) => {
   const [loading, setLoading] = useState<boolean>(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -46,8 +46,9 @@ const DriverEditForm = ({ defaultData }: DriverEditFormProps) => {
         title: "Pomyślnie edytowano kierowcę",
         description: `Kierowca ${data.name} ${data.surname} został zauktualizowany`,
       });
-      queryClient.invalidateQueries({ queryKey: ["driver", String(data.id)] });
+      queryClient.invalidateQueries({ queryKey: ["drivers"] });
       setLoading(false);
+      closeDialog();
     },
   });
 
@@ -79,7 +80,7 @@ const DriverEditForm = ({ defaultData }: DriverEditFormProps) => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="grid grid-cols-2 gap-x-16 gap-y-8"
+          className="flex flex-col gap-y-1"
         >
           <FormInputItem
             form={form}
@@ -93,15 +94,13 @@ const DriverEditForm = ({ defaultData }: DriverEditFormProps) => {
             name="surname"
             placeholder="Wprowadź nazwisko"
           />
-          <div className="col-start-1 col-end-3 flex justify-center">
-            <Button type="submit" disabled={loading} className="w-1/4">
-              {loading ? (
-                <LoaderCircle className="w-4 h-4 animate-spin" />
-              ) : (
-                "Edytuj kierowcę"
-              )}
-            </Button>
-          </div>
+          <Button type="submit" disabled={loading} className="w-1/4">
+            {loading ? (
+              <LoaderCircle className="w-4 h-4 animate-spin" />
+            ) : (
+              "Edytuj kierowcę"
+            )}
+          </Button>
         </form>
       </Form>
     </div>

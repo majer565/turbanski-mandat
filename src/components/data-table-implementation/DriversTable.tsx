@@ -9,7 +9,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useColumnFilter } from "../../hooks/useColumnFilter";
 import { usePagination } from "../../hooks/usePagination";
 import { useSorting } from "../../hooks/useSorting";
@@ -20,9 +20,12 @@ import {
 } from "../../lib/data-table/driver-columns";
 import { DataTable } from "../data-table/DataTable";
 import { useToast } from "../ui/use-toast";
+import DriverEditSheet from "../form/DriverEditSheet";
+import { Driver } from "@prisma/client";
 
 const DriversTable = () => {
   const { data, isPending, isError } = useGetDrivers();
+  const [selectedDriver, setSelectedDriver] = useState<Driver | undefined>();
 
   const { sorting, setSorting } = useSorting([]);
   const { pagination, setPagination } = usePagination({
@@ -33,13 +36,14 @@ const DriversTable = () => {
   const { toast } = useToast();
 
   const router = useRouter();
-  const handleEdit = (id: string) => {
-    router.push(`/kierowcy/edytuj/${id}`);
+  
+  const handleEditDriver = (driver: Driver) => {
+    setSelectedDriver(driver);
   };
 
   const table = useReactTable({
     data: !isError ? data ?? [] : [],
-    columns: getDriverColumns(handleEdit),
+    columns: getDriverColumns(handleEditDriver),
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -65,12 +69,18 @@ const DriversTable = () => {
   }, [isError]);
 
   return (
-    <DataTable
-      viewDataMap={driverColumnsMap}
-      columnFilters={columnFilters}
-      table={table}
-      isDataLoading={isPending}
-    />
+    <>
+      <DriverEditSheet
+        handleOpenChange={() => setSelectedDriver(undefined)}
+        driver={selectedDriver}
+      />
+      <DataTable
+        viewDataMap={driverColumnsMap}
+        columnFilters={columnFilters}
+        table={table}
+        isDataLoading={isPending}
+      />
+    </>
   );
 };
 

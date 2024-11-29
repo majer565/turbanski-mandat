@@ -8,31 +8,33 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Ticket } from "@prisma/client";
-import TicketPaymentForm from "./TicketPaymentForm";
+import TicketFileEditForm from "./TicketFileEditForm";
 
-interface TicketPaymentSheetProps {
+interface TicketFileSheetProps {
   ticket?: Ticket;
   handleOpenChange: (open: boolean) => void;
 }
 
-const TicketPaymentSheet = ({
+const TicketFileSheet = ({
   ticket,
   handleOpenChange,
-}: TicketPaymentSheetProps) => {
+}: TicketFileSheetProps) => {
   return (
     <Sheet open={ticket !== undefined} onOpenChange={handleOpenChange}>
       <SheetContent side="left">
         <SheetHeader>
           <SheetTitle>Mandat {ticket?.number}</SheetTitle>
           <SheetDescription className="pb-3">
-            W tym miejscu możesz podać datę płatności i zmienić status na
-            opłacony.
+            Wybierz nowy plik PDF do zapisania.
           </SheetDescription>
-          <TicketPaymentForm id={ticket?.id || -1} closeDialog={() => handleOpenChange(false)} />
+          <TicketFileEditForm
+            id={ticket?.id || -1}
+            closeDialog={() => handleOpenChange(false)}
+          />
         </SheetHeader>
       </SheetContent>
     </Sheet>
   );
 };
 
-export default TicketPaymentSheet;
+export default TicketFileSheet;
