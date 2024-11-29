@@ -14,6 +14,7 @@ import { Form } from "../ui/form";
 import { useToast } from "../ui/use-toast";
 import FormFileItem from "./form-items/form-file-item";
 import { Ticket } from "@prisma/client";
+import { useRouter } from "next/navigation";
 
 interface TicketEditFormProps {
   id?: number;
@@ -23,6 +24,7 @@ const TicketFileEditForm = ({ id }: TicketEditFormProps) => {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const { toast } = useToast();
+  const router = useRouter();
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: updateTicketFile,
@@ -43,8 +45,13 @@ const TicketFileEditForm = ({ id }: TicketEditFormProps) => {
       });
       queryClient.invalidateQueries({ queryKey: ["tickets"] });
       setLoading(false);
+      handleRedirect();
     },
   });
+
+  const handleRedirect = () => {
+    router.push("/mandaty");
+  }
 
   const fileSchema = z.object({
     id: z.number().default(id || -1),

@@ -23,10 +23,9 @@ const defaultValues: Driver = {
   id: -1,
   name: "",
   surname: "",
-}
+};
 
 const DriverEditForm = ({ defaultData }: DriverEditFormProps) => {
-  const [driver, setDriver] = useState<Driver>(defaultData || defaultValues);
   const [loading, setLoading] = useState<boolean>(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -40,40 +39,37 @@ const DriverEditForm = ({ defaultData }: DriverEditFormProps) => {
       });
       setLoading(false);
     },
-    onSuccess: (data) => {
-      form.reset(driver);
+    onSuccess: (data: Driver) => {
+      form.reset(defaultValues);
       toast({
         variant: "default",
         title: "Pomyślnie edytowano kierowcę",
         description: `Kierowca ${data.name} ${data.surname} został zauktualizowany`,
       });
-      queryClient.invalidateQueries({ queryKey: ["drivers"] });
+      queryClient.invalidateQueries({ queryKey: ["driver", String(data.id)] });
       setLoading(false);
     },
   });
 
   const form = useForm<z.infer<typeof driverSchema>>({
     resolver: zodResolver(driverSchema),
-    defaultValues: driver,
+    defaultValues: defaultData || defaultValues,
   });
 
   const onSubmit = async (values: z.infer<typeof driverSchema>) => {
     setLoading(true);
     try {
-      const driverToSave = {
+      mutation.mutate({
         id: defaultData?.id || -1,
         name: values.name,
         surname: values.surname,
-      }
-      mutation.mutate(driverToSave);
-      setDriver(driverToSave);
+      });
     } catch (e) {
       toast({
         variant: "destructive",
         title: "Błąd | Nie udało się edytować kierowcy",
         description: String(e),
       });
-      setDriver(defaultValues);
       setLoading(false);
     }
   };
