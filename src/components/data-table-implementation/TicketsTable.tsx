@@ -8,17 +8,24 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useColumnFilter } from "../../hooks/useColumnFilter";
 import { usePagination } from "../../hooks/usePagination";
 import { useSorting } from "../../hooks/useSorting";
-import { ticketFilters as columnFilters, getTicketColumns, ticketColumnsMap } from "../../lib/data-table/ticket-columns";
+import {
+  ticketFilters as columnFilters,
+  getTicketColumns,
+  ticketColumnsMap,
+} from "../../lib/data-table/ticket-columns";
 import { DataTable } from "../data-table/DataTable";
 import { useToast } from "../ui/use-toast";
 import { useRouter } from "next/navigation";
+import TicketPaymentSheet from "../form/TicketPaymentSheet";
+import { Ticket } from "@prisma/client";
 
 const TicketsTable = () => {
   const { data, isPending, isError } = useGetTickets();
+  const [selectedTicket, setSelectedTicket] = useState<Ticket | undefined>();
 
   const { sorting, setSorting } = useSorting([]);
   const { pagination, setPagination } = usePagination({
@@ -35,10 +42,13 @@ const TicketsTable = () => {
   const handleFileEdit = (id: string) => {
     router.push(`/mandaty/edytuj/${id}/plik`);
   };
+  const handleEditPayment = (ticket: Ticket) => {
+    setSelectedTicket(ticket);
+  };
 
   const table = useReactTable({
     data: !isError ? data ?? [] : [],
-    columns: getTicketColumns(handleEdit, handleFileEdit),
+    columns: getTicketColumns(handleEdit, handleFileEdit, handleEditPayment),
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -63,7 +73,20 @@ const TicketsTable = () => {
     }
   }, [isError]);
 
-  return <DataTable viewDataMap={ticketColumnsMap} columnFilters={columnFilters} table={table} isDataLoading={isPending} />;
+  return (
+    <>
+      <TicketPaymentSheet
+        handleOpenChange={() => setSelectedTicket(undefined)}
+        ticket={selectedTicket}
+      />
+      <DataTable
+        viewDataMap={ticketColumnsMap}
+        columnFilters={columnFilters}
+        table={table}
+        isDataLoading={isPending}
+      />
+    </>
+  );
 };
 
 export default TicketsTable;

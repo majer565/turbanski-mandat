@@ -34,7 +34,7 @@ const FormDateItem = <T extends FieldValues>(props: FormDateProps<T>) => {
       render={({ field }) => (
         <FormItem className="flex flex-col">
           <FormLabel className="h-[24px]">{props.label}</FormLabel>
-          <Popover>
+          <Popover modal>
             <PopoverTrigger asChild>
               <FormControl>
                 <Button

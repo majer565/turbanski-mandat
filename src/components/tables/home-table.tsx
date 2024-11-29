@@ -14,9 +14,13 @@ import { CheckCheck } from "lucide-react";
 import { formatDateValueToString } from "../../lib/utils";
 import { Skeleton } from "../ui/skeleton";
 import { HomeData } from "../wrappers/home-wrapper";
-import { useMemo } from "react";
+import TicketPaymentSheet from "../form/TicketPaymentSheet";
+import { useState } from "react";
+import { Ticket } from "@prisma/client";
 
 const HomeTable = ({ tickets, isLoading, isError }: HomeData) => {
+  const [selectedTicket, setSelectedTicket] = useState<Ticket | undefined>();
+
   if (isLoading)
     return (
       <Table>
@@ -122,36 +126,54 @@ const HomeTable = ({ tickets, isLoading, isError }: HomeData) => {
       </Table>
     );
 
+  const handleOpenChange = (_isClosed: boolean) => {
+    setSelectedTicket(undefined);
+  };
+
+  const handleRowClick = (rowTicket: Ticket) => {
+    setSelectedTicket(rowTicket);
+  };
+
   return (
-    <Table>
-      <TableCaption>Lista nieopłaconych mandatów.</TableCaption>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-[230px]">Numer</TableHead>
-          <TableHead>Data wpływu poczty</TableHead>
-          <TableHead className="w-[100px]">Kwota</TableHead>
-          <TableHead className="text-right w-[100px]">Waluta</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {unpaidTickets.map((ticket) => (
-          <TableRow key={ticket.id}>
-            <TableCell className="font-medium">{ticket.number}</TableCell>
-            <TableCell>
-              {formatDateValueToString(ticket.postPayoutDate)}
-            </TableCell>
-            <TableCell>{ticket.amount}</TableCell>
-            <TableCell className="text-right">{ticket.currency}</TableCell>
+    <>
+      <TicketPaymentSheet
+        ticket={selectedTicket}
+        handleOpenChange={handleOpenChange}
+      />
+      <Table>
+        <TableCaption>Lista nieopłaconych mandatów.</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[230px]">Numer</TableHead>
+            <TableHead>Data wpływu poczty</TableHead>
+            <TableHead className="w-[100px]">Kwota</TableHead>
+            <TableHead className="text-right w-[100px]">Waluta</TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-      <TableFooter>
-        <TableRow>
-          <TableCell colSpan={3}>Razem</TableCell>
-          <TableCell className="text-right">{unpaidTickets.length}</TableCell>
-        </TableRow>
-      </TableFooter>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {unpaidTickets.map((ticket) => (
+            <TableRow
+              key={ticket.id}
+              className="cursor-pointer"
+              onClick={() => handleRowClick(ticket)}
+            >
+              <TableCell className="font-medium">{ticket.number}</TableCell>
+              <TableCell>
+                {formatDateValueToString(ticket.postPayoutDate)}
+              </TableCell>
+              <TableCell>{ticket.amount}</TableCell>
+              <TableCell className="text-right">{ticket.currency}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TableCell colSpan={3}>Razem</TableCell>
+            <TableCell className="text-right">{unpaidTickets.length}</TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>
+    </>
   );
 };
 
