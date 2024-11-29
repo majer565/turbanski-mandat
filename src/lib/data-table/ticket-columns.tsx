@@ -11,6 +11,7 @@ import {
   ArrowDownNarrowWide,
   ArrowDownWideNarrow,
   CheckIcon,
+  CreditCard,
   FilePen,
   MoreHorizontal,
   Pencil,
@@ -46,7 +47,8 @@ const renderSortIcon = (sortOption: string | false) => {
 
 export const getTicketColumns = (
   handleEdit: (id: string) => void,
-  handleFileEdit: (number: string) => void
+  handleFileEdit: (number: string) => void,
+  handleEditPayment: (ticket: Ticket) => void
 ): ColumnDef<Ticket & { driver: Driver }>[] => {
   return [
     {
@@ -66,9 +68,7 @@ export const getTicketColumns = (
             <DropdownMenuContent align="end">
               <DropdownMenuLabel color="primary">Akcje</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => handleEdit(String(ticket.id))}
-              >
+              <DropdownMenuItem onClick={() => handleEdit(String(ticket.id))}>
                 <Pencil className="h-4 w-4 mr-2 text-primary" />
                 <span>Edytuj</span>
               </DropdownMenuItem>
@@ -78,6 +78,12 @@ export const getTicketColumns = (
                 <FilePen className="h-4 w-4 mr-2 text-primary" />
                 <span>Edytuj plik</span>
               </DropdownMenuItem>
+              {ticket.payment === "Nieopłacone" && (
+                <DropdownMenuItem onClick={() => handleEditPayment(ticket)}>
+                  <CreditCard className="h-4 w-4 mr-2 text-primary" />
+                  <span>Zatwierdź płatność</span>
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         );
