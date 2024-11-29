@@ -30,7 +30,7 @@ const renderSortIcon = (sortOption: string | false) => {
 };
 
 export const getDriverColumns = (
-  handleEdit: (id: string) => void
+  handleEditDriver: (driver: Driver) => void
 ): ColumnDef<Driver>[] => {
   return [
     {
@@ -50,7 +50,7 @@ export const getDriverColumns = (
             <DropdownMenuContent align="end">
               <DropdownMenuLabel color="primary">Akcje</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => handleEdit(String(driver.id))}>
+              <DropdownMenuItem onClick={() => handleEditDriver(driver)}>
                 <Pencil className="h-4 w-4 mr-2 text-primary" />
                 <span>Edytuj</span>
               </DropdownMenuItem>

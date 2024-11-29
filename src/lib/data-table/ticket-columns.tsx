@@ -47,8 +47,8 @@ const renderSortIcon = (sortOption: string | false) => {
 
 export const getTicketColumns = (
   handleEdit: (id: string) => void,
-  handleFileEdit: (number: string) => void,
-  handleEditPayment: (ticket: Ticket) => void
+  handleFileEdit: (ticket: Ticket) => void,
+  handlePaymentEdit: (ticket: Ticket) => void
 ): ColumnDef<Ticket & { driver: Driver }>[] => {
   return [
     {
@@ -72,14 +72,12 @@ export const getTicketColumns = (
                 <Pencil className="h-4 w-4 mr-2 text-primary" />
                 <span>Edytuj</span>
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleFileEdit(String(ticket.id))}
-              >
+              <DropdownMenuItem onClick={() => handleFileEdit(ticket)}>
                 <FilePen className="h-4 w-4 mr-2 text-primary" />
                 <span>Edytuj plik</span>
               </DropdownMenuItem>
               {ticket.payment === "Nieopłacone" && (
-                <DropdownMenuItem onClick={() => handleEditPayment(ticket)}>
+                <DropdownMenuItem onClick={() => handlePaymentEdit(ticket)}>
                   <CreditCard className="h-4 w-4 mr-2 text-primary" />
                   <span>Zatwierdź płatność</span>
                 </DropdownMenuItem>
