@@ -22,18 +22,21 @@ import { format } from "date-fns";
 import { pl } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
 import { Button } from "../../ui/button";
+import { useRef } from "react";
 
 interface FormDateProps<T extends FieldValues> extends FormItemProps<T> {
   placeholder: string;
 }
 const FormDateItem = <T extends FieldValues>(props: FormDateProps<T>) => {
+  const labelRef = useRef<HTMLLabelElement>(null);
+
   return (
     <FormField
       control={props.form.control}
       name={props.name as Path<T>}
       render={({ field }) => (
         <FormItem className="flex flex-col">
-          <FormLabel className="h-[24px]">{props.label}</FormLabel>
+          <FormLabel ref={labelRef} className="h-[24px]">{props.label}</FormLabel>
           <Popover modal>
             <PopoverTrigger asChild>
               <FormControl>
@@ -58,7 +61,7 @@ const FormDateItem = <T extends FieldValues>(props: FormDateProps<T>) => {
               <Calendar
                 mode="single"
                 selected={field.value}
-                onSelect={(e) => field.onChange(String(e))}
+                onSelect={(e) => {field.onChange(String(e)); labelRef.current?.click()}}
                 disabled={(date) =>
                   date > new Date() || date < new Date("1900-01-01")
                 }
