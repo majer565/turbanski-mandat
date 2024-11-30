@@ -11,6 +11,7 @@ import { Check, ChevronsUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { useRef } from "react";
 
 interface FormComboboxProps<T extends FieldValues> extends FormItemProps<T> {
   placeholder: string;
@@ -18,13 +19,15 @@ interface FormComboboxProps<T extends FieldValues> extends FormItemProps<T> {
 }
 
 const FormComboboxItem = <T extends FieldValues>(props: FormComboboxProps<T>) => {
+  const labelRef = useRef<HTMLLabelElement>(null);
+
   return (
     <FormField
       control={props.form.control}
       name={props.name as Path<T>}
       render={({ field }) => (
         <FormItem className="flex flex-col">
-          <FormLabel className="h-[18px] mt-[6px]">{props.label}</FormLabel>
+          <FormLabel ref={labelRef} className="h-[18px] mt-[6px]">{props.label}</FormLabel>
           <Popover>
             <PopoverTrigger asChild>
               <FormControl>
@@ -52,6 +55,7 @@ const FormComboboxItem = <T extends FieldValues>(props: FormComboboxProps<T>) =>
                         key={option.value}
                         onSelect={() => {
                           field.onChange(option.value as PathValue<T, Path<T>>);
+                          labelRef.current?.click();
                         }}
                       >
                         <Check
