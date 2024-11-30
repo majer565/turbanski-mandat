@@ -25,7 +25,7 @@ export default async function Mandaty() {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      <div className="container mx-auto py-10">
+      <div className="container mx-auto py-10 max-w-max">
         <Suspense>
           <TicketsTable />
         </Suspense>
