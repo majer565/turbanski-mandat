@@ -5,6 +5,7 @@ import { useGetTickets } from "../../hooks/useGetTickets";
 import HomeCharts from "../charts/home-charts";
 import HomeTable from "../tables/home-table";
 import FlexRow from "./FlexRowWrapper";
+import HomeDriversStatsTable from "../tables/home-driver-stats";
 
 export interface HomeData {
   tickets?: Ticket[];
@@ -17,7 +18,10 @@ const HomeWrapper = () => {
 
   return (
     <FlexRow className="gap-16">
-      <HomeCharts tickets={data} isLoading={isLoading} isError={isError} />
+      <div className="flex flex-col gap-6 max-w-[30rem]">
+        <HomeCharts tickets={data} isLoading={isLoading} isError={isError} />
+        <HomeDriversStatsTable />
+      </div>
       <HomeTable tickets={data} isLoading={isLoading} isError={isError} />
     </FlexRow>
   );
