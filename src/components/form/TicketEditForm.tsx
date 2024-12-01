@@ -141,15 +141,15 @@ const TicketEditForm = ({ defaultData }: TicketEditFormProps) => {
           />
           <FormDateItem
             form={form}
+            label="Data wpływu poczty"
+            name="postPayoutDate"
+            placeholder="Wybierz datę"
+          />
+          <FormDateItem
+            form={form}
             label="Data mandatu"
             name="date"
             placeholder="Wybierz datę"
-          />
-          <FormTimeItem
-            form={form}
-            label="Godzina mandatu"
-            name="time"
-            placeholder="Wybierz godzinę"
           />
           <FormInputItem
             form={form}
@@ -157,29 +157,11 @@ const TicketEditForm = ({ defaultData }: TicketEditFormProps) => {
             name="vehiclePlate"
             placeholder="Wprowadź numer"
           />
-          <FormInputItem
+          <FormTimeItem
             form={form}
-            label="Kwota mandatu"
-            type="number"
-            min="0"
-            name="amount"
-            placeholder="Wprowadź kwotę"
-          />
-          <FormSelectItem
-            form={form}
-            label="Waluta"
-            name="currency"
-            placeholder="Wybierz walutę"
-            options={[
-              { value: "EUR", label: "EUR" },
-              { value: "PLN", label: "PLN" },
-            ]}
-          />
-          <FormDateItem
-            form={form}
-            label="Data wpływu poczty"
-            name="postPayoutDate"
-            placeholder="Wybierz datę"
+            label="Godzina mandatu"
+            name="time"
+            placeholder="Wybierz godzinę"
           />
           <FormSelectItem
             form={form}
@@ -191,12 +173,30 @@ const TicketEditForm = ({ defaultData }: TicketEditFormProps) => {
               { value: "Nieopłacone", label: "Nieopłacone" },
             ]}
           />
+          <FormInputItem
+            form={form}
+            label="Kwota mandatu"
+            type="number"
+            min="0"
+            name="amount"
+            placeholder="Wprowadź kwotę"
+          />
           <FormDateItem
             form={form}
             label="Data płatności"
             name="paymentDate"
             placeholder="Wybierz datę"
             disabled={payment === "Nieopłacone"}
+          />
+          <FormSelectItem
+            form={form}
+            label="Waluta"
+            name="currency"
+            placeholder="Wybierz walutę"
+            options={[
+              { value: "EUR", label: "EUR" },
+              { value: "PLN", label: "PLN" },
+            ]}
           />
           <FormComboboxItem
             form={form}
