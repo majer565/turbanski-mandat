@@ -23,14 +23,17 @@ export function DataTableExportButton<TData>({
   const exportToCSV = async () => {
     const rows = table.getCoreRowModel().rows;
     const columns = table.getAllColumns();
+    const filteredColumns = columns.filter((column) => column.id !== "actions");
     const rowData = rows.map((row: Row<TData>) => {
       const rowDataObj: { [key: string]: any } = {};
-      columns.forEach((column) => {
-        rowDataObj[`${dataMap.get(column.id)}`] = isValidDate(
-          row.getValue(column.id)
-        )
-          ? formatDateValueToString(row.getValue(column.id))
-          : row.getValue(column.id);
+      filteredColumns.forEach((column) => {
+        if (column.id.toLocaleLowerCase().includes("date")) {
+          rowDataObj[`${dataMap.get(column.id)}`] = formatDateValueToString(
+            row.getValue(column.id)
+          );
+        } else {
+          rowDataObj[`${dataMap.get(column.id)}`] = row.getValue(column.id);
+        }
       });
       return rowDataObj;
     });
