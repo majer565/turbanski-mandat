@@ -13,8 +13,6 @@ import { Button } from "../ui/button";
 import { Form } from "../ui/form";
 import { useToast } from "../ui/use-toast";
 import FormFileItem from "./form-items/form-file-item";
-import { Ticket } from "@prisma/client";
-import { useRouter } from "next/navigation";
 
 interface TicketEditFormProps {
   id?: number;
@@ -25,7 +23,6 @@ const TicketFileEditForm = ({ id, closeDialog }: TicketEditFormProps) => {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const { toast } = useToast();
-  const router = useRouter();
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: updateTicketFile,
@@ -44,7 +41,7 @@ const TicketFileEditForm = ({ id, closeDialog }: TicketEditFormProps) => {
         title: "Pomyślnie zaktualizowano mandat",
         description: `Mandat o numerze ${data.number} został zaktualizowany`,
       });
-      queryClient.invalidateQueries({ queryKey: ["tickets"] });
+      queryClient.invalidateQueries({ queryKey: ["tickets", 'ticket', id] });
       setLoading(false);
       closeDialog();
     },
@@ -68,8 +65,7 @@ const TicketFileEditForm = ({ id, closeDialog }: TicketEditFormProps) => {
       if (!pdfFile) throw new Error("Nie udało się wczytać poprawnie pliku");
       savedFile = await uploadFile(pdfFile);
       if (!savedFile) throw new Error("Nie udało się zapisać pliku");
-      if (!values.id)
-        throw new Error("Nie udało się pobrać numeru mandatu");
+      if (!values.id) throw new Error("Nie udało się pobrać numeru mandatu");
 
       const ticketFile = {
         id: values.id,

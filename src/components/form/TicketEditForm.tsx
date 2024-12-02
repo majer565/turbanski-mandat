@@ -82,8 +82,8 @@ const TicketEditForm = ({ defaultData }: TicketEditFormProps) => {
   const payment = form.watch("payment");
 
   useEffect(() => {
-    if (payment === "Nieopłacone") form.setValue("paymentDate", undefined);
-  }, [payment]);
+    if (payment === "Nieopłacone") form.setValue("paymentDate", "");
+  }, [form, payment]);
 
   const handleRedirect = () => {
     router.push("/mandaty");
