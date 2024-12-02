@@ -19,6 +19,17 @@ import FormDateItem from "./form-items/form-date-item";
 import FormInputItem from "./form-items/form-input-item";
 import FormSelectItem from "./form-items/form-select-item";
 import FormTimeItem from "./form-items/form-time-item";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export interface FormTicket
   extends Omit<Ticket, "amount" | "driverId" | "paymentDate"> {
@@ -130,6 +141,7 @@ const TicketEditForm = ({ defaultData }: TicketEditFormProps) => {
     <div>
       <Form {...form}>
         <form
+          id="edit-ticket-form"
           onSubmit={form.handleSubmit(onSubmit)}
           className="grid grid-cols-2 gap-x-16 gap-y-2"
         >
@@ -211,13 +223,36 @@ const TicketEditForm = ({ defaultData }: TicketEditFormProps) => {
             }
           />
           <div className="col-start-1 col-end-3 flex justify-center">
-            <Button type="submit" disabled={loading} className="w-1/4">
-              {loading ? (
-                <LoaderCircle className="w-4 h-4 animate-spin" />
-              ) : (
-                "Zatwierdź"
-              )}
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button type="button" className="w-1/4" disabled={loading}>
+                  Edytuj mandat
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Czy zatwierdzić operację?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Czy na pewno chcesz edytować mandat? Sprawdź czy wszystkie
+                    pola są wypełnione poprawnie.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Anuluj</AlertDialogCancel>
+                  <AlertDialogAction
+                    form="edit-ticket-form"
+                    type="submit"
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <LoaderCircle className="w-4 h-4 animate-spin" />
+                    ) : (
+                      "Zatwierdź"
+                    )}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </form>
       </Form>
