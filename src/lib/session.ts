@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import "server-only";
 import { logger } from "./logger/client";
-import { Request } from "./logger/Logger";
+import { LoggerRequest } from "./logger/Logger";
 
 const secretKey = process.env.SESSION_SECRET;
 const encodedKey = new TextEncoder().encode(secretKey);
@@ -23,7 +23,7 @@ export async function decrypt(session: string | undefined = "") {
     });
     return payload;
   } catch (error) {
-    logger.error("Failed to verify session:: " + error, Request.AUTH);
+    logger.error("Failed to verify session:: " + error, LoggerRequest.AUTH);
   }
 }
 

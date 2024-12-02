@@ -4,14 +4,14 @@ import { Driver } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../../prisma/client";
 import { logger } from "../../../lib/logger/client";
-import { Request } from "../../../lib/logger/Logger";
+import { LoggerRequest } from "../../../lib/logger/Logger";
 
 export async function GET() {
   try {
     const res = await prisma.driver.findMany();
     return Response.json(res);
   } catch (e) {
-    logger.error("Can't fetch data from database:: " + e, Request.GET);
+    logger.error("Can't fetch data from database:: " + e, LoggerRequest.GET);
     throw new Error("Can't fetch data from database");
   }
 }
@@ -33,10 +33,10 @@ export async function POST(req: NextRequest) {
 
     const res = await prisma.driver.create({ data: driver });
 
-    logger.info(`Driver created successfully with id ${res.id}.`, Request.POST);
+    logger.info(`Driver created successfully with id ${res.id}.`, LoggerRequest.POST);
     return NextResponse.json(res, { status: 200 });
   } catch (e) {
-    logger.error("Can't create driver:: " + e, Request.POST);
+    logger.error("Can't create driver:: " + e, LoggerRequest.POST);
     return NextResponse.json({ message: String(e) }, { status: 500 });
   }
 }
@@ -65,10 +65,10 @@ export async function PUT(req: NextRequest) {
       },
     });
 
-    logger.info(`Driver with id ${res.id} updated successfully.`, Request.PUT);
+    logger.info(`Driver with id ${res.id} updated successfully.`, LoggerRequest.PUT);
     return NextResponse.json(res, { status: 200 });
   } catch (e) {
-    logger.error("Can't update driver:: " + e, Request.PUT);
+    logger.error("Can't update driver:: " + e, LoggerRequest.PUT);
     return NextResponse.json({ message: String(e) }, { status: 500 });
   }
 }

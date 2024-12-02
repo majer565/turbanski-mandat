@@ -4,7 +4,7 @@ import { Ticket } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../../prisma/client";
 import { logger } from "../../../lib/logger/client";
-import { Request } from "../../../lib/logger/Logger";
+import { LoggerRequest } from "../../../lib/logger/Logger";
 
 export async function GET(_req: NextRequest) {
   try {
@@ -12,7 +12,7 @@ export async function GET(_req: NextRequest) {
 
     return Response.json(res);
   } catch (e) {
-    logger.error("Can't fetch data from database:: " + e, Request.GET);
+    logger.error("Can't fetch data from database:: " + e, LoggerRequest.GET);
     throw new Error("Can't fetch data from database:: " + e);
   }
 }
@@ -33,10 +33,10 @@ export async function POST(req: NextRequest) {
 
     const res = await prisma.ticket.create({ data: ticket });
 
-    logger.info(`Ticket created successfully with id ${res.id}.`, Request.POST);
+    logger.info(`Ticket created successfully with id ${res.id}.`, LoggerRequest.POST);
     return NextResponse.json(res, { status: 200 });
   } catch (e) {
-    logger.error("Can't create ticket:: " + e, Request.POST);
+    logger.error("Can't create ticket:: " + e, LoggerRequest.POST);
     return NextResponse.json({ message: String(e) }, { status: 500 });
   }
 }
@@ -73,10 +73,10 @@ export async function PUT(req: NextRequest) {
       },
     });
 
-    logger.info(`Ticket with id ${res.id} updated successfully.`, Request.PUT);
+    logger.info(`Ticket with id ${res.id} updated successfully.`, LoggerRequest.PUT);
     return NextResponse.json(res, { status: 200 });
   } catch (e) {
-    logger.error("Can't update ticket:: " + e, Request.PUT);
+    logger.error("Can't update ticket:: " + e, LoggerRequest.PUT);
     return NextResponse.json({ message: String(e) }, { status: 500 });
   }
 }

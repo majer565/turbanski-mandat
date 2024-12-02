@@ -1,7 +1,7 @@
 import { verifySession } from "@/lib/session";
 import { prisma } from "../../../../../prisma/client";
 import { logger } from "../../../../lib/logger/client";
-import { Request } from "../../../../lib/logger/Logger";
+import { LoggerRequest } from "../../../../lib/logger/Logger";
 
 export async function GET(_req: Request, { params }: { params: { id: string } }) {
   try {
@@ -16,7 +16,7 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
     });
     return Response.json(res);
   } catch (e) {
-    logger.error("Can't fetch data from database:: " + e, Request.GET);
+    logger.error("Can't fetch data from database:: " + e, LoggerRequest.GET);
     throw new Error("Can't fetch data from database:: " + e);
   }
 }

@@ -7,7 +7,7 @@ export class Logger {
 
   constructor() {}
 
-  info(message: string, request: Request) {
+  info(message: string, request: LoggerRequest) {
     console.log(
       "%s[INFO]%s[%s]%s[%s] %s%s",
       this.infoColor,
@@ -20,7 +20,7 @@ export class Logger {
     );
   }
 
-  error(message: string, request: Request) {
+  error(message: string, request: LoggerRequest) {
     console.log(
         "%s[ERROR]%s[%s]%s[%s] %s%s",
         this.errorColor,
@@ -33,7 +33,7 @@ export class Logger {
       );
   }
 
-  warn(message: string, request: Request) {
+  warn(message: string, request: LoggerRequest) {
     console.log(
         "%s[WARNING]%s[%s]%s[%s] %s%s",
         this.warnColor,
@@ -47,7 +47,7 @@ export class Logger {
   }
 }
 
-export enum Request {
+export enum LoggerRequest {
   GET = "GET",
   POST = "POST",
   PUT = "PUT",

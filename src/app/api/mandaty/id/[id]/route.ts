@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../../../../prisma/client";
 import { logger } from "../../../../../lib/logger/client";
-import { Request } from "../../../../../lib/logger/Logger";
+import { LoggerRequest } from "../../../../../lib/logger/Logger";
 
 export async function GET(
   _request: NextRequest,
@@ -16,7 +16,7 @@ export async function GET(
 
     return Response.json(res);
   } catch (error) {
-    logger.error("Failed to fetch ticket:: " + error, Request.GET);
+    logger.error("Failed to fetch ticket:: " + error, LoggerRequest.GET);
     return NextResponse.json(
       { message: "Failed to fetch ticket" },
       { status: 500 }
