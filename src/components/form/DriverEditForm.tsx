@@ -35,7 +35,8 @@ const DriverEditForm = ({ defaultData, closeDialog }: DriverEditFormProps) => {
       toast({
         variant: "destructive",
         title: "Błąd | Nie udało się edytować kierowcy",
-        description: e.message,
+        description:
+          "Wystąpił błąd podczas edycji kierowcy. Spróbuj ponownie. Jeśli problem będzie się powtarzał, skontaktuj się z administratorem.",
       });
       setLoading(false);
     },
@@ -69,7 +70,8 @@ const DriverEditForm = ({ defaultData, closeDialog }: DriverEditFormProps) => {
       toast({
         variant: "destructive",
         title: "Błąd | Nie udało się edytować kierowcy",
-        description: String(e),
+        description:
+          "Wystąpił błąd podczas edycji kierowcy. Spróbuj ponownie. Jeśli problem będzie się powtarzał, skontaktuj się z administratorem.",
       });
       setLoading(false);
     }

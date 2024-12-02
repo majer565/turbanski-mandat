@@ -45,7 +45,8 @@ const TicketForm = () => {
       toast({
         variant: "destructive",
         title: "Błąd | Nie udało się zapisać mandatu",
-        description: e.message,
+        description:
+          "Wystąpił błąd podczas zapisywania mandatu. Spróbuj ponownie. Jeśli problem będzie się powtarzał, skontaktuj się z administratorem.",
       });
       setLoading(false);
     },
@@ -107,7 +108,7 @@ const TicketForm = () => {
         throw new Error("Mandat o takim numerze już istnieje");
 
       if (!pdfFile) throw new Error("Nie udało się wczytać poprawnie pliku");
-      console.log(pdfFile);
+      
       savedFile = await uploadFile(pdfFile);
       if (!savedFile) throw new Error("Nie udało się zapisać pliku");
 
@@ -128,7 +129,8 @@ const TicketForm = () => {
       toast({
         variant: "destructive",
         title: "Błąd | Nie udało się zapisać mandatu",
-        description: String(e),
+        description:
+          "Wystąpił błąd podczas zapisywania mandatu. Spróbuj ponownie. Jeśli problem będzie się powtarzał, skontaktuj się z administratorem.",
       });
 
       if (savedFile !== null) await removeFile(savedFile);

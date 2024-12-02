@@ -36,7 +36,7 @@ const DriversTable = () => {
   const { toast } = useToast();
 
   const router = useRouter();
-  
+
   const handleEditDriver = (driver: Driver) => {
     setSelectedDriver(driver);
   };
@@ -63,7 +63,8 @@ const DriversTable = () => {
       toast({
         variant: "destructive",
         title: "Błąd | Nie można wczytać danych",
-        description: "Wystąpił problem przy ładowaniu danych. Spróbuj ponownie",
+        description:
+          "Wystąpił problem przy ładowaniu danych. Spróbuj ponownie. Jeśli problem będzie się powtarzał, skontaktuj się z administratorem.",
       });
     }
   }, [isError]);

@@ -30,7 +30,7 @@ const TicketFileEditForm = ({ id, closeDialog }: TicketEditFormProps) => {
       toast({
         variant: "destructive",
         title: "Błąd | Nie udało się edytować pliku",
-        description: e.message,
+        description: "Wystąpił błąd podczas edycji pliku. Spróbuj ponownie. Jeśli problem będzie się powtarzał, skontaktuj się z administratorem.",
       });
       setLoading(false);
     },
@@ -77,7 +77,7 @@ const TicketFileEditForm = ({ id, closeDialog }: TicketEditFormProps) => {
       toast({
         variant: "destructive",
         title: "Błąd | Nie udało się zapisać mandatu",
-        description: String(e),
+        description: "Wystąpił błąd podczas zapisywania mandatu. Spróbuj ponownie. Jeśli problem będzie się powtarzał, skontaktuj się z administratorem.",
       });
 
       if (savedFile !== null) await removeFile(savedFile);

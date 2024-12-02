@@ -1,6 +1,8 @@
 import fs from "fs";
 import { NextResponse } from "next/server";
 import path from "path";
+import { logger } from "../../../../lib/logger/client";
+import { LoggerRequest } from "../../../../lib/logger/Logger";
 
 export async function GET(_req: Request, { params }: { params: { filename: string } }) {
   try {
@@ -26,6 +28,7 @@ export async function GET(_req: Request, { params }: { params: { filename: strin
       },
     });
   } catch (error) {
+    logger.error("Failed to retrieve file:: " + error, LoggerRequest.GET);
     return NextResponse.json(
       { message: "Failed to retrieve file" },
       { status: 500 }

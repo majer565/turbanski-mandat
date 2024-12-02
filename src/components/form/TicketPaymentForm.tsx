@@ -29,7 +29,8 @@ const TicketPaymentForm = ({
       toast({
         variant: "destructive",
         title: "Błąd | Nie udało się zmienić statusu płatności",
-        description: e.message,
+        description:
+          "Wystąpił błąd podczas zmiany statusu płatności. Spróbuj ponownie. Jeśli problem będzie się powtarzał, skontaktuj się z administratorem.",
       });
       setLoading(false);
     },
@@ -74,7 +75,8 @@ const TicketPaymentForm = ({
       toast({
         variant: "destructive",
         title: "Błąd | Nie udało się zmienić statusu płatności",
-        description: String(e),
+        description:
+          "Wystąpił błąd podczas zmiany statusu płatności. Spróbuj ponownie. Jeśli problem będzie się powtarzał, skontaktuj się z administratorem.",
       });
       setLoading(false);
     }

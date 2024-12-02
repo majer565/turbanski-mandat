@@ -68,7 +68,7 @@ const TicketEditForm = ({ defaultData }: TicketEditFormProps) => {
       toast({
         variant: "destructive",
         title: "Błąd | Nie udało się edytować mandatu",
-        description: e.message,
+        description: "Wystąpił błąd podczas edycji mandatu. Spróbuj ponownie. Jeśli problem będzie się powtarzał, skontaktuj się z administratorem.",
       });
       setLoading(false);
     },
@@ -130,7 +130,7 @@ const TicketEditForm = ({ defaultData }: TicketEditFormProps) => {
       toast({
         variant: "destructive",
         title: "Błąd | Nie udało się zapisać mandatu",
-        description: String(e),
+        description: "Wystąpił błąd podczas zapisywania mandatu. Spróbuj ponownie. Jeśli problem będzie się powtarzał, skontaktuj się z administratorem.",
       });
 
       setLoading(false);
