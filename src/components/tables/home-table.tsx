@@ -10,13 +10,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Ticket } from "@prisma/client";
 import { CheckCheck } from "lucide-react";
+import { useState } from "react";
 import { formatDateValueToString } from "../../lib/utils";
+import TicketPaymentSheet from "../form/TicketPaymentSheet";
 import { Skeleton } from "../ui/skeleton";
 import { HomeData } from "../wrappers/home-wrapper";
-import TicketPaymentSheet from "../form/TicketPaymentSheet";
-import { useState } from "react";
-import { Ticket } from "@prisma/client";
 
 const HomeTable = ({ tickets, isLoading, isError }: HomeData) => {
   const [selectedTicket, setSelectedTicket] = useState<Ticket | undefined>();
@@ -31,6 +31,9 @@ const HomeTable = ({ tickets, isLoading, isError }: HomeData) => {
             <TableHead>Data wpływu poczty</TableHead>
             <TableHead className="w-[100px]">Kwota</TableHead>
             <TableHead className="text-right w-[100px]">Waluta</TableHead>
+            <TableHead className="text-right w-[130px]">
+              Dni od wpływu
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -48,12 +51,15 @@ const HomeTable = ({ tickets, isLoading, isError }: HomeData) => {
               <TableCell>
                 <Skeleton className="h-4 w-full" />
               </TableCell>
+              <TableCell>
+                <Skeleton className="h-4 w-full" />
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableCell colSpan={3}>Razem</TableCell>
+            <TableCell colSpan={4}>Razem</TableCell>
             <TableCell className="text-right">
               <Skeleton className="h-4 w-full" />
             </TableCell>
@@ -72,18 +78,21 @@ const HomeTable = ({ tickets, isLoading, isError }: HomeData) => {
             <TableHead>Data wpływu poczty</TableHead>
             <TableHead className="w-[100px]">Kwota</TableHead>
             <TableHead className="text-right w-[100px]">Waluta</TableHead>
+            <TableHead className="text-right w-[100px]">
+              Dni od wpływu
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           <TableRow>
-            <TableCell colSpan={4} className="font-medium text-center">
+            <TableCell colSpan={5} className="font-medium text-center">
               Wystąpił błąd podczas pobierania danych. Spróbuj ponownie.
             </TableCell>
           </TableRow>
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableCell colSpan={3}>Razem</TableCell>
+            <TableCell colSpan={4}>Razem</TableCell>
             <TableCell className="text-right">
               <Skeleton className="h-4 w-full" />
             </TableCell>
@@ -93,7 +102,13 @@ const HomeTable = ({ tickets, isLoading, isError }: HomeData) => {
     );
 
   const unpaidTickets =
-    tickets?.filter((ticket) => ticket.payment === "Nieopłacone") || [];
+    tickets
+      ?.filter(({ payment }) => payment === "Nieopłacone")
+      ?.sort(
+        (a, b) =>
+          new Date(a.postPayoutDate).getTime() -
+          new Date(b.postPayoutDate).getTime()
+      ) || [];
 
   if (!unpaidTickets)
     return (
@@ -105,11 +120,14 @@ const HomeTable = ({ tickets, isLoading, isError }: HomeData) => {
             <TableHead>Data wpływu poczty</TableHead>
             <TableHead className="w-[100px]">Kwota</TableHead>
             <TableHead className="text-right w-[100px]">Waluta</TableHead>
+            <TableHead className="text-right w-[100px]">
+              Dni od wpływu
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           <TableRow>
-            <TableCell colSpan={4} className="font-medium text-center">
+            <TableCell colSpan={5} className="font-medium text-center">
               <div className="flex justify-center gap-2 items-center">
                 Brak nieopłaconych mandatów
                 <CheckCheck className="w-4 h-4 text-primary" />
@@ -119,7 +137,7 @@ const HomeTable = ({ tickets, isLoading, isError }: HomeData) => {
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableCell colSpan={3}>Razem</TableCell>
+            <TableCell colSpan={4}>Razem</TableCell>
             <TableCell className="text-right">0</TableCell>
           </TableRow>
         </TableFooter>
@@ -132,6 +150,25 @@ const HomeTable = ({ tickets, isLoading, isError }: HomeData) => {
 
   const handleRowClick = (rowTicket: Ticket) => {
     setSelectedTicket(rowTicket);
+  };
+
+  const getDateCellFromPostPayoutDate = (postPayoutDate: string) => {
+    const postDate = new Date(postPayoutDate);
+    const currentDate = new Date();
+    const diffTime = Math.abs(currentDate.getTime() - postDate.getTime());
+    const daysFrom = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+    return (
+      <TableCell
+        className={`font-medium text-right ${
+          daysFrom <= 1 && "text-yellow-500"
+        } ${daysFrom > 1 && daysFrom <= 3 && "text-orange-500"} ${
+          daysFrom > 3 && "text-red-600"
+        }`}
+      >
+        {daysFrom}
+      </TableCell>
+    );
   };
 
   return (
@@ -148,6 +185,9 @@ const HomeTable = ({ tickets, isLoading, isError }: HomeData) => {
             <TableHead>Data wpływu poczty</TableHead>
             <TableHead className="w-[100px]">Kwota</TableHead>
             <TableHead className="text-right w-[100px]">Waluta</TableHead>
+            <TableHead className="text-right w-[130px]">
+              Dni od wpływu
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -163,12 +203,13 @@ const HomeTable = ({ tickets, isLoading, isError }: HomeData) => {
               </TableCell>
               <TableCell>{ticket.amount}</TableCell>
               <TableCell className="text-right">{ticket.currency}</TableCell>
+              {getDateCellFromPostPayoutDate(ticket.postPayoutDate)}
             </TableRow>
           ))}
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableCell colSpan={3}>Razem</TableCell>
+            <TableCell colSpan={4}>Razem</TableCell>
             <TableCell className="text-right">{unpaidTickets.length}</TableCell>
           </TableRow>
         </TableFooter>
