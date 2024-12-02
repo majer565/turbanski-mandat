@@ -21,7 +21,7 @@ const TicketFileDialog = ({ filePath, ticketNumber }: TicketFileDialogProps) => 
 
   return (
     <Dialog>
-      <DialogTrigger>
+      <DialogTrigger asChild>
         <Button variant="ghost" size="icon">
           <FileSearch className="h-4 w-4" />
         </Button>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useGetDrivers } from "@/hooks/useGetDrivers";
+import { Driver } from "@prisma/client";
 import {
   getCoreRowModel,
   getFilteredRowModel,
@@ -8,7 +9,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useColumnFilter } from "../../hooks/useColumnFilter";
 import { usePagination } from "../../hooks/usePagination";
@@ -19,9 +19,8 @@ import {
   getDriverColumns,
 } from "../../lib/data-table/driver-columns";
 import { DataTable } from "../data-table/DataTable";
-import { useToast } from "../ui/use-toast";
 import DriverEditSheet from "../form/DriverEditSheet";
-import { Driver } from "@prisma/client";
+import { useToast } from "../ui/use-toast";
 
 const DriversTable = () => {
   const { data, isPending, isError } = useGetDrivers();
@@ -34,8 +33,6 @@ const DriversTable = () => {
   });
   const { filters, setFilters } = useColumnFilter([]);
   const { toast } = useToast();
-
-  const router = useRouter();
 
   const handleEditDriver = (driver: Driver) => {
     setSelectedDriver(driver);

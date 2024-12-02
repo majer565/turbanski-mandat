@@ -30,7 +30,7 @@ export default async function AddDriver() {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      <div className="container mx-auto py-10">
+      <div className="container w-1/4 mx-auto py-10">
         <DriverForm />
       </div>
     </FlexColumn>
