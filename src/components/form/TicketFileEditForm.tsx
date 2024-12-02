@@ -30,7 +30,8 @@ const TicketFileEditForm = ({ id, closeDialog }: TicketEditFormProps) => {
       toast({
         variant: "destructive",
         title: "Błąd | Nie udało się edytować pliku",
-        description: "Wystąpił błąd podczas edycji pliku. Spróbuj ponownie. Jeśli problem będzie się powtarzał, skontaktuj się z administratorem.",
+        description:
+          "Wystąpił błąd podczas edycji pliku. Spróbuj ponownie. Jeśli problem będzie się powtarzał, skontaktuj się z administratorem.",
       });
       setLoading(false);
     },
@@ -41,7 +42,7 @@ const TicketFileEditForm = ({ id, closeDialog }: TicketEditFormProps) => {
         title: "Pomyślnie zaktualizowano mandat",
         description: `Mandat o numerze ${data.number} został zaktualizowany`,
       });
-      queryClient.invalidateQueries({ queryKey: ["tickets", 'ticket', id] });
+      queryClient.invalidateQueries({ queryKey: ["tickets", "ticket", id] });
       setLoading(false);
       closeDialog();
     },
@@ -49,7 +50,9 @@ const TicketFileEditForm = ({ id, closeDialog }: TicketEditFormProps) => {
 
   const fileSchema = z.object({
     id: z.number().default(id || -1),
-    filename: z.string(),
+    filename: z
+      .string({ required_error: "To pole jest wymagane" })
+      .min(2, { message: "To pole jest wymagane" }),
   });
 
   const form = useForm<z.infer<typeof fileSchema>>({
@@ -77,7 +80,8 @@ const TicketFileEditForm = ({ id, closeDialog }: TicketEditFormProps) => {
       toast({
         variant: "destructive",
         title: "Błąd | Nie udało się zapisać mandatu",
-        description: "Wystąpił błąd podczas zapisywania mandatu. Spróbuj ponownie. Jeśli problem będzie się powtarzał, skontaktuj się z administratorem.",
+        description:
+          "Wystąpił błąd podczas zapisywania mandatu. Spróbuj ponownie. Jeśli problem będzie się powtarzał, skontaktuj się z administratorem.",
       });
 
       if (savedFile !== null) await removeFile(savedFile);
@@ -95,7 +99,7 @@ const TicketFileEditForm = ({ id, closeDialog }: TicketEditFormProps) => {
           <FormFileItem
             form={form}
             label="Plik"
-            name="file"
+            name="filename"
             className="w-[27rem]"
             placeholder="Dodaj plik"
             setFile={setPdfFile}
