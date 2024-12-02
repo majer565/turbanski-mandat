@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../../../prisma/client";
+import { logger } from "../../../../lib/logger/client";
+import { Request } from "../../../../lib/logger/Logger";
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const driversStats = await prisma.ticket.groupBy({
       by: ["driverId"],
@@ -41,6 +43,7 @@ export async function GET(request: NextRequest) {
 
     return Response.json(formattedResult);
   } catch (error) {
+    logger.error("Can't fetch drivers stats:: " + error, Request.GET);
     return NextResponse.json(
       { message: "Failed to fetch ticket" },
       { status: 500 }

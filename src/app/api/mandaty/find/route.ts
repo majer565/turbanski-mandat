@@ -1,6 +1,8 @@
 import { Ticket } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../../../prisma/client";
+import { logger } from "../../../../lib/logger/client";
+import { Request } from "../../../../lib/logger/Logger";
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,6 +18,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(ticketFromDb, { status: 200 });
   } catch (e) {
+    logger.error("Can't create new ticket:: " + e, Request.POST);
     return NextResponse.json({ message: String(e) }, { status: 500 });
   }
 }

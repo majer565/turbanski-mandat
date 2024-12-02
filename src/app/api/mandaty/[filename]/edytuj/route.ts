@@ -2,6 +2,8 @@ import { verifySession } from "@/lib/session";
 import { Ticket } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../../../../prisma/client";
+import { logger } from "../../../../../lib/logger/client";
+import { Request } from "../../../../../lib/logger/Logger";
 
 export async function PUT(req: NextRequest) {
   try {
@@ -26,8 +28,10 @@ export async function PUT(req: NextRequest) {
       },
     });
 
+    logger.info(`Ticket with id ${res.id} updated successfully.`, Request.PUT);
     return NextResponse.json(res, { status: 200 });
   } catch (e) {
+    logger.error("Can't update ticket:: " + e, Request.PUT);
     return NextResponse.json({ message: String(e) }, { status: 500 });
   }
 }

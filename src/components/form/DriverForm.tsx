@@ -23,7 +23,8 @@ const DriverForm = () => {
       toast({
         variant: "destructive",
         title: "Błąd | Nie udało się dodać kierowcy",
-        description: e.message,
+        description:
+          "Wystąpił błąd podczas dodawania kierowcy. Spróbuj ponownie. Jeśli problem będzie się powtarzał, skontaktuj się z administratorem.",
       });
       setLoading(false);
     },
@@ -52,7 +53,6 @@ const DriverForm = () => {
   const onSubmit = async (values: z.infer<typeof driverSchema>) => {
     setLoading(true);
     try {
-      console.log("Trying mutation");
       mutation.mutate({
         name: values.name,
         surname: values.surname,
@@ -61,7 +61,8 @@ const DriverForm = () => {
       toast({
         variant: "destructive",
         title: "Błąd | Nie udało się dodać kierowcy",
-        description: String(e),
+        description:
+          "Wystąpił błąd podczas dodawania kierowcy. Spróbuj ponownie. Jeśli problem będzie się powtarzał, skontaktuj się z administratorem.",
       });
       setLoading(false);
     }
@@ -70,12 +71,29 @@ const DriverForm = () => {
   return (
     <div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-y-2">
-          <FormInputItem form={form} label="Imię" name="name" placeholder="Wprowadź imię" />
-          <FormInputItem form={form} label="Nazwisko" name="surname" placeholder="Wprowadź nazwisko" />
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col gap-y-2"
+        >
+          <FormInputItem
+            form={form}
+            label="Imię"
+            name="name"
+            placeholder="Wprowadź imię"
+          />
+          <FormInputItem
+            form={form}
+            label="Nazwisko"
+            name="surname"
+            placeholder="Wprowadź nazwisko"
+          />
           <div>
             <Button type="submit" disabled={loading} className="w-1/2">
-              {loading ? <LoaderCircle className="w-4 h-4 animate-spin" /> : "Dodaj kierowcę"}
+              {loading ? (
+                <LoaderCircle className="w-4 h-4 animate-spin" />
+              ) : (
+                "Dodaj kierowcę"
+              )}
             </Button>
           </div>
         </form>
