@@ -33,7 +33,7 @@ import {
   selectFilterFn,
   textFilterFn,
 } from "./data-table-filter-fns";
-import { dateSortFn } from "./data-table-sort-fns";
+import { dateSortFn, driverTextSortFn } from "./data-table-sort-fns";
 
 const renderSortIcon = (sortOption: string | false) => {
   if (!sortOption) return;
@@ -140,6 +140,7 @@ export const getTicketColumns = (
         );
       },
       filterFn: textFilterFn,
+      sortingFn: driverTextSortFn,
     },
     {
       accessorKey: "vehiclePlate",

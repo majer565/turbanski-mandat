@@ -18,3 +18,10 @@ export function dateSortFn<TData>(rowA: Row<TData>, rowB: Row<TData>, columnId: 
 
   return dateA.getTime() - dateB.getTime();
 }
+
+export function driverTextSortFn<TData>(rowA: Row<TData>, rowB: Row<TData>, columnId: string): number {
+  const driverA = rowA.getValue<string>(columnId).split(" ")[1];
+  const driverB = rowB.getValue<string>(columnId).split(" ")[1];
+
+  return driverA.localeCompare(driverB);
+}
