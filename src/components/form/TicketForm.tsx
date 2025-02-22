@@ -6,7 +6,15 @@ import { useGetDrivers } from "@/hooks/useGetDrivers";
 import { ticketSchema } from "@/lib/form/ticket-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { LoaderCircle, UserRoundPlus } from "lucide-react";
+import {
+  Ban,
+  CircleCheck,
+  CircleDot,
+  CircleHelp,
+  LoaderCircle,
+  RefreshCw,
+  UserRoundPlus,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -31,13 +39,17 @@ import {
 } from "@/components/ui/sheet";
 import DriverForm from "./DriverForm";
 import { findFormTicket } from "../../actions/findFormTicket";
+import { useCheckTicketIfExists } from "../../hooks/useCheckTicketIfExists";
 
 const TicketForm = () => {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const formRef = useRef<HTMLFormElement>(null);
+
   const { toast } = useToast();
+
   const { data: driversOptions } = useGetDrivers();
+
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: saveTicket,
@@ -81,11 +93,28 @@ const TicketForm = () => {
     defaultValues,
   });
 
+  const watchNumber = form.watch("number");
+  const watchDate = form.watch("date");
+  const watchTime = form.watch("time");
   const payment = form.watch("payment");
+
+  const {
+    data: isTicketInDb,
+    isLoading: isTicketInDbLoading,
+    error: isTicketInDbError,
+  } = useCheckTicketIfExists(watchNumber, watchDate, watchTime);
+
+  useEffect(() => {
+    if (watchNumber && watchDate && watchTime) {
+      queryClient.invalidateQueries({
+        queryKey: ["checkTicket", watchNumber, watchDate, watchTime],
+      });
+    }
+  }, [watchNumber, watchDate, watchTime, queryClient]);
 
   useEffect(() => {
     if (payment === "Nieopłacone") form.setValue("paymentDate", undefined);
-  }, [payment]);
+  }, [form, payment]);
 
   const onSubmit = async (values: z.infer<typeof ticketSchema>) => {
     setLoading(true);
@@ -108,7 +137,7 @@ const TicketForm = () => {
         throw new Error("Mandat o takim numerze już istnieje");
 
       if (!pdfFile) throw new Error("Nie udało się wczytać poprawnie pliku");
-      
+
       savedFile = await uploadFile(pdfFile);
       if (!savedFile) throw new Error("Nie udało się zapisać pliku");
 
@@ -135,6 +164,53 @@ const TicketForm = () => {
 
       if (savedFile !== null) await removeFile(savedFile);
       setLoading(false);
+    }
+  };
+
+  const getTicketStatusFooter = () => {
+    if (isTicketInDbLoading) {
+      return (
+        <>
+          <RefreshCw className="w-4 h-4 animate-spin text-primary" />
+          <span>Trwa sprawdzanie mandatu...</span>
+        </>
+      );
+    }
+
+    if (isTicketInDbError) {
+      return (
+        <>
+          <CircleDot className="w-4 h-4 text-destructive" />
+          <span className="text-destructive">
+            Wystąpił błąd podczas sprawdzania mandatu.
+          </span>
+        </>
+      );
+    }
+
+    if (isTicketInDb?.isInDb === undefined) {
+      return (
+        <>
+          <CircleHelp className="w-6 h-6" />
+          <span>Wprowadź numer, datę oraz godzinę mandatu.</span>
+        </>
+      );
+    }
+
+    if (isTicketInDb?.isInDb) {
+      return (
+        <>
+          <Ban className="w-4 h-4 text-destructive" />
+          <span>Mandat o takich danych już istnieje.</span>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <CircleCheck className="w-6 h-6 text-success" />
+          <span>Brak mandatu w bazie.</span>
+        </>
+      );
     }
   };
 
@@ -235,40 +311,45 @@ const TicketForm = () => {
       <div className="mt-8 flex flex-col gap-4 justify-center">
         <Separator />
         <div className="flex justify-between">
-          <Button
-            type="submit"
-            disabled={loading}
-            className="w-1/4"
-            onClick={() => formRef.current?.requestSubmit()}
-          >
-            {loading ? (
-              <LoaderCircle className="w-4 h-4 animate-spin" />
-            ) : (
-              "Dodaj mandat"
-            )}
-          </Button>
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button
-                className="bg-transparent"
-                type="button"
-                variant="outline"
-              >
-                <UserRoundPlus className="w-4 h-4 mr-2" />
-                <span>Dodaj kierowcę</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="w-[500px]">
-              <SheetHeader>
-                <SheetTitle>Dodaj kierowcę z panelu mandatu</SheetTitle>
-                <SheetDescription className="mb-3">
-                  W tym panelu możesz dodać kierowcę bezpośrednio, bez
-                  konieczności odwiedzania strony wszystkich kierowców.
-                </SheetDescription>
-                <DriverForm />
-              </SheetHeader>
-            </SheetContent>
-          </Sheet>
+          <div className="w-1/3 items-center flex gap-2 text-sm">
+            {getTicketStatusFooter()}
+          </div>
+          <div className="flex gap-4 w-2/3 justify-end">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button
+                  className="bg-transparent"
+                  type="button"
+                  variant="outline"
+                >
+                  <UserRoundPlus className="w-4 h-4 mr-2" />
+                  <span>Dodaj kierowcę</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[500px]">
+                <SheetHeader>
+                  <SheetTitle>Dodaj kierowcę z panelu mandatu</SheetTitle>
+                  <SheetDescription className="mb-3">
+                    W tym panelu możesz dodać kierowcę bezpośrednio, bez
+                    konieczności odwiedzania strony wszystkich kierowców.
+                  </SheetDescription>
+                  <DriverForm />
+                </SheetHeader>
+              </SheetContent>
+            </Sheet>
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-1/2"
+              onClick={() => formRef.current?.requestSubmit()}
+            >
+              {loading ? (
+                <LoaderCircle className="w-4 h-4 animate-spin" />
+              ) : (
+                "Dodaj mandat"
+              )}
+            </Button>
+          </div>
         </div>
       </div>
     </div>
