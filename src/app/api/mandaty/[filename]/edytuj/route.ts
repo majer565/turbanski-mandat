@@ -7,9 +7,6 @@ import { LoggerRequest } from "../../../../../lib/logger/Logger";
 
 export async function PUT(req: NextRequest) {
   try {
-    const session = await verifySession();
-    if (!session) throw new Error("Sesja wygasła");
-
     const ticket: Pick<Ticket, "id" | "file"> = await req.json();
     const ticketInDb = await prisma.ticket.findFirst({
       where: {

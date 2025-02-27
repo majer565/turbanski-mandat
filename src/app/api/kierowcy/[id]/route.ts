@@ -5,8 +5,6 @@ import { LoggerRequest } from "../../../../lib/logger/Logger";
 
 export async function GET(_req: Request, { params }: { params: { id: string } }) {
   try {
-    const session = await verifySession();
-    if (!session) throw new Error("Sesja wygasła");
     const driverId = Number(params.id);
 
     const res = await prisma.driver.findUnique({

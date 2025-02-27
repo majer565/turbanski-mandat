@@ -19,9 +19,6 @@ export async function GET(_req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await verifySession();
-    if (!session) throw new Error("Sesja wygasła");
-
     const ticket: TicketWithoutId = await req.json();
     const ticketFromDb = await prisma.ticket.findFirst({
       where: {
@@ -43,9 +40,6 @@ export async function POST(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   try {
-    const session = await verifySession();
-    if (!session) throw new Error("Sesja wygasła");
-
     const ticket: Ticket = await req.json();
     const ticketInDb = await prisma.ticket.findFirst({
       where: {
