@@ -18,9 +18,6 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await verifySession();
-    if (!session) throw new Error("Sesja wygasła");
-
     const driver: DriverWithoutId = await req.json();
     const driverInDb = await prisma.driver.findFirst({
       where: {
@@ -43,9 +40,6 @@ export async function POST(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   try {
-    const session = await verifySession();
-    if (!session) throw new Error("Sesja wygasła");
-
     const driver: Driver = await req.json();
     const driverInDb = await prisma.driver.findFirst({
       where: {
