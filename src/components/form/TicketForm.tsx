@@ -274,6 +274,7 @@ const TicketForm = () => {
             type="number"
             min="0"
             name="amount"
+            step="0.01"
             placeholder="Wprowadź kwotę"
           />
           <FormDateItem
