@@ -190,6 +190,7 @@ const TicketEditForm = ({ defaultData }: TicketEditFormProps) => {
             label="Kwota mandatu"
             type="number"
             min="0"
+            step="0.01"
             name="amount"
             placeholder="Wprowadź kwotę"
           />

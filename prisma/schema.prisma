@@ -13,7 +13,7 @@ model Ticket {
   date            String  @db.VarChar(128)
   time            String  @db.VarChar(16)
   vehiclePlate    String  @db.VarChar(16)
-  amount          Int
+  amount          Float
   currency        String  @db.VarChar(8)
   postPayoutDate  String  @db.VarChar(128)
   file            String  @db.VarChar(128)
