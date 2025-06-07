@@ -86,6 +86,7 @@ const TicketForm = () => {
     file: "",
     payment: "",
     driverId: "",
+    isSalaryCut: "",
   };
 
   const form = useForm<z.infer<typeof ticketSchema>>({
@@ -153,6 +154,7 @@ const TicketForm = () => {
         payment: values.payment,
         paymentDate: values.paymentDate || null,
         driverId,
+        isSalaryCut: values.isSalaryCut,
       });
     } catch (e) {
       toast({
@@ -306,6 +308,16 @@ const TicketForm = () => {
             label="Data wpływu poczty"
             name="postPayoutDate"
             placeholder="Wybierz datę"
+          />
+          <FormSelectItem
+            form={form}
+            label="Odliczone od wypłaty"
+            name="isSalaryCut"
+            placeholder="Wybierz opcję"
+            options={[
+              { value: "Tak", label: "Tak" },
+              { value: "Nie", label: "Nie" },
+            ]}
           />
         </form>
       </Form>

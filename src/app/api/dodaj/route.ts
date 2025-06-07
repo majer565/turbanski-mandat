@@ -10,19 +10,22 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const file = formData.get("ticketFile");
 
-    if (!file) throw new Error("Can't find uploaded file");
-
-    let buffer;
-
-    if (file instanceof File) {
-      buffer = Buffer.from(await file.arrayBuffer());
-    } else if (typeof file === "string") {
-      buffer = Buffer.from(file);
-    } else {
-      throw new Error("Unsupported FormDataEntryValue type");
+    if (!file) {
+      throw new Error("Can't find uploaded file");
     }
 
-    const storageDir = '/app/ticket_storage';
+    let buffer: Uint8Array;
+
+    if (typeof (file as any).arrayBuffer === "function") {
+      const arrayBuffer = await (file as any).arrayBuffer();
+      buffer = new Uint8Array(arrayBuffer);
+    } else if (typeof file === "string") {
+      buffer = new TextEncoder().encode(file);
+    } else {
+      throw new Error("Unsupported file format");
+    }
+
+    const storageDir = "/app/ticket_storage";
     const filename = "mandat-" + nanoid() + ".pdf";
     await writeFile(path.join(storageDir, filename), buffer);
 
