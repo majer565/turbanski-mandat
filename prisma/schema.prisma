@@ -4,8 +4,7 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url       = env("SUPA_DB_URL")
-  directUrl = env("SUPA_DIR_URL")
+  url       = env("DATABASE_URL")
 }
 
 model Ticket {
