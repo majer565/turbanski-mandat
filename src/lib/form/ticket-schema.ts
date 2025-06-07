@@ -36,6 +36,9 @@ export const ticketSchema = z
     driverId: z
       .string({ required_error: "To pole jest wymagane" })
       .min(0, { message: "To pole jest wymagane" }),
+    isSalaryCut: z
+      .string({ required_error: "To pole jest wymagane" })
+      .min(2, { message: "To pole jest wymagane" }),
   })
   .refine(
     (val) => {

@@ -64,6 +64,7 @@ export async function PUT(req: NextRequest) {
         payment: ticket.payment,
         paymentDate: ticket.paymentDate,
         driverId: ticket.driverId,
+        isSalaryCut: ticket.isSalaryCut,
       },
     });
 

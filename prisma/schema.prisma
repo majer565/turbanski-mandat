@@ -19,6 +19,7 @@ model Ticket {
   file            String  @db.VarChar(128)
   payment         String  @db.VarChar(11)
   paymentDate     String? @db.VarChar(128)
+  isSalaryCut     String  @db.VarChar(3) @default("Nie")
   driver          Driver  @relation(fields: [driverId], references: [id])
   driverId        Int
 }

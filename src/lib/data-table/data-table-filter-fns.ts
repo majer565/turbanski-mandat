@@ -40,7 +40,7 @@ export function selectFilterFn<TData>(
   id: string,
   filterValue: any
 ): any {
-  const rowValue = row.getValue(id) as string;
+  const rowValue = String(row.getValue(id));
   const input = filterValue as string[];
 
   if (input.length > 0) return input.some((value) => rowValue === value);

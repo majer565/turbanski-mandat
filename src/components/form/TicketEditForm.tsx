@@ -54,6 +54,7 @@ const defaultValues: FormTicket = {
   file: "",
   payment: "",
   driverId: "-1",
+  isSalaryCut: "",
 };
 
 const TicketEditForm = ({ defaultData }: TicketEditFormProps) => {
@@ -68,7 +69,8 @@ const TicketEditForm = ({ defaultData }: TicketEditFormProps) => {
       toast({
         variant: "destructive",
         title: "Błąd | Nie udało się edytować mandatu",
-        description: "Wystąpił błąd podczas edycji mandatu. Spróbuj ponownie. Jeśli problem będzie się powtarzał, skontaktuj się z administratorem.",
+        description:
+          "Wystąpił błąd podczas edycji mandatu. Spróbuj ponownie. Jeśli problem będzie się powtarzał, skontaktuj się z administratorem.",
       });
       setLoading(false);
     },
@@ -123,6 +125,7 @@ const TicketEditForm = ({ defaultData }: TicketEditFormProps) => {
         payment: values.payment,
         paymentDate: values.paymentDate || null,
         driverId,
+        isSalaryCut: values.isSalaryCut,
       };
 
       mutation.mutate({ ...ticketToSave, file: defaultValues.file });
@@ -130,7 +133,8 @@ const TicketEditForm = ({ defaultData }: TicketEditFormProps) => {
       toast({
         variant: "destructive",
         title: "Błąd | Nie udało się zapisać mandatu",
-        description: "Wystąpił błąd podczas zapisywania mandatu. Spróbuj ponownie. Jeśli problem będzie się powtarzał, skontaktuj się z administratorem.",
+        description:
+          "Wystąpił błąd podczas zapisywania mandatu. Spróbuj ponownie. Jeśli problem będzie się powtarzał, skontaktuj się z administratorem.",
       });
 
       setLoading(false);
@@ -222,6 +226,16 @@ const TicketEditForm = ({ defaultData }: TicketEditFormProps) => {
                 label: `${a.name} ${a.surname}`,
               })) ?? []
             }
+          />
+          <FormSelectItem
+            form={form}
+            label="Odliczone od wypłaty"
+            name="isSalaryCut"
+            placeholder="Wybierz opcję"
+            options={[
+              { value: "Tak", label: "Tak" },
+              { value: "Nie", label: "Nie" },
+            ]}
           />
           <div className="col-start-1 col-end-3 flex justify-center">
             <AlertDialog>

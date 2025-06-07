@@ -34,6 +34,7 @@ import {
   textFilterFn,
 } from "./data-table-filter-fns";
 import { dateSortFn, driverTextSortFn } from "./data-table-sort-fns";
+import TicketIsSalaryCutWrapper from "../../components/wrappers/TicketIsSalaryCutWrapper";
 
 const renderSortIcon = (sortOption: string | false) => {
   if (!sortOption) return;
@@ -228,6 +229,21 @@ export const getTicketColumns = (
       sortingFn: dateSortFn,
     },
     {
+      accessorKey: "isSalaryCut",
+      header: ({ column }) => {
+        return (
+          <Button variant="ghost" onClick={() => column.toggleSorting()}>
+            Odliczone
+            {renderSortIcon(column.getIsSorted())}
+          </Button>
+        );
+      },
+      cell: ({ cell }) => (
+        <TicketIsSalaryCutWrapper isSalarayCut={cell.getValue() as string} />
+      ),
+      filterFn: selectFilterFn,
+    },
+    {
       accessorKey: "file",
       header: "Plik",
       cell: ({ row }) => (
@@ -302,6 +318,17 @@ export const ticketFilters: ColumnFilterDefinition[] = [
     label: "Data płatności",
     type: FilterType.DATE,
   },
+  {
+    id: "isSalaryCut",
+    label: "Odliczone",
+    type: FilterType.SELECT,
+    options: {
+      selectOptions: [
+        { value: "Tak", icon: <CheckIcon className="w-4 h-4" /> },
+        { value: "Nie", icon: <XIcon className="w-4 h-4" /> },
+      ],
+    },
+  },
 ];
 
 export const ticketColumnsMap = new Map<string, string>([
@@ -316,4 +343,5 @@ export const ticketColumnsMap = new Map<string, string>([
   ["file", "Plik"],
   ["payment", "Płatność"],
   ["paymentDate", "Data płatności"],
+  ["isSalaryCut", "Odliczone"],
 ]);
